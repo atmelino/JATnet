@@ -8,8 +8,9 @@
 <link rel="stylesheet" type="text/css" href="JATstyle.css">
 
 
-<script type="text/JavaScript" src="jquery-2.1.1.js.js"></script>
+<script type="text/JavaScript" src="lib/jquery-2.1.1.js"></script>
 <script type="text/JavaScript" src="index.js"></script>
+<script type="text/JavaScript" src="functions.js"></script>
 <script type="text/JavaScript" src="menu.js"></script>
 <style>
 .ui-resizable-se {
@@ -33,7 +34,16 @@
 	<div id="status">
 		<?php include("status.html"); ?>
 	</div>
-	<div ID='mainarea' style="display: table;"></div>
+
+	<div ID='mainarea' style="display: table;">
+
+		<div id='messagesDiv'>
+			<textarea id="messages" style="width: 90%;"></textarea>
+			<!-- cols=60 rows=10 -->
+		</div>
+		<div id='container'></div>
+
+	</div>
 	<!-- end of mainarea -->
 
 
