@@ -15,6 +15,6 @@ function pageClick(page, title) {
 }
 
 function resetMenuButtons() {
-	document.getElementById("menuHome").src = "images/button_onload.svg";
+	document.getElementById("menuJAT").src = "images/button_onload.svg";
 	document.getElementById("menuDocumentation").src = "images/button_onload.svg";
 }

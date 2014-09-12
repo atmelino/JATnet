@@ -6,3 +6,6 @@ function onload_function() {
 
 }
 
+jQuery(document).ready(function() {
+	$().jetmenu();
+});
