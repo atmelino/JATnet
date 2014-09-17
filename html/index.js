@@ -6,6 +6,25 @@ function onload_function() {
 
 }
 
-jQuery(document).ready(function() {
-	$().jetmenu();
-});
+//jQuery(document).ready(function() {
+//	$().jetmenu();
+//});
+
+
+(function($) {
+	$(document).ready(function() {
+		$('.has-sub').click(function(e) {
+			alert('clicked');
+			e.preventDefault();
+			$(this).parent().toggleClass('tap');
+		});
+		$('.myhome').click(function(e) {
+			$('#container').load('home.html');
+			//alert('home clicked');
+		});
+		$('.documentation').click(function(e) {
+			$('#container').load('documentation.html');
+		});
+
+	});
+}(jQuery));

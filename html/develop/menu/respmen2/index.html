@@ -14,6 +14,10 @@
 				e.preventDefault();
 				$(this).parent().toggleClass('tap');
 			});
+			$('.myhome').click(function(e) {
+				alert('home clicked');
+			});
+
 		});
 	}(jQuery));
 </script>
@@ -97,7 +101,7 @@ ul.egmenu li:hover ul {
 
 	<div>
 		<ul class="egmenu mobile desktop">
-			<li><a>Home</a></li>
+			<li><a  class='myhome'>Home</a></li>
 			<li class=""><a href="" class="has-sub">Products</a>
 				<ul>
 					<li><a>Computers</a></li>

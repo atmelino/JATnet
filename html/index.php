@@ -13,8 +13,8 @@
 <script type="text/JavaScript" src="functions.js"></script>
 <script type="text/JavaScript" src="menu.js"></script>
 
-<link rel="stylesheet" type="text/css" href="lib/jetmenu.css">
-<script type="text/javascript" src="lib/jetmenu.js"></script>
+<!-- <link rel="stylesheet" type="text/css" href="lib/jetmenu.css"> -->
+<!-- <script type="text/javascript" src="lib/jetmenu.js"></script> -->
 
 
 <!-- On the remote server, insert the code from piwik.txt here for tracking -->
