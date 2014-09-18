@@ -20,11 +20,28 @@ function onload_function() {
 		});
 		$('.myhome').click(function(e) {
 			$('#container').load('home.html');
+			document.title = 'JAT';
 			//alert('home clicked');
 		});
-		$('.documentation').click(function(e) {
-			$('#container').load('documentation.html');
+		$('.Documentation').click(function(e) {
+			$('#container').load('Documentation.html');
+			document.title = 'Documentation';
 		});
+		$('.Applications').click(function(e) {
+			$('#container').load('Applications.html');
+			document.title = 'Applications';
+		});
+		$('.Examples').click(function(e) {
+			$('#container').load('Examples.html');
+			document.title = 'Examples';
+		});
+
+		
+		//<li><a class='Screenshots'>Screenshots</a></li>
+		//<li><a class='Support'>Support</a></li>
+		//<li><a class='Development'>Development</a></li>
+		//<li><a class='Testing'>Testing</a></li>
+		//<li><a class='Licenses'>Licenses</a></li>
 
 	});
 }(jQuery));
