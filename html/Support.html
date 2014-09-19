@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<h2>Computer Preparation</h2>
+	<h4>&nbsp;</h4>
+	<h4>Java Installation</h4>
+	<p>You need Java on your computer to run the JAT applications.</p>
+	<p>Click on this link to verify that you have Java installed on
+		your computer or to download Java:</p>
+	<p>
+		<a href="http://www.java.com/en/download/installed.jsp">Do I have
+			Java?</a>
+	</p>
+	<p>The recommended version of Java for JAT is Java 7.</p>
+	<p>On Ubuntu, the easiest method of installing Java 7 is described
+		at</p>
+	<p>
+		<a class="http"
+			href="http://www.webupd8.org/2012/01/install-oracle-java-jdk-7-in-ubuntu-via.html">Using
+			webupd8.org&#39;s strikingly simple method.</a>
+	</p>
+	<p>In a terminal, enter</p>
+	<div>
+		<table border="1" cellpadding="1" cellspacing="1"
+			style="width: 500px;">
+			<tbody>
+				<tr>
+					<td>
+						<div>sudo add-apt-repository ppa:webupd8team/java</div>
+						<div>sudo apt-get update</div>
+						<div>sudo apt-get install oracle-java7-installer</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>To verify, enter</p>
+		<table border="1" cellpadding="1" cellspacing="1"
+			style="width: 500px;">
+			<tbody>
+				<tr>
+					<td>java -version</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div>&nbsp;</div>
+	<div>&nbsp;</div>
+	<h4>Java3D Installation</h4>
+	<p>Some of the applications that have 3D graphics require that
+		Java3D is installed.</p>
+	<p>You can verify that you have Java3D installed on your computer:</p>
+	<p>
+		<a href="http://jat.sourceforge.net/jat/Java3Dtest/HelloWorld3D.html">Do
+			I have Java3D?</a>
+	</p>
+	<p>&nbsp;</p>
+	<p>If you do not have Java3D installed on your computer at all, see</p>
+	<p>
+		<a href="node/28">Installing Java3D</a>
+	</p>
+	<div>&nbsp;</div>
+	<h6>Typical Java3D problems and solutions</h6>
+	<p>&nbsp;</p>
+	<div>The package installer will install the library
+		libj3dcore-ogl.so into the folder /usr/lib/jni/libj3dcore-ogl.so .
+		When running an applet in a browser, the library may not be found in
+		the library path of the web browser. The simplest solution to this is
+		to copy the library into the /lib folder:</div>
+	<div>
+		<table border="1" cellpadding="1" cellspacing="1"
+			style="width: 500px;">
+			<tbody>
+				<tr>
+					<td>sudo cp /usr/lib/jni/libj3dcore-ogl.so /lib/</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div>After restarting the browser, the applet should run Java3D.</div>
+	<div>&nbsp;</div>
+	<p>You may have Java3D on your computer, but your computer needs to
+		have the according permissions to run Java3D applications in your web
+		browser.</p>
+	<p>On Ubuntu Linux, this is accomplished by creating a security
+		policy file named &quot;.java.policy&quot; &nbsp;in your home
+		directory. For simplicity, you could grant Java all permissions to
+		test the software, but you should not leave this in place as it could
+		compromise the security of your system. Example:</p>
+	<table border="1" cellpadding="1" cellspacing="1" style="width: 500px;">
+		<tbody>
+			<tr>
+				<td>
+					<p>Contents of file /home/jatuser/.java.policy:</p>
+				</td>
+			</tr>
+			<tr>
+				<td>grant {<br /> &nbsp; permission
+					java.security.AllPermission;<br /> };
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<p>You will have to close all open browser windows and restart the
+		web browser to enact the policy change.</p>
+	<p>&nbsp;</p>
+	<div>&nbsp;</div>
+	<p>&nbsp;</p>
+	<h2>Application Loading</h2>
+	<h4>&nbsp;</h4>
+	<h4>Web Page Applets</h4>
+	<p>Some of the applications can be run directly in your web
+		browser. These applications are on the</p>
+	<p>
+		<a href="http://jat/deploy/index.html">Applets page</a>
+	</p>
+	<p>In addition to having Java, you also need a Java browser-plugin
+		for you web browser. The link above should help you configure you
+		computer so that it can run JAT applets.</p>
+	<p>&nbsp;</p>
+	<h4>Local Hard Drive Installation</h4>
+	<p>The program execution from the live web site may feel slow, due
+		to some loading of files during the program execution. You can get a
+		much better and faster experience by taking the following steps:</p>
+	<ul>
+		<li>Download <a href="http://jat/zip/jat.zip">JAT.zip</a></li>
+		<li>Extract the downloaded file</li>
+		<li>Within the extracted folders, navigate a web browser to
+			jat/deploy/index.html</li>
+	</ul>
+	<p>When you run the applets from your local hard drive, you may get
+		a security warning. If you are not comfortable runnning an unsigned
+		component, you can block the applet.</p>
+	<p>
+		<img alt="" src="images/Java_security_warning.png"
+			style="width: 524px; height: 304px;" />
+	</p>
+	<h4>Script Files</h4>
+	<p>Some of the applications can be started by running the according
+		script files. On a Linux system, you have to make sure that the script
+		file has permission to be executed. Open a file manager and
+		right-click on the script file, then set the permission:</p>
+	<p>
+		<img alt="" src="images/script_permission.png"
+			style="width: 464px; height: 577px;" />
+	</p>
+	<p>&nbsp;</p>
+	<h4>DE405 Ephemeris Data Files</h4>
+	<p>Some of the applications require the DE405 Ephemeris data files
+		from JPL. If you are running an application from the JAT web site, the
+		data files will be downloaded automatically.</p>
+	<p>If you are running the application from your local hard disk,
+		download the files that you need for the time period you are working
+		with from</p>
+	<p>
+		<a href="ftp://ssd.jpl.nasa.gov/pub/eph/planets/">ftp://ssd.jpl.nasa.gov/pub/eph/planets/</a>
+	</p>
+	<p>and navigate to the folder ascii/de405/ within the FTP site.</p>
+	<p>
+		For example, the file <a class="file"
+			href="ftp://ssd.jpl.nasa.gov/pub/eph/planets/ascii/de405/ascp2000.405">ascp2000.405</a>
+		contains the data between the year 2000 and the year 2020. If you have
+		enough disk space and download bandwidth, you can simply download all
+		the files in the directory.
+	</p>
+	<p>The data files need to be placed in the directory</p>
+	<p>jat/data/core/ephemeris/DE405data</p>
+	<p>within the JAT directory structure.</p>
+	<p>&nbsp;</p>
+	<p>&nbsp;</p>
+	<h3>Developer:</h3>
+	<p class="with-tabs">&nbsp;</p>
+	<p class="with-tabs">&nbsp;</p>
+	<p>Do you get the error &quot;An error has occurred. See the log
+		file
+		/home/user/.eclipse/org.eclipse.platform_3.7.0_155965261/configuration/1349051856003.log.&quot;
+		after installing Java 7 and starting Eclipse? Solution: open a
+		terminal and run</p>
+	<p>ln -s /usr/lib/jni/libswt-* ~/.swt/lib/linux/x86/</p>
+	<p class="with-tabs">
+		<a href="node/33">Command line installation</a>
+	</p>
+	<p class="with-tabs">
+		<a href="?q=node/30">Windowbuilder Pro Installation</a>
+	</p>
+	<p class="with-tabs">&nbsp;</p>
+	<p>&nbsp;</p>
+	</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

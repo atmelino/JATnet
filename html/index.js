@@ -47,10 +47,13 @@ function onload_function() {
 			$('#container').load('Licenses.html');
 			document.title = 'Licenses';
 		});
+		$('.Support').click(function(e) {
+			$('#container').load('Support.html');
+			document.title = 'Support';
+		});
 
 		
 		//<li><a class='Screenshots'>Screenshots</a></li>
-		//<li><a class='Support'>Support</a></li>
 
 	});
 }(jQuery));
