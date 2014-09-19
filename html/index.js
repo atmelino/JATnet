@@ -35,6 +35,10 @@ function onload_function() {
 			$('#container').load('Examples.html');
 			document.title = 'Examples';
 		});
+		$('.Development').click(function(e) {
+			$('#container').load('Development.html');
+			document.title = 'Development';
+		});
 
 		
 		//<li><a class='Screenshots'>Screenshots</a></li>
