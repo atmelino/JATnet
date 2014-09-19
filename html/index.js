@@ -39,13 +39,18 @@ function onload_function() {
 			$('#container').load('Development.html');
 			document.title = 'Development';
 		});
+		$('.Testing').click(function(e) {
+			$('#container').load('Testing.html');
+			document.title = 'Testing';
+		});
+		$('.Licenses').click(function(e) {
+			$('#container').load('Licenses.html');
+			document.title = 'Licenses';
+		});
 
 		
 		//<li><a class='Screenshots'>Screenshots</a></li>
 		//<li><a class='Support'>Support</a></li>
-		//<li><a class='Development'>Development</a></li>
-		//<li><a class='Testing'>Testing</a></li>
-		//<li><a class='Licenses'>Licenses</a></li>
 
 	});
 }(jQuery));
