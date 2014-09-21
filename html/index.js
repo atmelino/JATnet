@@ -6,6 +6,15 @@ function onload_function() {
 
 }
 
+
+function linkClick(name)
+{
+	
+	$('#container').load(name);
+
+
+}
+
 //jQuery(document).ready(function() {
 //	$().jetmenu();
 //});
