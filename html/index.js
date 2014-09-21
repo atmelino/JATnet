@@ -60,6 +60,10 @@ function linkClick(name)
 			$('#container').load('Support.html');
 			document.title = 'Support';
 		});
+		$('.Screenshots').click(function(e) {
+			$('#container').load('Screenshots.html');
+			document.title = 'Screenshots';
+		});
 
 		
 		//<li><a class='Screenshots'>Screenshots</a></li>
