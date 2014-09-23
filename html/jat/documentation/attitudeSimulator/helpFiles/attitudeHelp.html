@@ -1,0 +1,504 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Bang-Bang control</title>
+                                                
+  <meta http-equiv="content-type" content="text/html; charset=Shift_JIS">
+</head>
+  <body>
+           
+<div align="center">  <font color="#330000"><img src="BangBangTitle.GIF"
+ alt="Title" width="492" height="64">
+    </font>         
+<div align="left"><b><u>Description</u></b><br>
+ <br>
+    A basic bang-bang control about single axis was implemented in this scenario. 
+  <br>
+    </div>
+    </div>
+     The model of a linearized spacecraft dynamics with a proportional and
+ derivative<br>
+     control was considered, which is shown in the illustration below.<br>
+     <br>
+     <img src="BangBang.GIF" alt="Block Diagram" width="584"
+ height="233">
+     <br>
+     <br>
+     <b><u>Inputs</u></b><br>
+ <br>
+     <b>J</b>                    &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Spacecraft Moment 
+of inertia<br>
+     <b>wn</b>                  &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160; &#160; &#160; Desired natural 
+frequency<br>
+     <b>damping</b>           &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160; &#160; &#160; Desired damping coefficient<br>
+     <b>Torque</b>            &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160; &#160; &#160; &#160; &#160; Torque level of the bang-bang 
+actuator<br>
+     <b>Dead Zone</b>       &#160;&#160;&#160; &#160;&#160;&#160; &#160; &#160; &#160; Range in which no torque should 
+be applied<br>
+     <b>theta_com</b>        &#160;&#160;&#160; &#160;&#160;&#160; &#160; &#160; &#160; &#160;Commanded angular position<br>
+     <br>
+     <b><u>Initial Condition<br>
+ </u></b><br>
+     <b>theta </b>&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;              &#160; &#160;Spacecraft angular position 
+for an actuator  with  no constraint<br>
+     <b>thetaDot</b>          &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160; &#160;Spacecraft angular velocity
+for an actuator with   no constraint<br>
+     <b>thetaBang </b>&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;       Spacecraft angular position for
+the bang-bang actuator<br>
+     <b>thetaDotBang</b>   &#160;&#160;&#160; &#160;&#160;&#160; Spacecraft angular velocity for the bang-bang 
+actuator<br>
+ <br>
+ <br>
+     <br>
+     <br>
+     <br>
+       <br>
+</body>
+</html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>CMG Control</title>
+                                         
+  <meta http-equiv="content-type" content="text/html; charset=Shift_JIS">
+</head>
+  <body>
+         
+<div align="center">  <img src="CMG%20Maneuver.GIF" alt="Title"
+ width="408" height="55">
+<b><u><br>
+ </u></b>        
+<div align="left">      
+<div align="left"><b><u>Description</u></b><br>
+ <br>
+   In this project, to simulate a reorientation maneuver of a rigid spacecraft<br>
+   using CMGs, a configuration of 3 single-gimbal control moment gyros (CMGs)<br>
+   aligned with the principal axis was used. The illustration shows the CMG 
+ <br>
+   configuration used.<br>
+   <br>
+   <img src="CMGassembly.GIF" alt="CMG Assembly" width="492"
+ height="448">
+   <br>
+         <b><u>Inputs<br>
+ </u></b><br>
+      <b>Ixx</b>,  <b>Iyy</b>, <b>Izz</b>                  &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; 
+&#160;&#160; Principal moments  of inertia<br>
+       <b>J </b>&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;                        
+       CMG inertia<br>
+     <b>A</b>                                 &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; 
+&#160;&#160;&#160; &#160;CMG ginbal rate<br>
+     <b>psi</b>                               &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; 
+&#160;&#160; Commanded Euler angle<br>
+     <b>phi &#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;</b>                              Commanded 
+Euler angle<br>
+     <b>theta</b>&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;                           Commanded 
+Euler angle<br>
+     <br>
+     <b><u>Initial Condition<br>
+ </u></b><br>
+      <b>w1</b>, <b>w2, w3</b>:                   &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Spacecraft 
+angular velocities  <br>
+          <b>q1, q2, q3, q4</b>:              &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Quaternions<br>
+     <b>Omega 1</b>                      &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Gimbal rate
+of CMG 1<br>
+     <b>Omega 2</b>                      &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Gimbal rate
+of CMG 2<br>
+     <b>Omega 3</b>                      &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Gimbal rate
+of CMG 3<br>
+         <br>
+   </div>
+   <br>
+     </div>
+     </div>
+     <br>
+    <br>
+   <br>
+   <br>
+</body>
+</html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Constant Torque</title>
+                                                       
+  <meta http-equiv="content-type" content="text/html; charset=Shift_JIS">
+</head>
+  <body>
+               
+<div align="center">
+<div align="center">  <img src="ConstantTorque.GIF" alt="Title"
+ width="284" height="54">
+</div>
+<div align="left"><b><u>Description</u></b><br>
+  <br>
+     </div>
+   
+<div align="left">This scenario uses Euler’s rotational equations of motion
+ to simulate the<br>
+    attitude dynamics of a rigid spacecraft with optional body-fixed, constant
+  <br>
+    torques. Euler’s rotational equations of motion is found in most of the 
+ <br>
+    textbooks on spacecraft dynamics <br>
+    <br>
+    <b><u>Inputs<br>
+  </u></b><br>
+    <b>Ixx</b>,  <b>Iyy, Izz</b>                  Principal moments of inertia<br>
+      <b>M1,M2,M3</b>                    External torque acting in the b1 
+direction<br>
+      <br>
+      <b><u>Initial Condition</u></b><br>
+  <br>
+    <b>w1</b>, <b>w2, w3</b>:                   Spacecraft angular velocities
+  <br>
+          <b>q1, q2, q3, q4</b>:              Quaternions<br>
+     <br>
+      </div>
+    </div>
+    <br>
+    <br>
+     <br>
+</body>
+</html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Four Reaction Wheels</title>
+                                         
+  <meta http-equiv="content-type" content="text/html; charset=Shift_JIS">
+</head>
+  <body>
+           
+<div align="center"> <img src="RW%20Control.GIF" alt="RW Control"
+ width="207" height="46">
+<b><u><br>
+ </u></b>        
+<div align="left">      
+<div align="left"><b><u>Description<br>
+ </u></b><br>
+   An attitude maneuver via momentum transfer based on the conservation of<br>
+   angular momentum was simulated. In this project, 4 reaction wheels in
+<br>
+   a pyramid configuration was used; this configuration provides redundancy 
+ <br>
+   such that if one wheels become unable to operate for some reason, <br>
+   the other three reaction wheels can provide control torque in all three
+ direction. <br>
+   <br>
+   <img src="FourReactionWheel.GIF"
+ alt="Four Reaction wheels in a pyramid configuration" width="541"
+ height="399">
+   <br>
+         <br>
+   <b><u>Inputs<br>
+ </u></b><br>
+      <b>Ixx</b>,<b> Iyy, Izz</b>                &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Moments of inertia<br>
+      <b>J</b>                               &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160;
+Reaction wheel inertia<br>
+   <b>  RW angle&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;</b>                  Tilt angle of reaction
+wheel axis<br>
+   <b>  psi</b>                             &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Commanded 
+Euler angle<br>
+   <b>  phi  </b>&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;                          Commanded 
+Euler angle<br>
+   <b>  theta</b>                         &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Commanded Euler 
+angle<br>
+     <br>
+     <b><u>Initial Condition</u></b><br>
+   <b>w1</b>, <b>w2, w3</b>:                 &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Spacecraft angular 
+velocities <br>
+         <b>q1, q2, q3, q4</b>:            &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Quaternions<br>
+    <b>Omega1 </b>&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;                     Angular velocity 
+of RW 1<br>
+   <b>  Omega2</b>                      &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Angular velocity 
+of RW 2<br>
+   <b>  Omega3 </b>&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;                     Angular velocity 
+of RW 3<br>
+   <b>  Omega4</b>                      &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Angular velocity 
+of RW 4<br>
+             </div>
+   </div>
+   </div>
+   <br>
+   <br>
+   <br>
+</body>
+</html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>GG Circular</title>
+                                         
+  <meta http-equiv="content-type" content="text/html; charset=Shift_JIS">
+</head>
+  <body>
+           
+<div align="center"> <img src="GGCircular.GIF" alt="Title" width="564"
+ height="54">
+<font color="#000000">    </font>        
+<div align="left">   
+<div align="left">   
+<div align="left">    A rigid spacecraft is subjected to a gravity gradient 
+ torque in a circular<br>
+   orbit.<br>
+         <br>
+   <b><u>Inputs<br>
+ </u></b><br>
+       <b>Ixx</b>,<b> Iyy, Izz </b>&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;                  Principal 
+moments of inertia<br>
+   <br>
+   <b><u>Initial Condition</u></b><br>
+ <br>
+   <b>w1</b>, <b>w2, w3</b>:                   &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Spacecraft angular 
+velocities  <br>
+        <b>q1, q2, q3, q4</b>:              &#160;&#160;&#160; &#160;&#160;&#160; Quaternions<br>
+      <br>
+         </div>
+   </div>
+   <br>
+     </div>
+     </div>
+     <br>
+    <br>
+   <br>
+   <br>
+</body>
+</html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>GG Eccentric</title>
+                                         
+  <meta http-equiv="content-type" content="text/html; charset=Shift_JIS">
+</head>
+  <body>
+           
+<div align="center"> <img src="GGEccentric.GIF" alt="Title" width="564"
+ height="54">
+      
+<div align="left">   
+<div align="left">   
+<div align="left">   
+<div align="left">   
+<div align="left"><b><u>Description<br>
+ </u></b><br>
+   A rigid spacecraft is subjected to gravity gradient torque while it revolves<br>
+   around an eccentric orbit.<br>
+         <br>
+   <b><u>Inputs<br>
+ </u></b><br>
+      <b>Ixx, Iyy, Izz</b>                Principal moments of inertia (kg
+ m2)<br>
+       <b>e        </b>                      Eccentricity<br>
+   <small><br>
+   <br>
+ </small><b><u>Initial Condition</u></b><br>
+ <br>
+   <b>w1</b>, <b>w2, w3</b>:                  Spacecraft angular velocities 
+ <br>
+       <b>q1, q2, q3, q4</b>:             Quaternions<br>
+   <br>
+     <u><br>
+   </u></div>
+   </div>
+   </div>
+   </div>
+   <br>
+     </div>
+     </div>
+     <br>
+    <br>
+   <br>
+   <br>
+</body>
+</html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Simple 2D Flexible Spacecraft</title>
+                                         
+  <meta http-equiv="content-type" content="text/html; charset=Shift_JIS">
+</head>
+  <body>
+         
+<div align="center">      <img src="Simple2DFlexSC.GIF" alt="Title"
+ width="544" height="64">
+       
+<div align="left"><b><u>Simulation Control</u></b><br>
+ <br>
+     <b>time step</b>:         Time step for the numerical integration routine<br>
+     <b>time</b>:                Duration of the simulation periond in seconds<br>
+    <b><u><br>
+ </u></b>   </div>
+         
+<div align="left"><b><u>Description<br>
+ </u></b><br>
+    A flexible spacecraft is modeled as a central rigid body with two massless
+  beams<br>
+     attachd symmetrically to the side of the central body. Each beam has 
+a  <br>
+     concentrated mass at the tip. The flexibility comes from the flexural
+ rigidity  EI of <br>
+     the beams.<br>
+     <img src="Flexible202D.GIF"
+ alt="2D Flexible Spacecraft Illustration" width="540" height="424">
+    <br>
+   <b><u>Inputs<br>
+ </u></b><br>
+   <b>J</b>:                &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Moment of inertia<br>
+   <b>m</b>:                &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Tip mass<br>
+   <b>a</b>:                &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Distance as indicated in
+the illustration above  (m)<br>
+   <b>L</b>:                &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Length of the beam (m)<br>
+   <b>EI</b>:               &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Flexural rigidity of the
+beam (N m2) <br>
+   <b><u><small><br>
+   </small>Initial Condition<br>
+ </u></b><br>
+   <b>Alpha</b>:           &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Spacecraft angular position  <br>
+   <b>u1</b>:               &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Position of the first mass<br>
+   <b>u2</b>:               &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Position of the second mass<br>
+   <b>AlphaDot</b>:      &#160;&#160;&#160; &#160;&#160; Spacecraft angular velocity <br>
+   <b>u1Dot</b>:          &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Velocity of the first mass<br>
+   <b>u2Dot</b>:          &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Velocity of the second mass<br>
+ <br>
+ <img src="2DFlexInputOutput.GIF" alt="Input and Output" width="606"
+ height="745">
+ <br>
+         
+<h4><br>
+      <br>
+     </h4>
+   </div>
+      <br>
+     </div>
+     <br>
+     <br>
+   <br>
+</body>
+</html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Simple 3D Flexible Spacecraft</title>
+                                  
+  <meta http-equiv="content-type" content="text/html; charset=Shift_JIS">
+</head>
+  <body>
+       
+<div align="center">     <img src="Simple3DFlexSC.GIF" alt="Title"
+ width="544" height="64">
+     
+<div align="left"><b><u>Simulation Control</u></b><br>
+   <b>time step</b>:         Time step for the numerical integration routine<br>
+   <b>time</b>:                Duration of the simulation periond in seconds<br>
+   <br>
+    <b><u>Description</u></b><br>
+   A flexible spacecraft is modeled as a central rigid body with two massless 
+ beams<br>
+   attachd symmetrically to the side of the central body. Each beam has a 
+<br>
+   concentrated mass at the tip. The flexibility comes from the flexural
+rigidity  EI of <br>
+   the beams. Although the flexible elements are constrained to move in 1-2 
+ plane<br>
+   only, the applet is able to simulate the effect of flexibility on the
+spacecraft  <br>
+   attitude in three dimensional space.<br>
+    <img src="Flexible202D.GIF"
+ alt="2D Flexible Spacecraft Illustration" width="540" height="424">
+    <br>
+    <b><u>Inputs</u></b><br>
+   <b>Ixx, Iyy, Izz</b>:        &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Principal moments if inertia<br>
+   <b>m</b>:                    &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160; Tip mass (kg)<br>
+   <b>a</b>:                     &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Distance as
+indicated in the illustration (m)<br>
+   <b>L</b>:                     &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Length of the 
+beam as illustrated (m)<br>
+   <b>EI</b>:                    &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Flexural rigidity 
+(N m2)<br>
+   <br>
+   <b><u>Initial Condition</u></b><br>
+   <b>u1</b>:                    &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Position of the
+first mass<br>
+   <b>u2</b>:                    &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Position of the
+second mass<br>
+   <b>psi, theta, phi</b>:      &#160;&#160;&#160; &#160;&#160;&#160; Euler angles in a sequence of 3-2-1<br>
+   <b>u1Dot</b>:                &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Velocity of the first 
+mass<br>
+   <b>u2Dot</b>:                &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Velocity of the second 
+mass<br>
+   <b>psiDot</b>:                &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Time rate of psi angle<br>
+   <b>thetaDot</b> :           &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Time rate of theta angle<br>
+   <b>phiDot</b>:               &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; Time rate of phi angle<br>
+   <br>
+   <br>
+    <br>
+       
+<h4><br>
+   </h4>
+    <br>
+    </div>
+     <br>
+    </div>
+    <br>
+   <br>
+   <br>
+</body>
+</html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Spherical Damper</title>
+                                         
+  <meta http-equiv="content-type" content="text/html; charset=Shift_JIS">
+</head>
+  <body>
+           
+<div align="center"> <img src="SphericalDamper.GIF" alt="Title"
+ width="424" height="55">
+        
+<div align="left"><b><u>Simulation Control</u></b><br>
+     <b>time step</b>:         Time step for the numerical integration routine<br>
+     <b>time</b>:                Duration of the simulation periond in seconds<br>
+   </div>
+         
+<div align="left">      
+<div align="left">      
+<div align="left">      
+<div align="left"><br>
+   <b><u>Description</u></b><br>
+   A damper in a rigid spacecraft in a circular orbit may be able to stabilize 
+ the spacecraft <br>
+   that otherwise goes unstable without it. To simulate such a behavior,
+a  rigid spacecraft <br>
+   with a damper of spherical shape was modeled as illustrated.<br>
+   <br>
+   <img src="DamperAndSpacecraft.GIF"
+ alt="Illustration of a damper and spacecraft" width="541" height="364">
+   <br>
+    <br>
+       <b><u>Inputs</u></b><br>
+   <b>Ixx</b>, <b>Iyy, Izz</b>                &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160; &#160; Principal moments 
+of inertia<br>
+   <b>c &#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;</b>                              &#160; &#160; &#160; Damping 
+Coefficient<br>
+     <b>j </b>                              &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160; 
+&#160; Spherical damper inertia<br>
+   <br>
+   <b><u>Initial Condition</u></b><br>
+         <b>w1</b>, <b>w2, w3</b>:                  &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160;&#160;&#160; &#160; Spacecraft 
+angular velocities  <br>
+      <b>q1, q2, q3, q4</b>:             &#160;&#160;&#160; &#160;&#160; &#160;&#160;&#160; &#160; Quaternions<br>
+      <b>alpha, beta, gamma</b>:    &#160;&#160;&#160; Damper angular velocities<br>
+   </div>
+   </div>
+   </div>
+   </div>
+   </div>
+   <br>
+   <br>
+   <br>
+</body>
+</html>
