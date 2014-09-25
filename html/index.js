@@ -1,24 +1,33 @@
 function onload_function() {
 	printlnMessage('messages', 'onload_status() in index.js');
 
-	$('#container').load('home.html');
-	document.title = 'JAT';
+	page = getCookie('page');
+	title = getCookie('title');
+	if (page == null) {
+		page = 'home.html';
+		title = 'JAT'
+	}
+	printlnMessage('messages', page+' '+title);
+
+	// $('#container').load('home.html');
+	// document.title = 'JAT';
+	$('#container').load(page);
+	document.title = title;
 
 }
 
+function linkClick(page,title) {
 
-function linkClick(name)
-{
-	
-	$('#container').load(name);
-
+	$('#container').load(page);
+	document.title = title;
+	setCookie('page', page, 100);
+	setCookie('title', title, 100);
 
 }
 
-//jQuery(document).ready(function() {
-//	$().jetmenu();
-//});
-
+// jQuery(document).ready(function() {
+// $().jetmenu();
+// });
 
 (function($) {
 	$(document).ready(function() {
@@ -28,17 +37,30 @@ function linkClick(name)
 			$(this).parent().toggleClass('tap');
 		});
 		$('.myhome').click(function(e) {
-			$('#container').load('home.html');
-			document.title = 'JAT';
-			//alert('home clicked');
+			//$('#container').load('home.html');
+			//document.title = 'JAT';
+			page='home.html';
+			title='JAT';
+			$('#container').load(page);
+			document.title = title;
+			setCookie('page', page, 100);
+			setCookie('title', title, 100);
+
+			// alert('home clicked');
 		});
 		$('.Documentation').click(function(e) {
-			$('#container').load('Documentation.html');
-			document.title = 'Documentation';
+			//$('#container').load('Documentation.html');
+			page='Documentation.html';
+			title='Documentation';
+			$('#container').load(page);
+			document.title = title;
+			setCookie('page', page, 100);
+			setCookie('title', title, 100);
 		});
 		$('.Applications').click(function(e) {
-			$('#container').load('Applications.html');
-			document.title = 'Applications';
+			linkClick('Applications.html','Applications');
+			//$('#container').load('Applications.html');
+			//document.title = 'Applications';
 		});
 		$('.Examples').click(function(e) {
 			$('#container').load('Examples.html');
@@ -65,8 +87,7 @@ function linkClick(name)
 			document.title = 'Screenshots';
 		});
 
-		
-		//<li><a class='Screenshots'>Screenshots</a></li>
+		// <li><a class='Screenshots'>Screenshots</a></li>
 
 	});
 }(jQuery));
