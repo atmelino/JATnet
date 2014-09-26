@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+
+
+
+
+
+
+	<p>This document describes how to download and install JAT from the
+		Subversion repository. This document assumes that you are using
+		Eclipse 3.7.0.</p>
+	<p>The major steps involved include:</p>
+	<p>1. Install subclipse plugin for Eclipse.</p>
+	<p>2. Connect to the Subversion Repository.</p>
+	<p>3. Checking out jatcore and setting up a Java Project in
+		Eclipse.</p>
+	<p>4. Checking out jatcontrib and setting up a Java Project in
+		Eclipse.</p>
+	<h2>
+		<br /> 1. Installing the subclipse Plugin
+	</h2>
+	<p>1. In Eclipse, choose Help-&gt;Software Updates-&gt;Find and
+		Install&hellip; as shown below.</p>
+	<p>Alternate text</p>
+	<p>2. On the Install/Update dialog box, choose: Search for new
+		features to install and click the Next &gt; button.</p>
+	<p>3. On the Install dialog box, click on the New Remote
+		Site&hellip; button.</p>
+	<p>
+		4. On the New Update Site dialog box, enter: Subclipse Plugin for the
+		Name and <a href="http://subclipse.tigris.org/update"
+			title="http://subclipse.tigris.org/update">http://subclipse.tigris.org/update</a>
+		for the URL as shown below.
+	</p>
+	<p>
+		<img alt="" src="images/add_site%20.png"
+			style="width: 553px; height: 189px;" />
+	</p>
+	<p>5. In the Install dialog box, click on Subclipse Plugin to
+		expand it. Then under Sites to include in search, check the boxes for
+		Subclipse Plugin, Subversion Book and Subclipse Plugin as shown below.
+		Click the Next &gt; button.</p>
+	<p>
+		<img alt="" src="images/install_subclipse.png"
+			style="width: 742px; height: 568px;" />
+	</p>
+	<p>6. In the Install dialog box, under Select the features to
+		install, check the boxes for Subclipse and Version Control with
+		Subversion as shown below. Click the Next &gt; button.</p>
+	<p>Alternate text</p>
+	<p>7. Click on Finish. The plugin should be installed and ready to
+		go.</p>
+	<h2>
+		<br /> 2. Connect to the Subversion Repository
+	</h2>
+	<p>1. In Eclipse, select Window -&gt; Open Perspective -&gt;
+		Other&hellip;</p>
+	<p>2. In the Select Perspective dialog box, select SVN Repository
+		Exploring and click OK.</p>
+	<p>Alternate text</p>
+	<p>3. Right click in the SVN Repository window. Choose New-&gt;
+		Repository Location &hellip;</p>
+	<p>4. In the Add SVN Repository dialog box, enter</p>
+	<p>
+		<a href="https://jat.svn.sourceforge.net/svnroot/jat"
+			title="https://jat.svn.sourceforge.net/svnroot/jat">https://jat.svn.sourceforge.net/svnroot/jat</a>
+	</p>
+	<p>in the Url textbox.</p>
+	<p>
+		<img alt="" src="images/add_new_repository.png"
+			style="width: 609px; height: 311px;" />
+	</p>
+	<p>Accept the certificate.</p>
+	<p>
+		<img alt="" src="images/accept_certificate.png"
+			style="width: 633px; height: 203px;" />
+	</p>
+	<p>&nbsp;</p>
+	<h2>
+		<br /> 3. Checking out jatcore and Setting Up a Java Project
+	</h2>
+	<p>1. In the SVN Repository window, right click on Trunk</p>
+	<p>
+		2. In the pop-up menu, select Check out<img alt=""
+			src="images/checkout_trunk.png"
+			style="width: 640px; height: 334px;" />
+	</p>
+	<p>3. In the Checkout from SVN dialog box, select Check out as
+		project configured using the New Project Wizard and click on Finish.</p>
+	<p>Note: It is important to use the project wizard so that the
+		project becomes a Java project.</p>
+	<p>4. In the New Project dialog box, select Java Project and click
+		on Next &gt;.</p>
+	<p>
+		<img alt="" src="images/wizard_java.png"
+			style="width: 609px; height: 501px;" />
+	</p>
+	<p>5. In the New Java Project dialog box, enter jat for the Project
+		Name.</p>
+	<p>
+		<img alt="" src="images/new_java_project.jpg"
+			style="width: 528px; height: 640px;" />
+	</p>
+	<p>Click on the Finish &gt; button.</p>
+	<p>You should be redirected to the Java perspective.</p>
+	<p>5. JAT uses several libraries that are contained in jar files.
+		You need to inform Eclipse where these jar files are located.</p>
+	<p>Choose the menu Project&nbsp; -&gt; Properties and select the
+		Libraries tab. Click on Add External JARs and add all of the jar files
+		that are stored in the lib folder</p>
+	<p>
+		<img alt="" src="images/build_path.png"
+			style="width: 689px; height: 450px;" />
+	</p>
+	<p>&nbsp;</p>
+	<p>This should clear all of the errors that were reported.</p>
+	<p>&nbsp;</p>
+
+
+
+
+
+</body>
+</html>

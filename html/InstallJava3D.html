@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+
+
+
+
+
+	<div class="content clear-block">
+		<h2>Ubuntu</h2>
+		<p>&nbsp;</p>
+		<h4>Ubuntu 9.10:</h4>
+		<p>
+			Download Java3D from <a
+				href="http://download.java.net/media/java3d/builds/release/1.5.2/j3d-1_5_2-linux-i586.zip">http://download.java.net/media/java3d/builds/release/1.5.2/j3d-1_5_2-linux-i586.zip</a>
+		</p>
+		<p>Extract the file, and extract the included j3d-jre.zip</p>
+		<p>In Eclipse, make sure yur build path has j3dcore.jar,
+			j3dutils.jar, and vecmath.jar as external jar files</p>
+		<p>
+			<img alt="" src="images/build_path.png"
+				style="width: 600px; height: 392px;" />
+		</p>
+		<p>The files</p>
+		<ul>
+			<li>libj3dcore-ogl-cg.so</li>
+			<li>libj3dcore-ogl.so</li>
+		</ul>
+		<p>need to be in the library path. The simplest way to accomplish
+			this is by simply copying those files into /lib:</p>
+		<table border="1" cellpadding="1" cellspacing="1"
+			style="width: 500px;">
+			<tbody>
+				<tr>
+					<td>sudo cp &lt;extracted
+						path&gt;/j3d-1_5_2-linux-i586/lib/i386/* /lib/</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			<a href="https://help.ubuntu.com/community/Java3dUbuntu">https://help.ubuntu.com/community/Java3dUbuntu</a>
+		</p>
+		<p>&nbsp;</p>
+		<h4>Ubuntu 11.10:</h4>
+		<p>Install Java3D using the software center or synaptic package
+			manager:</p>
+		<p>
+			<img alt="" src="images/jav3d_synaptic.png"
+				style="width: 600px; height: 347px;" />
+		</p>
+		<p>The package installer will install the library
+			libj3dcore-ogl.so into the folder /usr/lib/jni/libj3dcore-ogl.so .
+			When running an applet in a browser, the library may not be found in
+			the library path. The simplest solution to this is to copy the
+			library into the /lib folder:</p>
+		<table border="1" cellpadding="1" cellspacing="1"
+			style="width: 500px;">
+			<tbody>
+				<tr>
+					<td>sudo cp /usr/lib/jni/libj3dcore-ogl.so /lib/</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>After restarting the browser, the applet should run Java3D.</p>
+		<h4>&nbsp;</h4>
+		<h4>Ubuntu 12.04:</h4>
+		<p>Same as Ubuntu 11.10, install using software center or
+			Synaptic.</p>
+		<p>
+			<img alt="" src="images/java3dSoftwareCenter.png"
+				style="width: 600px; height: 508px;" />
+		</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+	</div>
+
+
+
+
+
+</body>
+</html>

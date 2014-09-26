@@ -7,124 +7,99 @@
 <body>
 
 
-
-
-
-
-	<div class="content clear-block">
-		<p>
-			<img alt="" src="images/launch_to_ISS_draft1.jpg"
-				style="width: 359px; height: 319px;" />
-		</p>
-		<h2>&nbsp;</h2>
-		<h2>Simulation Environment</h2>
-		<p>Model: Mass point dynamics with constant area drag force</p>
-		<p>Reference frame: Inertial frame centered at center of earth</p>
-		<p>&nbsp;</p>
-		<h2>Forces</h2>
-		<p>
-			<img alt="" src="images/rktth1.gif"
-				style="width: 418px; height: 314px;" />
-		</p>
-		<p>Gravity $\mathbf {G}$</p>
-		<p>\begin{equation} \mathbf G=-\frac{G m}{r^3}\mathbf
-			r\end{equation}</p>
-		<p>Thrust $\mathbf {T}$</p>
-		<p>\begin{equation} \mathbf T=v_e \cdot \frac{dm}{dt} \hat{\mathbf
-			t}= g_0 \cdot I_{sp} \cdot \frac{dm}{dt} \hat{\mathbf
-			t}\end{equation}</p>
-		<p>$\hat{\mathbf t}$ is the thrust direction unit vector</p>
-		<p>Drag $\mathbf {D}$</p>
-		<p>\begin{equation} \mathbf {D}= \begin{cases} \mathbf {D}_1,
-			&amp; \mbox{if }&nbsp; v&lt;=500 \frac{km}{h} \\ \mathbf {D}_2, &amp;
-			\mbox{if }&nbsp; v&gt;500 \frac{km}{h} \end{cases}\end{equation}</p>
-		<p>Drag $\mathbf {D}_1 = - \frac{1}{2} \rho C_d A v^3 \hat{\mathbf
-			v}$</p>
-		<p>The lift is treated as being neglectable, since thrust
-			direction adjustments will be made very slowly, and the axis of the
-			rocket will be close to parallel to the velocity vector</p>
-		<p>The total force acting on the rocket is</p>
-		<p>\begin{equation} \mathbf F = \mathbf G + \mathbf T + \mathbf
-			D&nbsp;\end{equation}</p>
-		<h2>Equations of Motion</h2>
-		<p>The equations of motion (EOM) can be obtained from Newton&#39;s
-			second law:</p>
-		<p>\begin{equation} \mathbf F = m \cdot \mathbf a \end{equation}</p>
-		<p>so</p>
-		<p>\begin{equation} a=\frac{\mathbf F}{m} =\frac{1}{m}( \mathbf G
-			+ \mathbf T + \mathbf D) \end{equation}</p>
-		<h2>Control variables</h2>
-		<p>The ascent of the rocket will be controlled by varying the
-			thrust direction</p>
-		<p>Thrust direction $\hat{\mathbf t} $</p>
-		<p>and within some limits, the thrust</p>
-		<p>Thrust $T= \vert \mathbf T \vert $ where $\dot{m}_{low}&lt;
-			\frac{dm}{dt}&lt; \dot{m}_{high}$</p>
-		<p>&nbsp;</p>
-		<h2>State Vector</h2>
-		<p>The state vector that will be propagated in time in the
-			simulation consists of</p>
-		<p>\begin{equation} \mathbf{x}(t) = \begin{bmatrix} \mathbf{r}(t)
-			\\ \mathbf{v}(t) \\ m(t) \end{bmatrix} \end{equation}</p>
-		<p>&nbsp;</p>
-		<h2>Initial state</h2>
-		<p>The launch occurs at Kennedy Space Center (KSC) which has the
-			coordinates</p>
-		<p>28&deg;36&prime;30.23&Prime;N 80&deg;36&prime;15.64&Prime;W</p>
-		<p>&nbsp;</p>
-		<p>\begin{equation}&nbsp; \mathbf{ r_0}=\mathbf{ r}(t_0)
-			\end{equation}</p>
-		<p>\begin{equation}&nbsp; \mathbf{ v_0}=\mathbf{ v}(t_0)
-			\end{equation}</p>
-		<p>\begin{equation}&nbsp; m_0=m(t_0) \end{equation}</p>
-		<p>&nbsp;</p>
-		<h2>Final State</h2>
-		<p>The vehicle will be transported to the orbit of the space
-			station. The goal of the ascent is not an immediate rendezvous with
-			the space station. Moving within an orbit does not cost a large
-			amount of energy, and it is safer for the mission to target a true
-			anomaly that is sufficiently far away from the space station. The
-			true anomaly of the ascent can be chosen by chosing the launch time
-			and waiting until the space station is in an appropriate position.</p>
-		<p>Therefore, the final state is an implicit condition where the
-			orbital elements of the vehicle match the orbital elements of the ISS
-			orbit.</p>
-		<p>Final state of state vector:</p>
-		<p>\begin{equation}&nbsp; \mathbf{ r_f}=\mathbf{ r}(t_f)
-			\end{equation}</p>
-		<p>\begin{equation}&nbsp; \mathbf{ v_f}=\mathbf{ v}(t_f)
-			\end{equation}</p>
-		<p>\begin{equation}&nbsp; m_f=m(t_f) \end{equation}</p>
-		<p>Target orbit elements:</p>
-		<p>\begin{equation}&nbsp; a(\mathbf{r}_f,\mathbf{r}_f,m_f)=a_{ISS}
-			\end{equation}</p>
-		<p>\begin{equation}&nbsp; e(\mathbf{r}_f,\mathbf{r}_f,m_f)=e_{ISS}
-			\end{equation}</p>
-		<p>\begin{equation}&nbsp; i(\mathbf{r}_f,\mathbf{r}_f,m_f)=i_{ISS}
-			\end{equation}</p>
-		<p>\begin{equation}&nbsp;
-			\Omega(\mathbf{r}_f,\mathbf{r}_f,m_f)=\Omega_{ISS} \end{equation}</p>
-		<p>\begin{equation}&nbsp;
-			\omega(\mathbf{r}_f,\mathbf{r}_f,m_f)=\omega_{ISS} \end{equation}</p>
-		<p>
-			<style type="text/css">
-p,li {
-	white-space: pre-wrap;
-}
-</style>
-		</p>
-		<p>&nbsp;</p>
-		<p>&nbsp;</p>
-		<p>&nbsp;</p>
-		<p>&nbsp;</p>
-		<p>&nbsp;</p>
-		<p>&nbsp;</p>
-	</div>
-
-
-
-
-
-
+	<p>
+		<img alt="" src="images/launch_to_ISS_draft1.jpg"
+			style="width: 359px; height: 319px;" />
+	</p>
+	<h2>&nbsp;</h2>
+	<h2>Simulation Environment</h2>
+	<p>Model: Mass point dynamics with constant area drag force</p>
+	<p>Reference frame: Inertial frame centered at center of earth</p>
+	<p>&nbsp;</p>
+	<h2>Forces</h2>
+	<p>
+		<img alt="" src="images/rktth1.gif"
+			style="width: 418px; height: 314px;" />
+	</p>
+	<p>Gravity $\mathbf {G}$</p>
+	<p>\begin{equation} \mathbf G=-\frac{G m}{r^3}\mathbf
+		r\end{equation}</p>
+	<p>Thrust $\mathbf {T}$</p>
+	<p>\begin{equation} \mathbf T=v_e \cdot \frac{dm}{dt} \hat{\mathbf
+		t}= g_0 \cdot I_{sp} \cdot \frac{dm}{dt} \hat{\mathbf t}\end{equation}</p>
+	<p>$\hat{\mathbf t}$ is the thrust direction unit vector</p>
+	<p>Drag $\mathbf {D}$</p>
+	<p>\begin{equation} \mathbf {D}= \begin{cases} \mathbf {D}_1, &amp;
+		\mbox{if }&nbsp; v&lt;=500 \frac{km}{h} \\ \mathbf {D}_2, &amp;
+		\mbox{if }&nbsp; v&gt;500 \frac{km}{h} \end{cases}\end{equation}</p>
+	<p>Drag $\mathbf {D}_1 = - \frac{1}{2} \rho C_d A v^3 \hat{\mathbf
+		v}$</p>
+	<p>The lift is treated as being neglectable, since thrust direction
+		adjustments will be made very slowly, and the axis of the rocket will
+		be close to parallel to the velocity vector</p>
+	<p>The total force acting on the rocket is</p>
+	<p>\begin{equation} \mathbf F = \mathbf G + \mathbf T + \mathbf
+		D&nbsp;\end{equation}</p>
+	<h2>Equations of Motion</h2>
+	<p>The equations of motion (EOM) can be obtained from Newton&#39;s
+		second law:</p>
+	<p>\begin{equation} \mathbf F = m \cdot \mathbf a \end{equation}</p>
+	<p>so</p>
+	<p>\begin{equation} a=\frac{\mathbf F}{m} =\frac{1}{m}( \mathbf G +
+		\mathbf T + \mathbf D) \end{equation}</p>
+	<h2>Control variables</h2>
+	<p>The ascent of the rocket will be controlled by varying the
+		thrust direction</p>
+	<p>Thrust direction $\hat{\mathbf t} $</p>
+	<p>and within some limits, the thrust</p>
+	<p>Thrust $T= \vert \mathbf T \vert $ where $\dot{m}_{low}&lt;
+		\frac{dm}{dt}&lt; \dot{m}_{high}$</p>
+	<p>&nbsp;</p>
+	<h2>State Vector</h2>
+	<p>The state vector that will be propagated in time in the
+		simulation consists of</p>
+	<p>\begin{equation} \mathbf{x}(t) = \begin{bmatrix} \mathbf{r}(t)
+		\\ \mathbf{v}(t) \\ m(t) \end{bmatrix} \end{equation}</p>
+	<p>&nbsp;</p>
+	<h2>Initial state</h2>
+	<p>The launch occurs at Kennedy Space Center (KSC) which has the
+		coordinates</p>
+	<p>28&deg;36&prime;30.23&Prime;N 80&deg;36&prime;15.64&Prime;W</p>
+	<p>&nbsp;</p>
+	<p>\begin{equation}&nbsp; \mathbf{ r_0}=\mathbf{ r}(t_0)
+		\end{equation}</p>
+	<p>\begin{equation}&nbsp; \mathbf{ v_0}=\mathbf{ v}(t_0)
+		\end{equation}</p>
+	<p>\begin{equation}&nbsp; m_0=m(t_0) \end{equation}</p>
+	<p>&nbsp;</p>
+	<h2>Final State</h2>
+	<p>The vehicle will be transported to the orbit of the space
+		station. The goal of the ascent is not an immediate rendezvous with
+		the space station. Moving within an orbit does not cost a large amount
+		of energy, and it is safer for the mission to target a true anomaly
+		that is sufficiently far away from the space station. The true anomaly
+		of the ascent can be chosen by chosing the launch time and waiting
+		until the space station is in an appropriate position.</p>
+	<p>Therefore, the final state is an implicit condition where the
+		orbital elements of the vehicle match the orbital elements of the ISS
+		orbit.</p>
+	<p>Final state of state vector:</p>
+	<p>\begin{equation}&nbsp; \mathbf{ r_f}=\mathbf{ r}(t_f)
+		\end{equation}</p>
+	<p>\begin{equation}&nbsp; \mathbf{ v_f}=\mathbf{ v}(t_f)
+		\end{equation}</p>
+	<p>\begin{equation}&nbsp; m_f=m(t_f) \end{equation}</p>
+	<p>Target orbit elements:</p>
+	<p>\begin{equation}&nbsp; a(\mathbf{r}_f,\mathbf{r}_f,m_f)=a_{ISS}
+		\end{equation}</p>
+	<p>\begin{equation}&nbsp; e(\mathbf{r}_f,\mathbf{r}_f,m_f)=e_{ISS}
+		\end{equation}</p>
+	<p>\begin{equation}&nbsp; i(\mathbf{r}_f,\mathbf{r}_f,m_f)=i_{ISS}
+		\end{equation}</p>
+	<p>\begin{equation}&nbsp;
+		\Omega(\mathbf{r}_f,\mathbf{r}_f,m_f)=\Omega_{ISS} \end{equation}</p>
+	<p>\begin{equation}&nbsp;
+		\omega(\mathbf{r}_f,\mathbf{r}_f,m_f)=\omega_{ISS} \end{equation}</p>
+	<p>
 </body>
 </html>
