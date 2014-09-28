@@ -45,6 +45,9 @@ function linkClick(page, title) {
 		$('.Applications').click(function(e) {
 			linkClick('Applications.html', 'Applications');
 		});
+		$('.WebApps').click(function(e) {
+			linkClick('WebApps.html', 'Web Apps');
+		});
 		$('.Examples').click(function(e) {
 			linkClick('Examples.html', 'Examples');
 		});
