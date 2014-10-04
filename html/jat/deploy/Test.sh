@@ -1,3 +1,7 @@
+#!/bin/bash
+
+
+
 java -cp "../../../dist/*" jat.examples.Test
 
 
