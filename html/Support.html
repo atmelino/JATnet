@@ -12,7 +12,72 @@
 
 	This section describes the setup on the server that runs the Java
 	programs and makes them available to a browser client through a PHP
-	bridge.
+	bridge. Install an Apache server:
+	<p>
+		<code>sudo apt-get install tasksel</code>
+	</p>
+	Install Tomcat:
+	<p>
+		<code>sudo apt-get install tomcat7</code>
+		<br> Also install<br>
+		<code>sudo apt-get install tomcat7-docs tomcat7-admin
+			tomcat7-examples</code>
+
+	</p>
+	if you get error " * no JDK or JRE found - please set JAVA_HOME":
+	<p>
+		<code>nano /etc/default/tomcat7</code>
+	</p>
+	add the line
+	<p>
+		<code>JAVA_HOME=/usr/lib/jvm/java-8-oracle</code>
+	</p>
+
+	<p>
+		<img alt="" src="images/tomcat_config.png" style="width: 400px;" />
+	</p>
+
+	To allow the web management interface:
+
+	<p>
+		<code>sudo nano /etc/tomcat7/tomcat-users.xml</code>
+		<br> and add the lines<br>
+		<code>
+			&lt;tomcat-users> <br> &lt;user username="admin"
+			password="password" roles="manager-gui,admin-gui" /> <br>
+			&lt;/tomcat-users>
+		</code>
+	</p>
+
+
+	Then restart Tomcat
+	<p>
+		<code>service tomcat7 restart</code>
+	</p>
+
+	If a page takes very long to load, open
+	<p>
+		<code>nano /etc/default/tomcat7</code>
+	</p>
+
+	and add the following line:
+	<p>
+		<code>JAVA_OPTS="-Djava.security.egd=file:/dev/./urandom
+			-Djava.awt.headless=true -Xmx1024m -XX:MaxPermSize=512m
+			-XX:+UseConcMarkSweepGC"</code>
+	</p>
+
+
+
+	<p>
+		<a
+			href="https://www.digitalocean.com/community/tutorials/how-to-install-apache-tomcat-7-on-ubuntu-14-04-via-apt-get
+">https://www.digitalocean.com/community/tutorials/how-to-install-apache-tomcat-7-on-ubuntu-14-04-via-apt-get
+		</a>
+	</p>
+
+
+
 
 	<h3>PHP Java Bridge</h3>
 
@@ -20,20 +85,10 @@
 		<a href="http://php-java-bridge.sourceforge.net/">http://php-java-bridge.sourceforge.net/</a>
 	</p>
 
-	Install an Apache server:
-	<p>
-		<code>sudo apt-get install tasksel</code>
-	</p>
-	Install Tomcat:
-	<p>
-		<code>sudo apt-get install tomcat7</code>
-	</p>
-
 	Install php-cgi:
 	<p>
 		<code> sudo apt-get install php5-cgi libapache2-mod-php5 </code>
 	</p>
-
 
 	Test PHP Java bridge:
 
