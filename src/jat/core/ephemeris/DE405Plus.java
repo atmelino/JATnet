@@ -279,6 +279,7 @@ public class DE405Plus extends DE405APL implements FirstOrderDifferentialEquatio
 
 	public void update_posvel_and_frame(Time t) throws IOException {
 
+		System.out.println("DE405Plus:update_posvel_and_frame");
 		update_planetary_ephemeris(t);
 
 		// Default frame is ICRF
@@ -311,6 +312,8 @@ public class DE405Plus extends DE405APL implements FirstOrderDifferentialEquatio
 	}
 
 	public VectorN get_planet_posvel(body bodyEnum, Time t) throws IOException {
+		System.out.println("DE405Plus:get_planet_posvel");
+
 		update_posvel_and_frame(t);
 
 		VectorN posvel = new VectorN(6);

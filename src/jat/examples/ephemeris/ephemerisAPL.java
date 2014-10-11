@@ -45,8 +45,10 @@ public class ephemerisAPL
 	        System.out.println("vx= "+rv.get(3)+" km/s");
 	        System.out.println("vy= "+rv.get(4)+" km/s");
 	        System.out.println("vz= "+rv.get(5)+" km/s");
+
+	        /*
 	        System.out.println("HEE Frame");
-			ephem.setFrame(frame.HEE);
+	        ephem.setFrame(frame.HEE);
 			//rv = ephem.get_planet_posvel(DE405Plus.body.MARS, mytime.jd_tt());
 			rv = ephem.get_planet_posvel(body.MARS, mytime);
 	        System.out.println("The position of Mars on 10-17-2002 at 12:00pm was ");
@@ -56,7 +58,8 @@ public class ephemerisAPL
 	        System.out.println("The velocity of Mars on 10-17-2002 at 12:00pm was ");
 	        System.out.println("vx= "+rv.get(3)+" km/s");
 	        System.out.println("vy= "+rv.get(4)+" km/s");
-	        System.out.println("vz= "+rv.get(5)+" km/s");
+	        System.out.println("vz= "+rv.get(5)+" km/s");\
+	        */
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

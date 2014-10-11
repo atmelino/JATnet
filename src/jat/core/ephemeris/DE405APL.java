@@ -140,10 +140,11 @@ public class DE405APL {
 	String DE405_path;
 
 	public DE405APL() {
+		System.out.println("DE405APL:DE405APL()");
 
 		path = new PathUtil();
 		DE405_path = path.DE405Path;
-		// System.out.println("[DE405APL 1 DE405_path] " + DE405_path);
+		System.out.println("[DE405APL 1 DE405_path] " + DE405_path);
 	}
 
 	public DE405APL(Applet myApplet) {
@@ -164,8 +165,9 @@ public class DE405APL {
 	 */
 	protected void update_planetary_ephemeris(Time t) throws IOException {
 
+		System.out.println("DE405APL:update_planetary_ephemeris");
 		double jultime = t.jd_tt();
-		//System.out.println("[DE405APL jultime]" + jultime);
+		System.out.println("[DE405APL jultime]" + jultime);
 		int i = 0, j = 0;
 		double[] ephemeris_r = new double[4];
 		double[] ephemeris_rprime = new double[4];
@@ -190,7 +192,8 @@ public class DE405APL {
 		for (j = 1; j <= 3; j++) {
 			planet_r[3][j] = planet_r[3][j] - planet_r[10][j] / (1 + emrat);
 			planet_r[10][j] = planet_r[3][j] + planet_r[10][j];
-			planet_rprime[3][j] = planet_rprime[3][j] - planet_rprime[10][j] / (1 + emrat);
+			planet_rprime[3][j] = planet_rprime[3][j] - planet_rprime[10][j]
+					/ (1 + emrat);
 			planet_rprime[10][j] = planet_rprime[3][j] + planet_rprime[10][j];
 		}
 
@@ -200,9 +203,10 @@ public class DE405APL {
 		velICRF[0] = new VectorN(0, 0, 0);
 		double daysec = 3600. * 24.;
 		for (i = 1; i <= 11; i++) {
-			posICRF[i] = new VectorN(planet_r[i][1], planet_r[i][2], planet_r[i][3]);
-			velICRF[i] = new VectorN(planet_rprime[i][1] / daysec, planet_rprime[i][2] / daysec, planet_rprime[i][3]
-					/ daysec);
+			posICRF[i] = new VectorN(planet_r[i][1], planet_r[i][2],
+					planet_r[i][3]);
+			velICRF[i] = new VectorN(planet_rprime[i][1] / daysec,
+					planet_rprime[i][2] / daysec, planet_rprime[i][3] / daysec);
 		}
 
 	}
@@ -222,9 +226,10 @@ public class DE405APL {
 	 * @param ephemeris_rprime
 	 * @throws IOException
 	 */
-	private void get_ephemeris_posvel(double jultime, int i, double ephemeris_r[], double ephemeris_rprime[])
-			throws IOException {
+	private void get_ephemeris_posvel(double jultime, int i,
+			double ephemeris_r[], double ephemeris_rprime[]) throws IOException {
 
+		//System.out.println("DE405APL:get_ephemeris_posvel");
 		int interval = 0, numbers_to_skip = 0, pointer = 0, j = 0, k = 0, subinterval = 0;
 
 		double interval_start_time = 0, subinterval_duration = 0, chebyshev_time = 0;
@@ -269,10 +274,13 @@ public class DE405APL {
 		if ((jultime < ephemeris_dates[1]) || (jultime > ephemeris_dates[2]))
 			get_ephemeris_coefficients(jultime);
 
-		interval = (int) (Math.floor((jultime - ephemeris_dates[1]) / interval_duration) + 1);
-		interval_start_time = (interval - 1) * interval_duration + ephemeris_dates[1];
+		interval = (int) (Math.floor((jultime - ephemeris_dates[1])
+				/ interval_duration) + 1);
+		interval_start_time = (interval - 1) * interval_duration
+				+ ephemeris_dates[1];
 		subinterval_duration = interval_duration / number_of_coef_sets[i];
-		subinterval = (int) (Math.floor((jultime - interval_start_time) / subinterval_duration) + 1);
+		subinterval = (int) (Math.floor((jultime - interval_start_time)
+				/ subinterval_duration) + 1);
 		numbers_to_skip = (interval - 1) * numbers_per_interval;
 
 		/*
@@ -303,14 +311,16 @@ public class DE405APL {
 		 * Calculate the chebyshev time within the subinterval, between -1 and
 		 * +1
 		 */
-		chebyshev_time = 2 * (jultime - ((subinterval - 1) * subinterval_duration + interval_start_time))
+		chebyshev_time = 2
+				* (jultime - ((subinterval - 1) * subinterval_duration + interval_start_time))
 				/ subinterval_duration - 1;
 
 		/* Calculate the Chebyshev position polynomials */
 		position_poly[1] = 1;
 		position_poly[2] = chebyshev_time;
 		for (j = 3; j <= number_of_coefs[i]; j++)
-			position_poly[j] = 2 * chebyshev_time * position_poly[j - 1] - position_poly[j - 2];
+			position_poly[j] = 2 * chebyshev_time * position_poly[j - 1]
+					- position_poly[j - 2];
 
 		/* Calculate the position of the i'th planet at jultime */
 		for (j = 1; j <= 3; j++) {
@@ -327,21 +337,23 @@ public class DE405APL {
 		velocity_poly[2] = 1;
 		velocity_poly[3] = 4 * chebyshev_time;
 		for (j = 4; j <= number_of_coefs[i]; j++)
-			velocity_poly[j] = 2 * chebyshev_time * velocity_poly[j - 1] + 2 * position_poly[j - 1]
-					- velocity_poly[j - 2];
+			velocity_poly[j] = 2 * chebyshev_time * velocity_poly[j - 1] + 2
+					* position_poly[j - 1] - velocity_poly[j - 2];
 
 		/* Calculate the velocity of the i'th planet */
 		for (j = 1; j <= 3; j++) {
 			ephemeris_rprime[j] = 0;
 			for (k = 1; k <= number_of_coefs[i]; k++)
-				ephemeris_rprime[j] = ephemeris_rprime[j] + coef[j][k] * velocity_poly[k];
+				ephemeris_rprime[j] = ephemeris_rprime[j] + coef[j][k]
+						* velocity_poly[k];
 			/*
 			 * The next line accounts for differentiation of the iterative
 			 * formula with respect to chebyshev time. Essentially, if dx/dt =
 			 * (dx/dct) times (dct/dt), the next line includes the factor
 			 * (dct/dt) so that the units are km/day
 			 */
-			ephemeris_rprime[j] = ephemeris_rprime[j] * (2.0 * number_of_coef_sets[i] / interval_duration);
+			ephemeris_rprime[j] = ephemeris_rprime[j]
+					* (2.0 * number_of_coef_sets[i] / interval_duration);
 
 			/* DON'T Convert from km to A.U. */
 			// ephemeris_rprime[j] = ephemeris_rprime[j] / au;
@@ -449,7 +461,7 @@ public class DE405APL {
 			}
 
 			// System.out.println("[DE405APL DE405_path] " + DE405_path);
-			// System.out.println("[DE405APL filename] " + filename);
+			System.out.println("[DE405APL filename] " + fileName);
 
 			if (fileName == null) {
 				System.out.println("Time period unavailable");
@@ -471,7 +483,8 @@ public class DE405APL {
 					fileName = "file:" + fileName;
 				URL url = new URL(fileName);
 				// System.out.println("[DE405APL filename] " + fileName);
-				BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+				BufferedReader in = new BufferedReader(new InputStreamReader(
+						url.openStream()));
 
 				/* Read each record in the file */
 				for (j = 1; j <= records; j++) {
@@ -486,46 +499,72 @@ public class DE405APL {
 						if (i > 2) {
 							/* parse first entry */
 							mantissa1 = Integer.parseInt(line.substring(4, 13));
-							mantissa2 = Integer.parseInt(line.substring(13, 22));
+							mantissa2 = Integer
+									.parseInt(line.substring(13, 22));
 							exponent = Integer.parseInt(line.substring(24, 26));
 							if (line.substring(23, 24).equals("+"))
-								ephemeris_coefficients[(j - 1) * 816 + (3 * (i - 2) - 1)] = mantissa1
-										* Math.pow(10, (exponent - 9)) + mantissa2 * Math.pow(10, (exponent - 18));
+								ephemeris_coefficients[(j - 1) * 816
+										+ (3 * (i - 2) - 1)] = mantissa1
+										* Math.pow(10, (exponent - 9))
+										+ mantissa2
+										* Math.pow(10, (exponent - 18));
 							else
-								ephemeris_coefficients[(j - 1) * 816 + (3 * (i - 2) - 1)] = mantissa1
-										* Math.pow(10, -(exponent + 9)) + mantissa2 * Math.pow(10, -(exponent + 18));
+								ephemeris_coefficients[(j - 1) * 816
+										+ (3 * (i - 2) - 1)] = mantissa1
+										* Math.pow(10, -(exponent + 9))
+										+ mantissa2
+										* Math.pow(10, -(exponent + 18));
 							if (line.substring(1, 2).equals("-"))
-								ephemeris_coefficients[(j - 1) * 816 + (3 * (i - 2) - 1)] = -ephemeris_coefficients[(j - 1)
+								ephemeris_coefficients[(j - 1) * 816
+										+ (3 * (i - 2) - 1)] = -ephemeris_coefficients[(j - 1)
 										* 816 + (3 * (i - 2) - 1)];
 						}
 						if (i > 2) {
 							/* parse second entry */
-							mantissa1 = Integer.parseInt(line.substring(30, 39));
-							mantissa2 = Integer.parseInt(line.substring(39, 48));
+							mantissa1 = Integer
+									.parseInt(line.substring(30, 39));
+							mantissa2 = Integer
+									.parseInt(line.substring(39, 48));
 							exponent = Integer.parseInt(line.substring(50, 52));
 							if (line.substring(49, 50).equals("+"))
-								ephemeris_coefficients[(j - 1) * 816 + 3 * (i - 2)] = mantissa1
-										* Math.pow(10, (exponent - 9)) + mantissa2 * Math.pow(10, (exponent - 18));
+								ephemeris_coefficients[(j - 1) * 816 + 3
+										* (i - 2)] = mantissa1
+										* Math.pow(10, (exponent - 9))
+										+ mantissa2
+										* Math.pow(10, (exponent - 18));
 							else
-								ephemeris_coefficients[(j - 1) * 816 + 3 * (i - 2)] = mantissa1
-										* Math.pow(10, -(exponent + 9)) + mantissa2 * Math.pow(10, -(exponent + 18));
+								ephemeris_coefficients[(j - 1) * 816 + 3
+										* (i - 2)] = mantissa1
+										* Math.pow(10, -(exponent + 9))
+										+ mantissa2
+										* Math.pow(10, -(exponent + 18));
 							if (line.substring(27, 28).equals("-"))
-								ephemeris_coefficients[(j - 1) * 816 + 3 * (i - 2)] = -ephemeris_coefficients[(j - 1)
+								ephemeris_coefficients[(j - 1) * 816 + 3
+										* (i - 2)] = -ephemeris_coefficients[(j - 1)
 										* 816 + 3 * (i - 2)];
 						}
 						if (i < 274) {
 							/* parse third entry */
-							mantissa1 = Integer.parseInt(line.substring(56, 65));
-							mantissa2 = Integer.parseInt(line.substring(65, 74));
+							mantissa1 = Integer
+									.parseInt(line.substring(56, 65));
+							mantissa2 = Integer
+									.parseInt(line.substring(65, 74));
 							exponent = Integer.parseInt(line.substring(76, 78));
 							if (line.substring(75, 76).equals("+"))
-								ephemeris_coefficients[(j - 1) * 816 + (3 * (i - 2) + 1)] = mantissa1
-										* Math.pow(10, (exponent - 9)) + mantissa2 * Math.pow(10, (exponent - 18));
+								ephemeris_coefficients[(j - 1) * 816
+										+ (3 * (i - 2) + 1)] = mantissa1
+										* Math.pow(10, (exponent - 9))
+										+ mantissa2
+										* Math.pow(10, (exponent - 18));
 							else
-								ephemeris_coefficients[(j - 1) * 816 + (3 * (i - 2) + 1)] = mantissa1
-										* Math.pow(10, -(exponent + 9)) + mantissa2 * Math.pow(10, -(exponent + 18));
+								ephemeris_coefficients[(j - 1) * 816
+										+ (3 * (i - 2) + 1)] = mantissa1
+										* Math.pow(10, -(exponent + 9))
+										+ mantissa2
+										* Math.pow(10, -(exponent + 18));
 							if (line.substring(53, 54).equals("-"))
-								ephemeris_coefficients[(j - 1) * 816 + (3 * (i - 2) + 1)] = -ephemeris_coefficients[(j - 1)
+								ephemeris_coefficients[(j - 1) * 816
+										+ (3 * (i - 2) + 1)] = -ephemeris_coefficients[(j - 1)
 										* 816 + (3 * (i - 2) + 1)];
 						}
 					}
@@ -540,6 +579,8 @@ public class DE405APL {
 			} catch (MalformedURLException e) {
 				System.out.println("MalformedURLException");
 			} catch (IOException e) {
+				System.out.println("Error = " + e.toString());
+
 			}
 
 		} catch (StringIndexOutOfBoundsException e) {
