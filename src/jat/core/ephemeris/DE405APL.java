@@ -154,6 +154,11 @@ public class DE405APL {
 		// System.out.println("[DE405APL 2 DE405_path] " + DE405_path);
 	}
 
+	public DE405APL(String absolutePath) {
+
+		DE405_path = absolutePath;
+	}
+
 	/**
 	 * Procedure to calculate the position and velocity at jultime of the major
 	 * planets. Note that the planets are enumerated as follows: Mercury = 1,

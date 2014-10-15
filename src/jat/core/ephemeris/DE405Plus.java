@@ -47,7 +47,8 @@ import org.apache.commons.math3.ode.sampling.StepInterpolator;
  * calculated (See DE405Frame.java)
  * 
  */
-public class DE405Plus extends DE405APL implements FirstOrderDifferentialEquations, unitModel {
+public class DE405Plus extends DE405APL implements
+		FirstOrderDifferentialEquations, unitModel {
 
 	public frame ephFrame;
 	public boolean bodyGravOnOff[] = new boolean[DE405Body.body.amount];
@@ -62,10 +63,11 @@ public class DE405Plus extends DE405APL implements FirstOrderDifferentialEquatio
 	jatMessages messages;
 	public boolean printSteps = false;
 	public boolean printBodyPos = false;
-	unitSet uS = new unitSet("DE405Plus", distanceUnit.km, timeUnit.sec, massUnit.kg);
+	unitSet uS = new unitSet("DE405Plus", distanceUnit.km, timeUnit.sec,
+			massUnit.kg);
 	public VectorN EarthMoonPlaneNormal;
-	public VectorN  rotationAxis;
-	
+	public VectorN rotationAxis;
+
 	public DE405Plus() {
 		super();
 		ephFrame = frame.ICRF;
@@ -84,6 +86,12 @@ public class DE405Plus extends DE405APL implements FirstOrderDifferentialEquatio
 	public DE405Plus(PathUtil path) {
 		this.path = path;
 		DE405_path = path.DE405Path;
+		ephFrame = frame.ICRF;
+		sb = new SolarSystemBodies();
+	}
+
+	public DE405Plus(String absolutePath) {
+		DE405_path = absolutePath;
 		ephFrame = frame.ICRF;
 		sb = new SolarSystemBodies();
 	}
@@ -111,14 +119,14 @@ public class DE405Plus extends DE405APL implements FirstOrderDifferentialEquatio
 		VectorN MoonVel = velICRF[MOON].minus(velICRF[EARTH]);
 		MoonPos.unitize();
 		MoonVel.unitize();
-		//MoonPos.print("[DE405Plus pos unit] " + body.name[MOON]);
-		//MoonVel.print("[DE405Plus vel unit] " + body.name[MOON]);
+		// MoonPos.print("[DE405Plus pos unit] " + body.name[MOON]);
+		// MoonVel.print("[DE405Plus vel unit] " + body.name[MOON]);
 
-		EarthMoonPlaneNormal=MoonPos.crossProduct(MoonVel);
-		
-		VectorN zAxis=new VectorN(0,0,1);
-		rotationAxis=EarthMoonPlaneNormal.crossProduct(zAxis);
-		//rotationAxis.print("[DE405Plus rotation axis] ");
+		EarthMoonPlaneNormal = MoonPos.crossProduct(MoonVel);
+
+		VectorN zAxis = new VectorN(0, 0, 1);
+		rotationAxis = EarthMoonPlaneNormal.crossProduct(zAxis);
+		// rotationAxis.print("[DE405Plus rotation axis] ");
 	}
 
 	/**
@@ -194,7 +202,8 @@ public class DE405Plus extends DE405APL implements FirstOrderDifferentialEquatio
 					if (printBodyPos) {
 						String nf = "%16.3f ";
 						String format = "%8s " + nf + nf + nf + nf + nf;
-						System.out.printf(format, b.name[b.ordinal()], mu_body, xBody, yBody, zBody, bodyPos.mag());
+						System.out.printf(format, b.name[b.ordinal()], mu_body,
+								xBody, yBody, zBody, bodyPos.mag());
 						System.out.println();
 					}
 				}
@@ -220,7 +229,8 @@ public class DE405Plus extends DE405APL implements FirstOrderDifferentialEquatio
 			if (printSteps) {
 				String nf = "%14.3f ";
 				String format = nf + nf + nf + nf + nf + nf + nf + nf;
-				System.out.printf(format, t, y[0], y[1], y[2], y[3], y[4], y[5], energy(t, y));
+				System.out.printf(format, t, y[0], y[1], y[2], y[3], y[4],
+						y[5], energy(t, y));
 				System.out.println();
 			}
 			time.add(t);
