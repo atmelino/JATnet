@@ -13,10 +13,11 @@
 <script type="text/JavaScript" src="functions.js"></script>
 <script type="text/JavaScript" src="menu.js"></script>
 <script type="text/javascript" src="lib/three.min.js"></script>
-<script type="text/javascript" src="lib/d3.min.js"></script>
-<script type="text/javascript" src="lib/elegans.min.js"></script>
+<script type="text/javascript" src="lib/d3.js"></script>
+<script type="text/javascript" src="lib/elegans.js"></script>
 
-
+<!-- <script type="text/javascript" src="lib/d3.min.js"></script> -->
+<!-- <script type="text/javascript" src="lib/elegans.min.js"></script> -->
 <!-- <link rel="stylesheet" type="text/css" href="lib/jetmenu.css"> -->
 <!-- <script type="text/javascript" src="lib/jetmenu.js"></script> -->
 
