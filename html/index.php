@@ -14,7 +14,7 @@
 <script type="text/JavaScript" src="menu.js"></script>
 <script type="text/javascript" src="lib/three.min.js"></script>
 <script type="text/javascript" src="lib/d3.js"></script>
-<script type="text/javascript" src="lib/elegans.js"></script>
+<script type="text/javascript" src="lib/elegansMod.js"></script>
 
 <!-- <script type="text/javascript" src="lib/d3.min.js"></script> -->
 <!-- <script type="text/javascript" src="lib/elegans.min.js"></script> -->

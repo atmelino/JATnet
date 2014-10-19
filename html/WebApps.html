@@ -22,9 +22,19 @@
 			data.z.push(z);
 		}
 
+		
+		
+		//var stage = new Elegans.Stage(d3.select("#vis"));
+		//var surface = new Elegans.LinePlot(data);
+		//stage.add(surface);
+		//stage.render();
+		
 		d3.select("#vis").datum(data).call(
 				Elegans.LinePlot.data_name("z = x^2 + y^2 (y = -x, x=-10..10)").thickness(5).colors(
 						[ "#dd1c77", "#dd1c77" ]));
+
+		//d3.select('#vis').datum(data).call(Elegans.SurfacePlot)
+	
 	};
 </script>
 
