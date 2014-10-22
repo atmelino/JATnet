@@ -46,7 +46,7 @@
         // Cartesian viewport
         .viewport({
           type: 'cartesian',
-          range: [[-3, 3], [-2, 2], [-10, 10]],
+          range: [[-3, 3], [-2, 2], [-1, 1]],
           scale: [1, 1, 1],
         })
         .camera({
@@ -85,6 +85,28 @@
           size: .05,
           zero: false,
           labels: true,
+        })
+        
+        .curve({
+          n: 2,
+          domain: [-1, 1],
+          data: [[0, 0, -4], [1.5*π, .5, 4]],
+          color: 0xa0a0a0,
+          lineWidth: 1,
+        })
+        .curve({
+          n: 2,
+          domain: [-1, 1],
+          data: [[0, 0, -4], [1.75*π, .5, 4]],
+          color: 0xa0a0a0,
+          lineWidth: 1,
+        })
+        .curve({
+          n: 48,
+          domain: [-π, π],
+          expression: function (x) { return [x, .5, 4]; },
+          color: 0xa0a0a0,
+          lineWidth: 1,
         })
 
         // Grid
