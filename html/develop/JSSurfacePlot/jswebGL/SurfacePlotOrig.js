@@ -1615,8 +1615,706 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
     this.init();
 };
 
+GLText = function(data3D, text, pos, angle, surfacePlot, axis, align){
+    this.shaderTextureProgram = surfacePlot.shaderTextureProgram;
+    this.currenShader = null;
+    this.gl = surfacePlot.gl;
+    this.setMatrixUniforms = surfacePlot.setMatrixUniforms;
+    
+    this.vertexTextureCoordBuffer = null;
+    this.textureVertexPositionBuffer = null;
+    this.textureVertexIndexBuffer = null;
+    this.context2D = surfacePlot.context2D;
+    this.mvPushMatrix = surfacePlot.mvPushMatrix;
+    this.mvPopMatrix = surfacePlot.mvPopMatrix;
+    this.texture;
+    this.text = text;
+    this.angle = angle;
+    this.pos = pos;
+    this.surfacePlot = surfacePlot;
+    this.textMetrics = null;
+    this.axis = axis;
+    this.align = align;
+    
+    this.setUpTextArea = function(){
+        this.context2D.font = 'normal 28px Verdana';
+        this.context2D.fillStyle = 'rgba(255,255,255,0)';
+        this.context2D.fillRect(0, 0, 512, 512);
+        this.context2D.lineWidth = 3;
+        this.context2D.textAlign = 'left';
+        this.context2D.textBaseline = 'top';
+    };
+    
+    this.writeTextToCanvas = function(text, idx){
+        this.context2D.save();
+        this.context2D.clearRect(0, 0, 512, 512);
+        this.context2D.fillStyle = 'rgba(255, 255, 255, 0)';
+        this.context2D.fillRect(0, 0, 512, 512);
+        
+        var r = hexToR(this.surfacePlot.axisTextColour);
+        var g = hexToG(this.surfacePlot.axisTextColour);
+        var b = hexToB(this.surfacePlot.axisTextColour);
+        
+        this.context2D.fillStyle = 'rgba(' + r + ', ' + g + ', ' + b + ', 255)'; // Set the axis label colour.
+        this.textMetrics = this.context2D.measureText(text);
+        
+        if (this.axis == "y" || this.align == "left") 
+            this.context2D.fillText(text, 0, 0);
+        else 
+            if (!this.align) 
+                this.context2D.fillText(text, 512 - this.textMetrics.width, 0);
+        
+        if (this.align == "centre") 
+            this.context2D.fillText(text, 256 - this.textMetrics.width / 2, 0);
+        if (this.align == "right") 
+            this.context2D.fillText(text, 512 - this.textMetrics.width, 0);
+        
+        this.setTextureFromCanvas(this.context2D.canvas, this.texture, 0);
+        
+        this.context2D.restore();
+    };
+    
+    this.setTextureFromCanvas = function(canvas, textTexture, idx){
+        this.gl.activeTexture(this.gl.TEXTURE0 + idx);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, textTexture);
+        this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, true);
+        this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, canvas);
+        
+        if (isPowerOfTwo(canvas.width) && isPowerOfTwo(canvas.height)) {
+            this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
+            this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
+        }
+        else {
+            this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
+            this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
+            this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
+        }
+        
+        this.gl.bindTexture(this.gl.TEXTURE_2D, textTexture);
+    };
+    
+    function isPowerOfTwo(value){
+        return ((value & (value - 1)) == 0);
+    }
+    
+    this.initTextBuffers = function(){
+    
+        // Text texture vertices
+        this.textureVertexPositionBuffer = this.gl.createBuffer();
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.textureVertexPositionBuffer);
+        this.textureVertexPositionBuffer.itemSize = 3;
+        this.textureVertexPositionBuffer.numItems = 4;
+        this.shaderTextureProgram.textureCoordAttribute = this.gl.getAttribLocation(this.shaderTextureProgram, "aTextureCoord");
+        this.gl.vertexAttribPointer(this.shaderTextureProgram.textureCoordAttribute, this.textureVertexPositionBuffer.itemSize, this.gl.FLOAT, false, 0, 0);
+        
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.textureVertexPositionBuffer);
+        
+        // Where we render the text.
+        var texturePositionCoords = [-0.5, -0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5];
+        
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(texturePositionCoords), this.gl.STATIC_DRAW);
+        
+        // Texture index buffer.
+        this.textureVertexIndexBuffer = this.gl.createBuffer();
+        this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.textureVertexIndexBuffer);
+        
+        var textureVertexIndices = [0, 1, 2, 0, 2, 3];
+        
+        this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(textureVertexIndices), this.gl.STATIC_DRAW);
+        this.textureVertexIndexBuffer.itemSize = 1;
+        this.textureVertexIndexBuffer.numItems = 6;
+        
+        // Text textures
+        this.vertexTextureCoordBuffer = this.gl.createBuffer();
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexTextureCoordBuffer);
+        this.vertexTextureCoordBuffer.itemSize = 2;
+        this.vertexTextureCoordBuffer.numItems = 4;
+        this.gl.vertexAttribPointer(this.shaderTextureProgram.textureCoordAttribute, this.vertexTextureCoordBuffer.itemSize, this.gl.FLOAT, false, 0, 0);
+        
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexTextureCoordBuffer);
+        
+        var textureCoords = [0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0];
+        
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(textureCoords), this.gl.STATIC_DRAW);
+    };
+    
+    this.initTextBuffers();
+    this.setUpTextArea();
+    
+    this.texture = this.gl.createTexture();
+    this.writeTextToCanvas(this.text, this.idx);
+};
 
+GLText.prototype.draw = function(){
+    this.mvPushMatrix(this.surfacePlot);
+    
+    var rotationMatrix = mat4.create();
+    mat4.identity(rotationMatrix);
+    
+    if (this.axis == "y") {
+        mat4.translate(rotationMatrix, [0.0, 0.5, 0.5]);
+        mat4.translate(rotationMatrix, [this.pos.x + 0.53, this.pos.y + 0.6, this.pos.z - 0.5]);
+        mat4.rotate(rotationMatrix, degToRad(this.angle), [1, 0, 0]);
+        mat4.translate(rotationMatrix, [0.0, -0.5, -0.5]);
+    }
+    else 
+        if (this.axis == "x") {
+            mat4.translate(rotationMatrix, [0.5, 0.5, 0.0]);
+            mat4.translate(rotationMatrix, [this.pos.x - 0.5, this.pos.y + 0.47, this.pos.z - 0.5]);
+            mat4.rotate(rotationMatrix, degToRad(this.angle), [0, 0, 1]);
+            mat4.translate(rotationMatrix, [-0.5, -0.5, 0]);
+        }
+        else 
+            if (this.axis == "z" && this.align == "centre") // Main Z-axis label.
+            {
+                mat4.translate(rotationMatrix, [0.0, 0.5, 0.5]);
+                mat4.translate(rotationMatrix, [this.pos.x - 0.3, this.pos.y + 0.5, this.pos.z - 0.5]);
+                mat4.rotate(rotationMatrix, degToRad(this.angle), [1, 0, 0]);
+                mat4.rotate(rotationMatrix, degToRad(this.angle), [0, 0, 1]);
+                mat4.translate(rotationMatrix, [0.0, -0.5, -0.5]);
+            }
+            else 
+                if (this.axis == "z" && !this.align) {
+                    mat4.translate(rotationMatrix, [0.0, 0.5, 0.5]);
+                    mat4.translate(rotationMatrix, [this.pos.x - 0.53, this.pos.y + 0.5, this.pos.z - 0.5]);
+                    mat4.rotate(rotationMatrix, degToRad(this.angle), [1, 0, 0]);
+                    mat4.translate(rotationMatrix, [0.0, -0.5, -0.5]);
+                }
+    
+    mat4.multiply(this.surfacePlot.mvMatrix, rotationMatrix);
+    
+    // Enable blending for transparency.
+    this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
+    this.gl.enable(this.gl.BLEND);
+    this.gl.disable(this.gl.DEPTH_TEST);
+    
+    // Text
+    this.currentShader = this.shaderTextureProgram;
+    this.gl.useProgram(this.currentShader);
+    
+    // Enable the vertex arrays for the current shader.
+    this.currentShader.vertexPositionAttribute = this.gl.getAttribLocation(this.currentShader, "aVertexPosition");
+    this.gl.enableVertexAttribArray(this.currentShader.vertexPositionAttribute);
+    this.currentShader.textureCoordAttribute = this.gl.getAttribLocation(this.currentShader, "aTextureCoord");
+    this.gl.enableVertexAttribArray(this.currentShader.textureCoordAttribute);
+    
+    this.shaderTextureProgram.samplerUniform = this.gl.getUniformLocation(this.shaderTextureProgram, "uSampler");
+    
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.textureVertexPositionBuffer);
+    this.gl.vertexAttribPointer(this.currentShader.vertexPositionAttribute, this.textureVertexPositionBuffer.itemSize, this.gl.FLOAT, false, 0, 0);
+    
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexTextureCoordBuffer);
+    this.gl.vertexAttribPointer(this.currentShader.textureCoordAttribute, this.vertexTextureCoordBuffer.itemSize, this.gl.FLOAT, false, 0, 0);
+    
+    this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
+    this.gl.uniform1i(this.currentShader.samplerUniform, 0);
+    
+    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.textureVertexIndexBuffer);
+    
+    this.setMatrixUniforms(this.currentShader, this.surfacePlot.pMatrix, this.surfacePlot.mvMatrix);
+    
+    this.gl.drawElements(this.gl.TRIANGLES, this.textureVertexIndexBuffer.numItems, this.gl.UNSIGNED_SHORT, 0);
+    
+    // Disable blending for transparency.
+    this.gl.disable(this.gl.BLEND);
+    this.gl.enable(this.gl.DEPTH_TEST);
+    
+    // Disable the vertex arrays for the current shader.
+    this.gl.disableVertexAttribArray(this.currentShader.vertexPositionAttribute);
+    this.gl.disableVertexAttribArray(this.currentShader.textureCoordAttribute);
+    
+    this.mvPopMatrix(this.surfacePlot);
+};
 
+/*
+ * This class represents the axes for the webGL plot.
+ */
+GLAxes = function(data3D, surfacePlot){
+    this.shaderProgram = surfacePlot.shaderAxesProgram;
+    this.currenShader = null;
+    this.gl = surfacePlot.gl;
+    this.numXPoints = surfacePlot.numXPoints;
+    this.numYPoints = surfacePlot.numYPoints;
+    this.data3D = data3D;
+    this.setMatrixUniforms = surfacePlot.setMatrixUniforms;
+    this.axesVertexPositionBuffer = null;
+    this.axesMinorVertexPositionBuffer = null;
+    this.surfaceVertexColorBuffer = null;
+    this.surfacePlot = surfacePlot;
+    
+    this.labels = [];
+    
+    this.initAxesBuffers = function(){
+        var vertices = [];
+        var minorVertices = [];
+        var axisExtent = 0.5;
+        
+        var axisOrigin = [-axisExtent, axisExtent, 0];
+        var xAxisEndPoint = [axisExtent, axisExtent, 0];
+        var yAxisEndPoint = [-axisExtent, -axisExtent, 0];
+        var zAxisEndPoint = [-axisExtent, axisExtent, axisExtent * 2];
+        
+        var xAxisEndPoint2 = [axisExtent, -axisExtent, 0];
+        var zAxisEndPoint2 = [-axisExtent, -axisExtent, axisExtent * 2];
+        
+        // X
+        vertices = vertices.concat(yAxisEndPoint);
+        vertices = vertices.concat(xAxisEndPoint2);
+        
+        // Y
+        vertices = vertices.concat(xAxisEndPoint2);
+        vertices = vertices.concat(xAxisEndPoint);
+        
+        // Z2
+        vertices = vertices.concat(yAxisEndPoint);
+        vertices = vertices.concat(zAxisEndPoint2);
+        
+        // Major axis lines.
+        this.axesVertexPositionBuffer = this.gl.createBuffer();
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.axesVertexPositionBuffer);
+        
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertices), this.gl.DYNAMIC_DRAW);
+        this.axesVertexPositionBuffer.itemSize = 3;
+        this.axesVertexPositionBuffer.numItems = vertices.length / 3;
+        
+        // Minor axis lines
+        var lineIntervalX = axisExtent / (this.surfacePlot.glOptions.xTicksNum / 2);
+        var lineIntervalY = axisExtent / (this.surfacePlot.glOptions.yTicksNum / 2);
+        var lineIntervalZ = axisExtent / (this.surfacePlot.glOptions.zTicksNum / 2);
+        
+        var i = 0;
+        
+        // X-axis division lines
+        for (var count = 0; count <= this.surfacePlot.glOptions.xTicksNum; i += lineIntervalX, count++) {
+            // X-axis labels.
+            var labels = this.surfacePlot.glOptions.xLabels;
+            var label = labels[count];
+            
+            labelPos = {
+                x: yAxisEndPoint[0] + i - 0.02,
+                y: yAxisEndPoint[1] - 1,
+                z: yAxisEndPoint[2]
+            };
+            glText = new GLText(data3D, label, labelPos, 90, surfacePlot, "x");
+            this.labels.push(glText);
+            
+            // X-axis divisions.
+            minorVertices = minorVertices.concat([axisOrigin[0] + i, axisOrigin[1], axisOrigin[2]]);
+            minorVertices = minorVertices.concat([yAxisEndPoint[0] + i, yAxisEndPoint[1], yAxisEndPoint[2]]);
+            
+            // back wall x-axis divisions.
+            minorVertices = minorVertices.concat([axisOrigin[0] + i, axisOrigin[1], 0]);
+            minorVertices = minorVertices.concat([axisOrigin[0] + i, axisOrigin[1], axisExtent * 2]);
+        }
+        
+        i = 0;
+        
+        // Y-axis division lines
+        for (var count = 0; count <= this.surfacePlot.glOptions.yTicksNum; i += lineIntervalY, count++) {
+            // Y-axis labels.
+            var labels = this.surfacePlot.glOptions.yLabels;
+            var label = labels[this.surfacePlot.glOptions.yTicksNum - count];
+            
+            labelPos = {
+                x: xAxisEndPoint[0],
+                y: xAxisEndPoint[1] - i - 1.06,
+                z: xAxisEndPoint[2]
+            };
+            glText = new GLText(data3D, label, labelPos, 0, surfacePlot, "y");
+            this.labels.push(glText);
+            
+            // y-axis divisions
+            minorVertices = minorVertices.concat([axisOrigin[0], axisOrigin[1] - i, axisOrigin[2]]);
+            minorVertices = minorVertices.concat([xAxisEndPoint[0], xAxisEndPoint[1] - i, xAxisEndPoint[2]]);
+            
+            // left wall y-axis divisions.
+            minorVertices = minorVertices.concat([axisOrigin[0], axisOrigin[1] - i, 0]);
+            minorVertices = minorVertices.concat([axisOrigin[0], axisOrigin[1] - i, axisExtent * 2]);
+        }
+        
+        i = 0;
+        
+        // Z-axis division lines
+        for (var count = 0; count <= this.surfacePlot.glOptions.zTicksNum; i += lineIntervalZ, count++) {
+            // Z-axis labels.
+            var labels = this.surfacePlot.glOptions.zLabels;
+            var label = labels[count];
+            
+            var labelPos = {
+                x: yAxisEndPoint[0],
+                y: yAxisEndPoint[1] - 1,
+                z: yAxisEndPoint[2] + i + 0.03
+            };
+            var glText = new GLText(data3D, label, labelPos, 90, surfacePlot, "z");
+            this.labels.push(glText);
+            
+            // Z-axis divisions
+            minorVertices = minorVertices.concat([axisOrigin[0], axisOrigin[1], axisOrigin[2] + i]);
+            minorVertices = minorVertices.concat([yAxisEndPoint[0], yAxisEndPoint[1], yAxisEndPoint[2] + i]);
+            
+            // back wall z-axis divisions
+            minorVertices = minorVertices.concat([axisOrigin[0], axisOrigin[1], axisOrigin[2] + i]);
+            minorVertices = minorVertices.concat([xAxisEndPoint[0], xAxisEndPoint[1], xAxisEndPoint[2] + i]);
+            
+        }
+        
+        // Set up the main X-axis label.
+        var labelPos = {
+            x: 0.5,
+            y: yAxisEndPoint[1] - 1.35,
+            z: yAxisEndPoint[2]
+        };
+        var glText = new GLText(data3D, this.surfacePlot.xTitle, labelPos, 0, surfacePlot, "x", "centre");
+        this.labels.push(glText);
+        
+        // Set up the main Y-axis label.
+        labelPos = {
+            x: xAxisEndPoint[0] + 0.2,
+            y: -0.5,
+            z: xAxisEndPoint[2]
+        };
+        glText = new GLText(data3D, this.surfacePlot.yTitle, labelPos, 90, surfacePlot, "x", "centre");
+        this.labels.push(glText);
+        
+        // Set up the main Z-axis label.
+        labelPos = {
+            x: yAxisEndPoint[0],
+            y: yAxisEndPoint[1] - 1,
+            z: 0.5
+        };
+        glText = new GLText(data3D, this.surfacePlot.zTitle, labelPos, 90, surfacePlot, "z", "centre");
+        this.labels.push(glText);
+        
+        // Set up the minor axis grid lines.
+        this.axesMinorVertexPositionBuffer = this.gl.createBuffer();
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.axesMinorVertexPositionBuffer);
+        
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(minorVertices), this.gl.DYNAMIC_DRAW);
+        this.axesMinorVertexPositionBuffer.itemSize = 3;
+        this.axesMinorVertexPositionBuffer.numItems = minorVertices.length / 3;
+    };
+    
+    this.initAxesBuffers();
+};
+
+GLAxes.prototype.draw = function(){
+    this.currentShader = this.shaderProgram;
+    this.gl.useProgram(this.currentShader);
+    
+    // Enable the vertex array for the current shader.
+    this.currentShader.vertexPositionAttribute = this.gl.getAttribLocation(this.currentShader, "aVertexPosition");
+    this.gl.enableVertexAttribArray(this.currentShader.vertexPositionAttribute);
+    
+    this.gl.uniform3f(this.currentShader.axesColour, 0.0, 0.0, 0.0); // Set the colour of the Major axis lines.
+    // Major axis lines
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.axesVertexPositionBuffer);
+    this.gl.vertexAttribPointer(this.currentShader.vertexPositionAttribute, this.axesVertexPositionBuffer.itemSize, this.gl.FLOAT, false, 0, 0);
+    
+    this.gl.lineWidth(2);
+    this.setMatrixUniforms(this.currentShader, this.surfacePlot.pMatrix, this.surfacePlot.mvMatrix);
+    this.gl.drawArrays(this.gl.LINES, 0, this.axesVertexPositionBuffer.numItems);
+    
+    // Minor axis lines
+    this.gl.uniform3f(this.currentShader.axesColour, 0.3, 0.3, 0.3); // Set the colour of the minor axis grid lines.
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.axesMinorVertexPositionBuffer);
+    this.gl.vertexAttribPointer(this.currentShader.vertexPositionAttribute, this.axesMinorVertexPositionBuffer.itemSize, this.gl.FLOAT, false, 0, 0);
+    
+    this.gl.lineWidth(1);
+    this.gl.drawArrays(this.gl.LINES, 0, this.axesMinorVertexPositionBuffer.numItems);
+    
+    // Render the axis labels.
+    var numLabels = this.labels.length;
+    
+    // Enable the vertex array for the current shader.
+    this.gl.disableVertexAttribArray(this.currentShader.vertexPositionAttribute);
+    
+    for (var i = 0; i < numLabels; i++) 
+        this.labels[i].draw();
+};
+
+/*
+ * A webGL surface without axes nor any other decoration.
+ */
+GLSurface = function(data3D, surfacePlot){
+    this.shaderProgram = surfacePlot.shaderProgram;
+    this.currentShader = null;
+    this.gl = surfacePlot.gl;
+    this.numXPoints = surfacePlot.numXPoints;
+    this.numYPoints = surfacePlot.numYPoints;
+    this.data3D = data3D;
+    this.colourGradientObject = surfacePlot.colourGradientObject;
+    this.setMatrixUniforms = surfacePlot.setMatrixUniforms;
+    
+    this.surfaceVertexPositionBuffer = null;
+    this.surfaceVertexColorBuffer = null;
+    this.surfaceVertexNormalBuffer = null;
+    this.surfaceVertexIndexBuffer = null;
+    this.surfacePlot = surfacePlot;
+    
+    this.initSurfaceBuffers = function(){
+        var i;
+        var j;
+        var vertices = [];
+        var colors = [];
+        var vertexNormals = [];
+        
+        for (i = 0; i < this.numXPoints - 1; i++) {
+            for (j = 0; j < this.numYPoints - 1; j++) {
+                // Create surface vertices.
+                var rawP1 = this.data3D[j + (i * this.numYPoints)];
+                var rawP2 = this.data3D[j + (i * this.numYPoints) + this.numYPoints];
+                var rawP3 = this.data3D[j + (i * this.numYPoints) + this.numYPoints + 1];
+                var rawP4 = this.data3D[j + (i * this.numYPoints) + 1];
+                
+                vertices.push(rawP1.ax);
+                vertices.push(rawP1.ay);
+                vertices.push(rawP1.az);
+                
+                vertices.push(rawP2.ax);
+                vertices.push(rawP2.ay);
+                vertices.push(rawP2.az);
+                
+                vertices.push(rawP3.ax);
+                vertices.push(rawP3.ay);
+                vertices.push(rawP3.az);
+                
+                vertices.push(rawP4.ax);
+                vertices.push(rawP4.ay);
+                vertices.push(rawP4.az);
+                
+                // Surface colours.
+                var rgb1 = this.colourGradientObject.getColour(rawP1.lz * 1.0);
+                var rgb2 = this.colourGradientObject.getColour(rawP2.lz * 1.0);
+                var rgb3 = this.colourGradientObject.getColour(rawP3.lz * 1.0);
+                var rgb4 = this.colourGradientObject.getColour(rawP4.lz * 1.0);
+                
+                colors.push(rgb1.red / 255);
+                colors.push(rgb1.green / 255);
+                colors.push(rgb1.blue / 255, 1.0);
+                colors.push(rgb2.red / 255);
+                colors.push(rgb2.green / 255);
+                colors.push(rgb2.blue / 255, 1.0);
+                colors.push(rgb3.red / 255);
+                colors.push(rgb3.green / 255);
+                colors.push(rgb3.blue / 255, 1.0);
+                colors.push(rgb4.red / 255);
+                colors.push(rgb4.green / 255);
+                colors.push(rgb4.blue / 255, 1.0);
+                
+                // Normal of triangle 1.
+                var v1 = [rawP2.ax - rawP1.ax, rawP2.ay - rawP1.ay, rawP2.az - rawP1.az];
+                var v2 = [rawP3.ax - rawP1.ax, rawP3.ay - rawP1.ay, rawP3.az - rawP1.az];
+                var cp1 = vec3.create();
+                cp1 = vec3.cross(v1, v2);
+                cp1 = vec3.normalize(v1, v2);
+                
+                // Normal of triangle 2.
+                v1 = [rawP3.ax - rawP1.ax, rawP3.ay - rawP1.ay, rawP3.az - rawP1.az];
+                v2 = [rawP4.ax - rawP1.ax, rawP4.ay - rawP1.ay, rawP4.az - rawP1.az];
+                var cp2 = vec3.create();
+                cp2 = vec3.cross(v1, v2);
+                cp2 = vec3.normalize(v1, v2);
+                
+                // Store normals for lighting.
+                vertexNormals.push(cp1[0]);
+                vertexNormals.push(cp1[1]);
+                vertexNormals.push(cp1[2]);
+                vertexNormals.push(cp1[0]);
+                vertexNormals.push(cp1[1]);
+                vertexNormals.push(cp1[2]);
+                vertexNormals.push(cp2[0]);
+                vertexNormals.push(cp2[1]);
+                vertexNormals.push(cp2[2]);
+                vertexNormals.push(cp2[0]);
+                vertexNormals.push(cp2[1]);
+                vertexNormals.push(cp2[2]);
+            }
+        }
+        
+        this.surfaceVertexPositionBuffer = this.gl.createBuffer();
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.surfaceVertexPositionBuffer);
+        
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertices), this.gl.DYNAMIC_DRAW);
+        this.surfaceVertexPositionBuffer.itemSize = 3;
+        this.surfaceVertexPositionBuffer.numItems = vertices.length / 3;
+        
+        this.surfaceVertexNormalBuffer = this.gl.createBuffer();
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.surfaceVertexNormalBuffer);
+        
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertexNormals), this.gl.DYNAMIC_DRAW);
+        this.surfaceVertexNormalBuffer.itemSize = 3;
+        this.surfaceVertexNormalBuffer.numItems = vertices.length / 3;
+        
+        this.surfaceVertexColorBuffer = this.gl.createBuffer();
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.surfaceVertexColorBuffer);
+        
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(colors), this.gl.DYNAMIC_DRAW);
+        this.surfaceVertexColorBuffer.itemSize = 4;
+        this.surfaceVertexColorBuffer.numItems = vertices.length / 3;
+        
+        this.surfaceVertexIndexBuffer = this.gl.createBuffer();
+        this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.surfaceVertexIndexBuffer);
+        
+        var numQuads = ((this.numXPoints - 1) * (this.numYPoints - 1)) / 2;
+        var surfaceVertexIndices = [];
+        
+        for (var i = 0; i < (numQuads * 8); i += 4) {
+            surfaceVertexIndices.push(i);
+            surfaceVertexIndices.push(i + 1);
+            surfaceVertexIndices.push(i + 2);
+            surfaceVertexIndices.push(i);
+            surfaceVertexIndices.push(i + 2);
+            surfaceVertexIndices.push(i + 3);
+        }
+        
+        this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(surfaceVertexIndices), this.gl.DYNAMIC_DRAW);
+        this.surfaceVertexIndexBuffer.itemSize = 1;
+        this.surfaceVertexIndexBuffer.numItems = surfaceVertexIndices.length;
+    };
+    
+    this.updateSurface = function(data){
+        var i;
+        var j;
+        var vertices = [];
+        var colors = [];
+        var vertexNormals = [];
+        
+        for (i = 0; i < this.numXPoints - 1; i++) {
+            for (j = 0; j < this.numYPoints - 1; j++) {
+                // Create surface vertices.
+                var rawP1 = data[j + (i * this.numYPoints)];
+                var rawP2 = data[j + (i * this.numYPoints) + this.numYPoints];
+                var rawP3 = data[j + (i * this.numYPoints) + this.numYPoints + 1];
+                var rawP4 = data[j + (i * this.numYPoints) + 1];
+                
+                //rawP1.az = Math.random();
+                
+                vertices.push(rawP1.ax);
+                vertices.push(rawP1.ay);
+                vertices.push(rawP1.az);
+                
+                vertices.push(rawP2.ax);
+                vertices.push(rawP2.ay);
+                vertices.push(rawP2.az);
+                
+                vertices.push(rawP3.ax);
+                vertices.push(rawP3.ay);
+                vertices.push(rawP3.az);
+                
+                vertices.push(rawP4.ax);
+                vertices.push(rawP4.ay);
+                vertices.push(rawP4.az);
+                
+                // Surface colours.
+                var rgb1 = this.colourGradientObject.getColour(rawP1.lz * 1.0);
+                var rgb2 = this.colourGradientObject.getColour(rawP2.lz * 1.0);
+                var rgb3 = this.colourGradientObject.getColour(rawP3.lz * 1.0);
+                var rgb4 = this.colourGradientObject.getColour(rawP4.lz * 1.0);
+                
+                colors.push(rgb1.red / 255);
+                colors.push(rgb1.green / 255);
+                colors.push(rgb1.blue / 255, 1.0);
+                colors.push(rgb2.red / 255);
+                colors.push(rgb2.green / 255);
+                colors.push(rgb2.blue / 255, 1.0);
+                colors.push(rgb3.red / 255);
+                colors.push(rgb3.green / 255);
+                colors.push(rgb3.blue / 255, 1.0);
+                colors.push(rgb4.red / 255);
+                colors.push(rgb4.green / 255);
+                colors.push(rgb4.blue / 255, 1.0);
+                
+                // Normal of triangle 1.
+                var v1 = [rawP2.ax - rawP1.ax, rawP2.ay - rawP1.ay, rawP2.az - rawP1.az];
+                var v2 = [rawP3.ax - rawP1.ax, rawP3.ay - rawP1.ay, rawP3.az - rawP1.az];
+                var cp1 = vec3.create();
+                cp1 = vec3.cross(v1, v2);
+                cp1 = vec3.normalize(v1, v2);
+                
+                // Normal of triangle 2.
+                v1 = [rawP3.ax - rawP1.ax, rawP3.ay - rawP1.ay, rawP3.az - rawP1.az];
+                v2 = [rawP4.ax - rawP1.ax, rawP4.ay - rawP1.ay, rawP4.az - rawP1.az];
+                var cp2 = vec3.create();
+                cp2 = vec3.cross(v1, v2);
+                cp2 = vec3.normalize(v1, v2);
+                
+                // Store normals for lighting.
+                vertexNormals.push(cp1[0]);
+                vertexNormals.push(cp1[1]);
+                vertexNormals.push(cp1[2]);
+                vertexNormals.push(cp1[0]);
+                vertexNormals.push(cp1[1]);
+                vertexNormals.push(cp1[2]);
+                vertexNormals.push(cp2[0]);
+                vertexNormals.push(cp2[1]);
+                vertexNormals.push(cp2[2]);
+                vertexNormals.push(cp2[0]);
+                vertexNormals.push(cp2[1]);
+                vertexNormals.push(cp2[2]);
+            }
+        }
+        
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.surfaceVertexPositionBuffer);
+        this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array(vertices));
+        
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.surfaceVertexNormalBuffer);
+        this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array(vertexNormals));
+        
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.surfaceVertexColorBuffer);
+        this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array(colors));
+        
+        this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.surfaceVertexIndexBuffer);
+        
+        var numQuads = ((this.numXPoints - 1) * (this.numYPoints - 1)) / 2;
+        var surfaceVertexIndices = [];
+        
+        for (var i = 0; i < (numQuads * 8); i += 4) {
+            surfaceVertexIndices.push(i);
+            surfaceVertexIndices.push(i + 1);
+            surfaceVertexIndices.push(i + 2);
+            surfaceVertexIndices.push(i);
+            surfaceVertexIndices.push(i + 2);
+            surfaceVertexIndices.push(i + 3);
+        }
+        
+        this.gl.bufferSubData(this.gl.ELEMENT_ARRAY_BUFFER, 0, new Uint16Array(surfaceVertexIndices));
+    };
+    
+    this.initSurfaceBuffers();
+};
+
+GLSurface.prototype.draw = function(){
+    this.currentShader = this.shaderProgram;
+    this.gl.useProgram(this.currentShader);
+    
+    // Enable the vertex arrays for the current shader.
+    this.currentShader.vertexPositionAttribute = this.gl.getAttribLocation(this.currentShader, "aVertexPosition");
+    this.gl.enableVertexAttribArray(this.currentShader.vertexPositionAttribute);
+    this.currentShader.vertexNormalAttribute = this.gl.getAttribLocation(this.currentShader, "aVertexNormal");
+    this.gl.enableVertexAttribArray(this.currentShader.vertexNormalAttribute);
+    this.currentShader.vertexColorAttribute = this.gl.getAttribLocation(this.currentShader, "aVertexColor");
+    this.gl.enableVertexAttribArray(this.currentShader.vertexColorAttribute);
+    
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.surfaceVertexPositionBuffer);
+    this.gl.vertexAttribPointer(this.currentShader.vertexPositionAttribute, this.surfaceVertexPositionBuffer.itemSize, this.gl.FLOAT, false, 0, 0);
+    
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.surfaceVertexColorBuffer);
+    this.gl.vertexAttribPointer(this.currentShader.vertexColorAttribute, this.surfaceVertexColorBuffer.itemSize, this.gl.FLOAT, false, 0, 0);
+    
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.surfaceVertexNormalBuffer);
+    this.gl.vertexAttribPointer(this.currentShader.vertexNormalAttribute, this.surfaceVertexNormalBuffer.itemSize, this.gl.FLOAT, false, 0, 0);
+    
+    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.surfaceVertexIndexBuffer);
+    
+    this.setMatrixUniforms(this.currentShader, this.surfacePlot.pMatrix, this.surfacePlot.mvMatrix);
+    
+    this.gl.drawElements(this.gl.TRIANGLES, this.surfaceVertexIndexBuffer.numItems, this.gl.UNSIGNED_SHORT, 0);
+    
+    // Disable the vertex arrays for the current shader.
+    this.gl.disableVertexAttribArray(this.currentShader.vertexPositionAttribute);
+    this.gl.disableVertexAttribArray(this.currentShader.vertexNormalAttribute);
+    this.gl.disableVertexAttribArray(this.currentShader.vertexColorAttribute);
+};
 
 /**
  * Given two coordinates, return the Euclidean distance
