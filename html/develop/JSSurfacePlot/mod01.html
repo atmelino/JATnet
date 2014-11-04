@@ -7,11 +7,11 @@
 
 
 <script type="text/javascript" src='jswebGL/SurfacePlot.js'></script>
-<!-- <script type="text/javascript" src='jswebGL/JSSurfacePlot.js'></script> -->
+<script type="text/javascript" src='jswebGL/JSSurfacePlot.js'></script>
 <script type="text/javascript" src='jswebGL/GLText.js'></script>
 <script type="text/javascript" src='jswebGL/GLAxes.js'></script>
 <script type="text/javascript" src='jswebGL/GLSurface.js'></script>
-<!-- <script type="text/javascript" src='jswebGL/GLSurface2.js'></script> -->
+<script type="text/javascript" src='jswebGL/GLSurface2.js'></script>
 
 
 
@@ -128,17 +128,15 @@
 </head>
 <body style="background: #000">
 	<div id='messagesDiv'>
-		<textarea id="messages" style="width: 90%;"></textarea>
-		<!-- cols=60 rows=10 -->
+		<textarea id="messages" style="width: 90%;"rows=10></textarea>
+		<!-- cols=60  -->
 	</div>
 
 	<div style="margin-left: 50px;">
 		<div>
 			<br> <input id="allowWebGL" type="checkbox" checked=""
 				onclick="toggleChart(this)"> <span style="color: #ffffff">Use
-				webGL</span> <br> <br> <br> <span style="color: #ffffff">Drag
-				to rotate.</span> <br> <br> <span style="color: #ffffff">Press
-				the shift key and drag the mouse to scale the surface plot.</span>
+				webGL</span> 
 		</div>
 
 		<div style="clear: right;">
@@ -149,7 +147,6 @@
 		</div>
 
 		<div style="clear: both;">
-			<br> <br>
 			<form action="">
 				<input type="button" name="animate" value="animate"
 					onclick="animateCharts();"> <span style="color: #ffffff">(applies
@@ -194,7 +191,7 @@
 			}
 
 
-			printlnMessage('messages','calling SurfacePlot()');
+			printlnMessage('messages','create SurfacePlot()');
 			surfacePlot = new SurfacePlot(document.getElementById("surfacePlotDiv"));
 
 			// Don't fill polygons in IE < v9. It's too slow.
@@ -278,6 +275,7 @@
 				origin : chartOrigin
 			};
 
+			printlnMessage('messages','draw SurfacePlot()');
 			surfacePlot.draw(data, options, basicPlotOptions, glOptions);
 
 			//coordinateCharts();
