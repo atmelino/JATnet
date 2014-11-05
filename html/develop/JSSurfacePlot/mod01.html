@@ -11,7 +11,8 @@
 <script type="text/javascript" src='jswebGL/GLText.js'></script>
 <script type="text/javascript" src='jswebGL/GLAxes.js'></script>
 <script type="text/javascript" src='jswebGL/GLSurface.js'></script>
-<script type="text/javascript" src='jswebGL/GLSurface2.js'></script>
+<!-- <script type="text/javascript" src='jswebGL/GLSurface2.js'></script> -->
+<script type="text/javascript" src='jswebGL/GLLines.js'></script>
 
 
 
@@ -128,7 +129,7 @@
 </head>
 <body style="background: #000">
 	<div id='messagesDiv'>
-		<textarea id="messages" style="width: 90%;"rows=10></textarea>
+		<textarea id="messages" style="width: 90%;" rows=10></textarea>
 		<!-- cols=60  -->
 	</div>
 
@@ -136,7 +137,8 @@
 		<div>
 			<br> <input id="allowWebGL" type="checkbox" checked=""
 				onclick="toggleChart(this)"> <span style="color: #ffffff">Use
-				webGL</span> 
+				webGL</span> <span style="color: #ffffff"> Drag to rotate. Shift drag to scale</span>
+
 		</div>
 
 		<div style="clear: right;">
@@ -190,8 +192,7 @@
 				}
 			}
 
-
-			printlnMessage('messages','create SurfacePlot()');
+			printlnMessage('messages', 'create SurfacePlot()');
 			surfacePlot = new SurfacePlot(document.getElementById("surfacePlotDiv"));
 
 			// Don't fill polygons in IE < v9. It's too slow.
@@ -275,7 +276,7 @@
 				origin : chartOrigin
 			};
 
-			printlnMessage('messages','draw SurfacePlot()');
+			printlnMessage('messages', 'draw SurfacePlot()');
 			surfacePlot.draw(data, options, basicPlotOptions, glOptions);
 
 			//coordinateCharts();

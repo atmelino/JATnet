@@ -73,8 +73,9 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
     var tTip = new Tooltip(false, tooltipColour);
     
     this.glSurface = null;
-    this.glSurface2 = null;
+    //this.glSurface2 = null;
     this.glAxes = null;
+    this.glLines = null;
     this.useWebGL = false;
     this.gl = null;
     this.shaderProgram = null;
@@ -305,8 +306,9 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
         this.data = null;
         this.colourGradientObject = null;
         this.glSurface = null;
-        this.glSurface2 = null;
+        //this.glSurface2 = null;
         this.glAxes = null;
+        this.glLines = null;
         this.shaderProgram = null;
         this.shaderTextureProgram = null;
         this.shaderAxesProgram = null;
@@ -838,13 +840,15 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
     this.initWorldObjects = function(data3D){
         if (this.frames) {
             this.glSurface = new GLSurface(data3D[0], this);
-            this.glSurface2 = new GLSurface2(data3D[0], this);
+            //this.glSurface2 = new GLSurface2(data3D[0], this);
             this.glAxes = new GLAxes(data3D[0], this);
+            this.glLines = new GLLines(data3D[0], this);
         }
         else {
             this.glSurface = new GLSurface(data3D, this);
-            this.glSurface2 = new GLSurface2(data3D, this);
+            //this.glSurface2 = new GLSurface2(data3D, this);
             this.glAxes = new GLAxes(data3D, this);
+            this.glLines = new GLLines(data3D, this);
         }
     };
     
@@ -898,6 +902,7 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
         this.gl.disableVertexAttribArray(this.shaderProgram.vertexColorAttribute);
         
         this.glAxes.draw();
+        this.glLines.draw();
         
         if (this.frames && !this.allFramesRendered) {
         
@@ -925,9 +930,10 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
         }
         
         this.glSurface.draw();
-		printlnMessage('messages','JSSurfacePlot() before draw');
-		this.glSurface2.draw();
-		printlnMessage('messages','JSSurfacePlot() after draw');
+        //var timeNow = new Date().getTime();
+		//printlnMessage('messages','JSSurfacePlot() before draw'+timeNow);
+		//this.glSurface2.draw();
+		//printlnMessage('messages','JSSurfacePlot() after draw');
         
         this.mvPopMatrix(this);
     };
