@@ -1,67 +1,26 @@
 /*
  * This class represents the lines for the webGL plot.
  */
-GLLines = function(points, surfacePlot){
+GLLines = function(linePoints, surfacePlot){
     this.shaderProgram = surfacePlot.shaderAxesProgram;
     this.currenShader = null;
     this.gl = surfacePlot.gl;
-    this.points = points;
+    this.linePoints = linePoints;
     this.setMatrixUniforms = surfacePlot.setMatrixUniforms;
     this.axesVertexPositionBuffer = null;
     this.surfacePlot = surfacePlot;
         
-    this.initAxesBuffers = function(){
-        var vertices = [];
-        
-        
-        
-		printlnMessage('messages', 'GLLines data3D '+JSON.stringify(points));
-        
-        
-        var axisExtent = 0.5;
-        
-        var xAxisEndPoint = [axisExtent, axisExtent, 0];
-        var yAxisEndPoint = [-axisExtent, -axisExtent, 0];
-        var zAxisEndPoint = [-axisExtent, axisExtent, axisExtent * 2];
-        
-        var xAxisEndPoint2 = [axisExtent, -axisExtent, 0];
-        var zAxisEndPoint2 = [-axisExtent, -axisExtent, axisExtent * 2];
-        
-        // X
-        vertices = vertices.concat(yAxisEndPoint);
-        vertices = vertices.concat(xAxisEndPoint2);
-        
-        // Y
-        vertices = vertices.concat(xAxisEndPoint2);
-        vertices = vertices.concat(xAxisEndPoint);
-        
-        // Z2
-        vertices = vertices.concat(yAxisEndPoint);
-        //vertices = vertices.concat(zAxisEndPoint2);
-        
-        
-        var somePoint = [.5,.6,-.7];
-        vertices = vertices.concat(somePoint);
-
-        var somePoint2 = [.1,0,.7];
-        vertices = vertices.concat(somePoint2);
-        
-        var somePoint3 = [-.1,0.4,.7];
-        vertices = vertices.concat(somePoint3);
-        
-        
-		//printlnMessage('messages', 'vertices.length '+vertices.length);
-     
-        
+    this.initAxesBuffers = function(){ 
+               
+		printlnMessage('messages', 'GLLines data3D '+JSON.stringify(linePoints));        
         
         // Major axis lines.
         this.axesVertexPositionBuffer = this.gl.createBuffer();
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.axesVertexPositionBuffer);
         
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertices), this.gl.DYNAMIC_DRAW);
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(linePoints), this.gl.DYNAMIC_DRAW);
         this.axesVertexPositionBuffer.itemSize = 3;
-        this.axesVertexPositionBuffer.numItems = vertices.length / 3;
-		//printlnMessage('messages', 'vertices.length/3 '+vertices.length/3);
+        this.axesVertexPositionBuffer.numItems = linePoints.length / 3;
                                         
     };
     
