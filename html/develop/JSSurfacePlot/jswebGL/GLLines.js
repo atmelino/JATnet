@@ -1,22 +1,25 @@
 /*
  * This class represents the lines for the webGL plot.
  */
-GLLines = function(data3D, surfacePlot){
+GLLines = function(points, surfacePlot){
     this.shaderProgram = surfacePlot.shaderAxesProgram;
     this.currenShader = null;
     this.gl = surfacePlot.gl;
-    this.data3D = data3D;
+    this.points = points;
     this.setMatrixUniforms = surfacePlot.setMatrixUniforms;
     this.axesVertexPositionBuffer = null;
     this.surfacePlot = surfacePlot;
-    
-    this.labels = [];
-    
+        
     this.initAxesBuffers = function(){
         var vertices = [];
+        
+        
+        
+		printlnMessage('messages', 'GLLines data3D '+JSON.stringify(points));
+        
+        
         var axisExtent = 0.5;
         
-        var axisOrigin = [-axisExtent, axisExtent, 0];
         var xAxisEndPoint = [axisExtent, axisExtent, 0];
         var yAxisEndPoint = [-axisExtent, -axisExtent, 0];
         var zAxisEndPoint = [-axisExtent, axisExtent, axisExtent * 2];
@@ -37,14 +40,17 @@ GLLines = function(data3D, surfacePlot){
         //vertices = vertices.concat(zAxisEndPoint2);
         
         
-        var somePoint = [.5,.6,.7];
+        var somePoint = [.5,.6,-.7];
         vertices = vertices.concat(somePoint);
 
-        var somePoint2 = [-.5,.6,.7];
+        var somePoint2 = [.1,0,.7];
         vertices = vertices.concat(somePoint2);
         
+        var somePoint3 = [-.1,0.4,.7];
+        vertices = vertices.concat(somePoint3);
         
-		printlnMessage('messages', 'vertices.length '+vertices.length);
+        
+		//printlnMessage('messages', 'vertices.length '+vertices.length);
      
         
         
@@ -55,7 +61,7 @@ GLLines = function(data3D, surfacePlot){
         this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertices), this.gl.DYNAMIC_DRAW);
         this.axesVertexPositionBuffer.itemSize = 3;
         this.axesVertexPositionBuffer.numItems = vertices.length / 3;
-		printlnMessage('messages', 'vertices.length/3 '+vertices.length/3);
+		//printlnMessage('messages', 'vertices.length/3 '+vertices.length/3);
                                         
     };
     
@@ -80,10 +86,7 @@ GLLines.prototype.draw = function(){
     this.gl.drawArrays(this.gl.LINES, 0, this.axesVertexPositionBuffer.numItems);
 
     //printlnMessage('messages', 'axesVertexPositionBuffer.numItems '+this.axesVertexPositionBuffer.numItems);
-        
-    // Render the axis labels.
-    var numLabels = this.labels.length;
-    
+            
     // Enable the vertex array for the current shader.
     this.gl.disableVertexAttribArray(this.currentShader.vertexPositionAttribute);
     

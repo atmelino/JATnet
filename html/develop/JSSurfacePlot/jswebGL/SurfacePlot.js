@@ -51,6 +51,9 @@ SurfacePlot.prototype.draw = function(data, options, basicPlotOptions, glOptions
     var startZAngle_canvas = options.startZAngle;
     var zAxisTextPosition = options.zAxisTextPosition;
     
+    
+	//printlnMessage('messages', 'surfacePlot data '+JSON.stringify(data));
+
     if (this.surfacePlot) {
 		
   		var isOpenGL = function() {

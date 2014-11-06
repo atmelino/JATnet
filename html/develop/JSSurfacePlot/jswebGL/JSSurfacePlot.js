@@ -20,7 +20,8 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
     var zTextPosition = 0.5;
 
     
-	printlnMessage('messages','JSSurfacePlot called');
+	//printlnMessage('messages','JSSurfacePlot called');
+	printlnMessage('messages', 'JSSurfacePlot data '+JSON.stringify(data));
 
     if (startXAngle_canvas != null && startXAngle_canvas != void 0) 
         this.currentXAngle_canvas = startXAngle_canvas;

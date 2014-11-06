@@ -137,7 +137,8 @@
 		<div>
 			<br> <input id="allowWebGL" type="checkbox" checked=""
 				onclick="toggleChart(this)"> <span style="color: #ffffff">Use
-				webGL</span> <span style="color: #ffffff"> Drag to rotate. Shift drag to scale</span>
+				webGL</span> <span style="color: #ffffff"> Drag to rotate. Shift
+				drag to scale</span>
 
 		</div>
 
@@ -148,13 +149,6 @@
 			</div>
 		</div>
 
-		<div style="clear: both;">
-			<form action="">
-				<input type="button" name="animate" value="animate"
-					onclick="animateCharts();"> <span style="color: #ffffff">(applies
-					to webGL only)</span>
-			</form>
-		</div>
 	</div>
 
 	<script type='text/javascript'>
@@ -162,8 +156,8 @@
 		var data, options, basicPlotOptions, glOptions, animated, plot1, values;
 
 		function setUp() {
-			var numRows = 45;
-			var numCols = 45;
+			var numRows = 2;
+			var numCols = 2;
 
 			//printlnMessage('messages','setup');
 
@@ -279,43 +273,12 @@
 			printlnMessage('messages', 'draw SurfacePlot()');
 			surfacePlot.draw(data, options, basicPlotOptions, glOptions);
 
-			//coordinateCharts();
-
-		}
-
-		// 		function coordinateCharts() {
-
-		// 			// Link the two charts for rotation.
-		// 			plot1 = surfacePlot.getChart();
-		// 			plot2 = surfacePlot2.getChart();
-
-		// 			plot1.otherPlots = [ plot2 ];
-		// 			plot2.otherPlots = [ plot1 ];
-
-		// 		}
-
-		function animateCharts() {
-
-			if (!animated) {
-				surfacePlot.draw(data2, options, basicPlotOptions2, glOptions2);
-				surfacePlot2.draw(data, options, basicPlotOptions, glOptions);
-				animated = true;
-			} else {
-				surfacePlot.draw(data, options, basicPlotOptions, glOptions);
-				surfacePlot2.draw(data2, options, basicPlotOptions2, glOptions2);
-				animated = false;
-			}
-
-			//coordinateCharts();
-
 		}
 
 		setUp();
 
 		function toggleChart(chkbox) {
 			surfacePlot.draw(data, options, basicPlotOptions, glOptions);
-
-			//coordinateCharts();
 		}
 	</script>
 
