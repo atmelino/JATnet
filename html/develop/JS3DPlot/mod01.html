@@ -205,9 +205,9 @@
 		}
 
 		// Options for the webGL plot.
-		var xLabels = [ -0.5, 0,0.5 ];
-		var yLabels = [ -0.5, 0,0.5 ];
-		var zLabels = [ -0.5, 0,0.5 ]; // These labels ar eused when autoCalcZScale is false;
+		var xLabels = [ -0.5, 0, 0.5 ];
+		var yLabels = [ -0.5, 0, 0.5 ];
+		var zLabels = [ -0.5, 0, 0.5 ]; // These labels ar eused when autoCalcZScale is false;
 		glOptions = {
 			xLabels : xLabels,
 			yLabels : yLabels,
@@ -221,8 +221,8 @@
 		options = {
 			xPos : 0,
 			yPos : 0,
-			width : 600,
-			height : 400,
+			width : 500,
+			height : 500,
 			colourGradient : colours,
 			xTitle : xAxisHeader,
 			yTitle : yAxisHeader,
@@ -265,21 +265,20 @@
 	</div>
 
 	<div style="margin-left: 50px;">
-		<div>
-			<br> <input id="allowWebGL" type="checkbox" checked=""
-				onclick="toggleChart(this)"> <span style="color: #ffffff">Use
-				webGL</span> <span style="color: #ffffff"> Drag to rotate. Shift
-				drag to scale</span>
+		<div></div>
 
-		</div>
-
-		<div style="clear: right;">
+		<div style="clear: right; float: left;">
 			<div id='surfacePlotDiv'
-				style="float: left; width: 600px; height: 450px; border: 1px solid red; background: #fff;">
+				style="float: left; width: 500px; height: 500px; border: 1px solid red; background: #fff;">
 				<!-- SurfacePlot goes here... -->
 			</div>
 		</div>
-
+		<div style="clear: right; float: left;">
+			<input id="allowWebGL" type="checkbox" checked=""
+				onclick="toggleChart(this)"> <span style="color: #ffffff">Use
+				webGL</span> <span style="color: #ffffff"> Drag to rotate. Shift
+				drag to scale</span>
+		</div>
 	</div>
 
 </body>

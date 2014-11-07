@@ -874,7 +874,7 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		mat4.perspective(5, this.gl.viewportWidth / this.gl.viewportHeight, 0.1, 100.0, this.pMatrix);
 		mat4.identity(this.mvMatrix);
 
-		mat4.translate(this.mvMatrix, [ 0.0, -0.3, -19.0 ]);
+		mat4.translate(this.mvMatrix, [ 0.0, -0.1, -19.0 ]);
 
 		mat4.multiply(this.mvMatrix, this.rotationMatrix);
 
