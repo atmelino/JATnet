@@ -124,6 +124,29 @@
 
 		//printlnMessage('messages','setup');
 
+		
+		plotBoxSize=100;
+
+		// Axis labels.
+		var xAxisHeader = "X [km]";
+		var yAxisHeader = "Y [km]";
+		var zAxisHeader = "Z [km]";
+		
+		var linePoints = [];
+		var Point1 = [ 0, 0, 0 ];
+		var Point2 = [ 1, 0, 0 ];
+		var Point3 = [ .5, .6, 2.3 ];
+		var Point4 = [ 0, 0, .4 ];
+		var Point5 = [ 0.3, 0.3, .4 ];
+		linePoints = linePoints.concat(Point1);
+		linePoints = linePoints.concat(Point2);
+		linePoints = linePoints.concat(Point3);
+		linePoints = linePoints.concat(Point4);
+		linePoints = linePoints.concat(Point5);
+		printlnMessage('messages', 'mod01 linePoints' + JSON.stringify(linePoints));
+		
+		
+		
 		var tooltipStrings = new Array();
 		values = new Array();
 		data = {
@@ -183,10 +206,7 @@
 		};
 		var colours = [ colour1, colour2, colour3, colour4, colour5 ];
 
-		// Axis labels.
-		var xAxisHeader = "X-axis";
-		var yAxisHeader = "Y-axis";
-		var zAxisHeader = "Z-axis";
+
 
 		var renderDataPoints = false;
 		var background = '#ffffff';
@@ -205,9 +225,16 @@
 		}
 
 		// Options for the webGL plot.
-		var xLabels = [ -0.5, 0, 0.5 ];
-		var yLabels = [ -0.5, 0, 0.5 ];
-		var zLabels = [ -0.5, 0, 0.5 ]; // These labels ar eused when autoCalcZScale is false;
+		//var xLabels = [ -0.5, 0, 0.5 ];
+		//var yLabels = [ -0.5, 0, 0.5 ];
+		//var zLabels = [ -0.5, 0, 0.5 ]; // These labels ar eused when autoCalcZScale is false;
+
+		var xLabels = [ -plotBoxSize, 0, plotBoxSize ];
+		var yLabels = [ -plotBoxSize, 0, plotBoxSize ];
+		var zLabels = [ -plotBoxSize, 0, plotBoxSize ]; // These labels ar eused when autoCalcZScale is false;
+
+		
+		plotBoxSize
 		glOptions = {
 			xLabels : xLabels,
 			yLabels : yLabels,
@@ -233,18 +260,6 @@
 			origin : chartOrigin
 		};
 
-		var linePoints = [];
-		var Point1 = [ 0, 0, 0 ];
-		var Point2 = [ 1, 0, 0 ];
-		var Point3 = [ .5, .6, 2.3 ];
-		var Point4 = [ 0, 0, .4 ];
-		var Point5 = [ 0.3, 0.3, .4 ];
-		linePoints = linePoints.concat(Point1);
-		linePoints = linePoints.concat(Point2);
-		linePoints = linePoints.concat(Point3);
-		linePoints = linePoints.concat(Point4);
-		linePoints = linePoints.concat(Point5);
-		printlnMessage('messages', 'mod01 linePoints' + JSON.stringify(linePoints));
 
 		printlnMessage('messages', 'draw SurfacePlot()');
 		surfacePlot.draw(data, linePoints, options, basicPlotOptions, glOptions);

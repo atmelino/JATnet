@@ -152,7 +152,7 @@ GLAxes = function(data3D, surfacePlot){
         labelPos = {
             x: yAxisEndPoint[0],
             y: yAxisEndPoint[1] - 1,
-            z: 0.5
+            z: 0
         };
         glText = new GLText(data3D, this.surfacePlot.zTitle, labelPos, 90, surfacePlot, "z", "centre");
         this.labels.push(glText);
