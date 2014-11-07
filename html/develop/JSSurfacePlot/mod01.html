@@ -205,15 +205,15 @@
 		}
 
 		// Options for the webGL plot.
-		var xLabels = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
-		var yLabels = [ 0, 1, 2, 3, 4, 5 ];
-		var zLabels = [ 0, 1, 2, 3, 4, 5, 6 ]; // These labels ar eused when autoCalcZScale is false;
+		var xLabels = [ -0.5, 0,0.5 ];
+		var yLabels = [ -0.5, 0,0.5 ];
+		var zLabels = [ -0.5, 0,0.5 ]; // These labels ar eused when autoCalcZScale is false;
 		glOptions = {
 			xLabels : xLabels,
 			yLabels : yLabels,
 			zLabels : zLabels,
 			chkControlId : "allowWebGL",
-			autoCalcZScale : true,
+			autoCalcZScale : false,
 			animate : true
 		};
 
@@ -234,9 +234,9 @@
 		};
 
 		var linePoints = [];
-		var Point1 = [ -.5, .6, -.2 ];
-		var Point2 = [ .5, .6, -.7 ];
-		var Point3 = [ .5, .6, .7 ];
+		var Point1 = [ 0, 0, 0 ];
+		var Point2 = [ 1, 0, 0 ];
+		var Point3 = [ .5, .6, 2.3 ];
 		var Point4 = [ 0, 0, .4 ];
 		var Point5 = [ 0.3, 0.3, .4 ];
 		linePoints = linePoints.concat(Point1);

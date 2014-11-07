@@ -21,13 +21,13 @@ GLAxes = function(data3D, surfacePlot){
         var minorVertices = [];
         var axisExtent = 0.5;
         
-        var axisOrigin = [-axisExtent, axisExtent, 0];
-        var xAxisEndPoint = [axisExtent, axisExtent, 0];
-        var yAxisEndPoint = [-axisExtent, -axisExtent, 0];
-        var zAxisEndPoint = [-axisExtent, axisExtent, axisExtent * 2];
+        var axisOrigin = [-axisExtent, axisExtent, -.5];
+        var xAxisEndPoint = [axisExtent, axisExtent, -.5];
+        var yAxisEndPoint = [-axisExtent, -axisExtent, -.5];
+        var zAxisEndPoint = [-axisExtent, axisExtent, axisExtent * 2-.5];
         
-        var xAxisEndPoint2 = [axisExtent, -axisExtent, 0];
-        var zAxisEndPoint2 = [-axisExtent, -axisExtent, axisExtent * 2];
+        var xAxisEndPoint2 = [axisExtent, -axisExtent, -.5];
+        var zAxisEndPoint2 = [-axisExtent, -axisExtent, axisExtent * 2-.5];
         
         // X
         vertices = vertices.concat(yAxisEndPoint);
@@ -75,8 +75,8 @@ GLAxes = function(data3D, surfacePlot){
             minorVertices = minorVertices.concat([yAxisEndPoint[0] + i, yAxisEndPoint[1], yAxisEndPoint[2]]);
             
             // back wall x-axis divisions.
-            minorVertices = minorVertices.concat([axisOrigin[0] + i, axisOrigin[1], 0]);
-            minorVertices = minorVertices.concat([axisOrigin[0] + i, axisOrigin[1], axisExtent * 2]);
+            minorVertices = minorVertices.concat([axisOrigin[0] + i, axisOrigin[1], -0.5]);
+            minorVertices = minorVertices.concat([axisOrigin[0] + i, axisOrigin[1], axisExtent * 2-0.5]);
         }
         
         i = 0;
@@ -100,8 +100,8 @@ GLAxes = function(data3D, surfacePlot){
             minorVertices = minorVertices.concat([xAxisEndPoint[0], xAxisEndPoint[1] - i, xAxisEndPoint[2]]);
             
             // left wall y-axis divisions.
-            minorVertices = minorVertices.concat([axisOrigin[0], axisOrigin[1] - i, 0]);
-            minorVertices = minorVertices.concat([axisOrigin[0], axisOrigin[1] - i, axisExtent * 2]);
+            minorVertices = minorVertices.concat([axisOrigin[0], axisOrigin[1] - i, -0.5]);
+            minorVertices = minorVertices.concat([axisOrigin[0], axisOrigin[1] - i, axisExtent * 2-0.5]);
         }
         
         i = 0;
