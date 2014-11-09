@@ -12,7 +12,7 @@ GLLines = function(linePoints, surfacePlot) {
 
 	this.initAxesBuffers = function() {
 
-		printlnMessage('messages', 'GLLines linePoints ' + JSON.stringify(linePoints));
+		//printlnMessage('messages', 'GLLines linePoints ' + JSON.stringify(linePoints));
 
 		var vertices = [];
 		// var i;
@@ -50,7 +50,7 @@ GLLines = function(linePoints, surfacePlot) {
 		// vertices = vertices.concat(linePoints[i+1]);
 		// vertices = vertices.concat(linePoints[i+2]);
 
-		printlnMessage('messages', 'GLLines vertices ' + JSON.stringify(vertices));
+		//printlnMessage('messages', 'GLLines vertices ' + JSON.stringify(vertices));
 
 		// lines.
 		this.axesVertexPositionBuffer = this.gl.createBuffer();
