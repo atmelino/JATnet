@@ -76,6 +76,7 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 	// this.glSurface2 = null;
 	this.glAxes = null;
 	this.glLines = null;
+	this.glSphere = null;
 	this.useWebGL = false;
 	this.gl = null;
 	this.shaderProgram = null;
@@ -309,6 +310,7 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		// this.glSurface2 = null;
 		this.glAxes = null;
 		this.glLines = null;
+		this.glSphere = null;
 		this.shaderProgram = null;
 		this.shaderTextureProgram = null;
 		this.shaderAxesProgram = null;
@@ -838,14 +840,14 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 	this.initWorldObjects = function(data3D) {
 		if (this.frames) {
 			this.glSurface = new GLSurface(data3D[0], this);
-			// this.glSurface2 = new GLSurface2(data3D[0], this);
 			this.glAxes = new GLAxes(data3D[0], this);
 			this.glLines = new GLLines(linePoints, this);
+			this.glSphere = new GLSphere(data3D[0], this);
 		} else {
 			this.glSurface = new GLSurface(data3D, this);
-			// this.glSurface2 = new GLSurface2(data3D, this);
 			this.glAxes = new GLAxes(data3D, this);
 			this.glLines = new GLLines(linePoints, this);
+			this.glSphere = new GLSphere(data3D, this);
 		}
 	};
 
@@ -900,6 +902,7 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 
 		this.glAxes.draw();
 		this.glLines.draw();
+		this.glSphere.draw();
 
 		if (this.frames && !this.allFramesRendered) {
 
