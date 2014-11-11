@@ -144,7 +144,7 @@
 		linePoints = linePoints.concat(Point3);
 		linePoints = linePoints.concat(Point4);
 		linePoints = linePoints.concat(Point5);
-		printlnMessage('messages', 'mod01 linePoints' + JSON.stringify(linePoints));
+		//printlnMessage('messages', 'JS3DPlot_orbit02.html linePoints' + JSON.stringify(linePoints));
 
 		var tooltipStrings = new Array();
 		values = new Array();
@@ -171,7 +171,7 @@
 			}
 		}
 
-		printlnMessage('messages', 'create SurfacePlot()');
+		//printlnMessage('messages', 'create SurfacePlot()');
 		surfacePlot = new SurfacePlot(document.getElementById("surfacePlotDiv"));
 
 		// Don't fill polygons in IE < v9. It's too slow.
@@ -256,7 +256,7 @@
 			origin : chartOrigin
 		};
 
-		printlnMessage('messages', 'draw SurfacePlot()');
+		//printlnMessage('messages', 'draw SurfacePlot()');
 		surfacePlot.draw(data, linePoints, options, basicPlotOptions, glOptions);
 
 	}
@@ -314,7 +314,7 @@
 
 <body onLoad="setUp();" style="background: #ccc">
 	<div id='messagesDiv'>
-		<textarea id="messages" style="width: 90%;" rows=10></textarea>
+		<textarea id="messages" style="width: 90%;" rows=15></textarea>
 		<!-- cols=60  -->
 	</div>
 
