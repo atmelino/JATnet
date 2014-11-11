@@ -17,21 +17,49 @@ GLSphere = function(data3D, surfacePlot) {
 	this.surfaceVertexIndexBuffer = null;
 	this.surfacePlot = surfacePlot;
 
+	
+	this.createVertices=function(param,fourpoints)
+	{
+		printlnMessage('messages', param );
+		printlnMessage('messages', fourpoints[0] );
+		a=fourpoints[0];
+		b=fourpoints[1];
+		c=fourpoints[2];
+
+		var point1 = new Point3D(a,b,c);
+		//var point1 = new Point3D(fourpoints[0], fourpoints[1], fourpoints[2]);
+		//var point2 = new Point3D(fourpoints[3], fourpoints[4], fourpoints[5]);
+		var point3 = new Point3D(0.5, 0.3, 0);
+		var point4 = new Point3D(0.3, 0.3, 0.3);
+		
+		
+		
+		
+		
+		//return('test');
+		return(fourpoints);
+	};
+	
 	this.initSurfaceBuffers = function() {
-		var i;
-		var j;
 		var vertices = [];
 		var colors = [];
 		var vertexNormals = [];
 
+		//this.createVertices('hello');
+		//printlnMessage('messages', this.createVertices('hello'));
 		// printlnMessage('messages', 'GLSphere data3D ' +
 		// JSON.stringify(this.data3D));
 
-		var point1 = new Point3D(0, 0, 0.1);
-		var point2 = new Point3D(0.2, 0, -0.1);
-		var point3 = new Point3D(0.2, 0.3, -0.1);
-		var point4 = new Point3D(0.3, 0.1, 0);
+		var point1 = new Point3D(0, 0, 0);
+		var point2 = new Point3D(.5, 0, 0);
+		var point3 = new Point3D(0.5, 0.3, 0);
+		var point4 = new Point3D(0.3, 0.3, 0.3);
 
+		var pointArray=[0, 0, 0,.5, 0, 0,0.5, 0.3, 0,0.3, 0.3, 0.3];
+		
+		printlnMessage('messages', JSON.stringify(this.createVertices('hello',pointArray)));
+
+		
 		// Create surface vertices.
 		var rawP1 = point1;
 		var rawP2 = point2;
@@ -53,6 +81,8 @@ GLSphere = function(data3D, surfacePlot) {
 		vertices.push(rawP4.ax);
 		vertices.push(rawP4.ay);
 		vertices.push(rawP4.az);
+
+		printVectorArray('vertices',vertices);
 
 		// Surface colours.
 		var rgb1 = this.colourGradientObject.getColour(rawP1.lz * 1.0);
@@ -102,9 +132,11 @@ GLSphere = function(data3D, surfacePlot) {
 		vertexNormals.push(cp2[2]);
 
 		var radius = .4;
-		var lats = 2;
-		var longs = 2;
-
+		var lats = 3;
+		var longs = 3;
+		var vertexNormalArray=[];
+		var vertexArray=[];
+		
 		for ( var latNumber = 0; latNumber <= lats; ++latNumber) {
 			for ( var longNumber = 0; longNumber <= longs; ++longNumber) {
 				var theta = latNumber * Math.PI / lats;
@@ -120,12 +152,20 @@ GLSphere = function(data3D, surfacePlot) {
 				var u = 1 - (longNumber / longs);
 				var v = latNumber / lats;
 
+				vertexArray.push(radius*x);
+				vertexArray.push(radius*y);
+				vertexArray.push(radius*z);
+				vertexNormalArray.push(x);
+				vertexNormalArray.push(y);
+				vertexNormalArray.push(z);
+
+
 				// vertices.push(radius * x);
 				// vertices.push(radius * y);
 				// vertices.push(radius * z);
 				// colors.push(0.345);
 
-				point = new Point3D(x, y, z);
+				// point = new Point3D(x, y, z);
 				// vertexNormals.push(point);
 				// texCoordData.push(u);
 				// texCoordData.push(v);
@@ -133,11 +173,21 @@ GLSphere = function(data3D, surfacePlot) {
 			}
 		}
 
-		printlnMessage('messages', 'GLSphere array length-' + ' vertices ' + vertices.length + ' colors '
-				+ colors.length + ' vertexNormals ' + vertexNormals.length);
-		printlnMessage('messages', 'GLSphere colors ' + JSON.stringify(colors));
-		printlnMessage('messages', 'GLSphere vertices ' + JSON.stringify(vertices));
+		//printlnMessage('messages', 'GLSphere array length-' + ' vertices ' + vertices.length + ' colors '
+				//+ colors.length + ' vertexNormals ' + vertexNormals.length);
+		//printlnMessage('messages', 'GLSphere colors ' + JSON.stringify(colors));
+		//printlnMessage('messages', 'GLSphere vertices ' + JSON.stringify(vertices));
 
+		//printlnMessage('messages', 'GLSphere vertexArray ' + JSON.stringify(vertexArray));
+		printVectorArray('vertexArray',vertexArray);
+
+		
+		
+		
+		
+		
+		
+		
 		this.surfaceVertexPositionBuffer = this.gl.createBuffer();
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.surfaceVertexPositionBuffer);
 
@@ -179,9 +229,10 @@ GLSphere = function(data3D, surfacePlot) {
 		this.surfaceVertexIndexBuffer.numItems = surfaceVertexIndices.length;
 	};
 
+	
 	this.updateSurface = function(data) {
-		var i;
-		var j;
+		var i=0;
+		var j=0;
 		var vertices = [];
 		var colors = [];
 		var vertexNormals = [];
