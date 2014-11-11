@@ -24,91 +24,120 @@ GLSphere = function(data3D, surfacePlot) {
 		var colors = [];
 		var vertexNormals = [];
 
-		printlnMessage('messages', 'GLSphere data3D ' + JSON.stringify(this.data3D));
+		// printlnMessage('messages', 'GLSphere data3D ' +
+		// JSON.stringify(this.data3D));
 
 		var point1 = new Point3D(0, 0, 0.1);
 		var point2 = new Point3D(0.2, 0, -0.1);
 		var point3 = new Point3D(0.2, 0.3, -0.1);
 		var point4 = new Point3D(0.3, 0.1, 0);
 
-		
-		for (i = 0; i <1; i++) {
-			for (j = 0; j < 1; j++) {
-				// Create surface vertices.
-				var rawP1 = point1;
-				var rawP2 = point2;
-				var rawP3 = point3;
-				var rawP4 = point4;
+		// Create surface vertices.
+		var rawP1 = point1;
+		var rawP2 = point2;
+		var rawP3 = point3;
+		var rawP4 = point4;
 
-				vertices.push(rawP1.ax);
-				vertices.push(rawP1.ay);
-				vertices.push(rawP1.az);
+		vertices.push(rawP1.ax);
+		vertices.push(rawP1.ay);
+		vertices.push(rawP1.az);
 
-				vertices.push(rawP2.ax);
-				vertices.push(rawP2.ay);
-				vertices.push(rawP2.az);
+		vertices.push(rawP2.ax);
+		vertices.push(rawP2.ay);
+		vertices.push(rawP2.az);
 
-				vertices.push(rawP3.ax);
-				vertices.push(rawP3.ay);
-				vertices.push(rawP3.az);
+		vertices.push(rawP3.ax);
+		vertices.push(rawP3.ay);
+		vertices.push(rawP3.az);
 
-				vertices.push(rawP4.ax);
-				vertices.push(rawP4.ay);
-				vertices.push(rawP4.az);
+		vertices.push(rawP4.ax);
+		vertices.push(rawP4.ay);
+		vertices.push(rawP4.az);
 
-				// Surface colours.
-				var rgb1 = this.colourGradientObject.getColour(rawP1.lz * 1.0);
-				var rgb2 = this.colourGradientObject.getColour(rawP2.lz * 1.0);
-				var rgb3 = this.colourGradientObject.getColour(rawP3.lz * 1.0);
-				var rgb4 = this.colourGradientObject.getColour(rawP4.lz * 1.0);
+		// Surface colours.
+		var rgb1 = this.colourGradientObject.getColour(rawP1.lz * 1.0);
+		var rgb2 = this.colourGradientObject.getColour(rawP2.lz * 1.0);
+		var rgb3 = this.colourGradientObject.getColour(rawP3.lz * 1.0);
+		var rgb4 = this.colourGradientObject.getColour(rawP4.lz * 1.0);
 
-				colors.push(rgb1.red / 255);
-				colors.push(rgb1.green / 255);
-				colors.push(rgb1.blue / 255, 1.0);
-				colors.push(rgb2.red / 255);
-				colors.push(rgb2.green / 255);
-				colors.push(rgb2.blue / 255, 1.0);
-				colors.push(rgb3.red / 255);
-				colors.push(rgb3.green / 255);
-				colors.push(rgb3.blue / 255, 1.0);
-				colors.push(rgb4.red / 255);
-				colors.push(rgb4.green / 255);
-				colors.push(rgb4.blue / 255, 1.0);
+		colors.push(rgb1.red / 255);
+		colors.push(rgb1.green / 255);
+		colors.push(rgb1.blue / 255, 1.0);
+		colors.push(rgb2.red / 255);
+		colors.push(rgb2.green / 255);
+		colors.push(rgb2.blue / 255, 1.0);
+		colors.push(rgb3.red / 255);
+		colors.push(rgb3.green / 255);
+		colors.push(rgb3.blue / 255, 1.0);
+		colors.push(rgb4.red / 255);
+		colors.push(rgb4.green / 255);
+		colors.push(rgb4.blue / 255, 1.0);
 
-				// Normal of triangle 1.
-				var v1 = [ rawP2.ax - rawP1.ax, rawP2.ay - rawP1.ay, rawP2.az - rawP1.az ];
-				var v2 = [ rawP3.ax - rawP1.ax, rawP3.ay - rawP1.ay, rawP3.az - rawP1.az ];
-				var cp1 = vec3.create();
-				cp1 = vec3.cross(v1, v2);
-				cp1 = vec3.normalize(v1, v2);
+		// Normal of triangle 1.
+		var v1 = [ rawP2.ax - rawP1.ax, rawP2.ay - rawP1.ay, rawP2.az - rawP1.az ];
+		var v2 = [ rawP3.ax - rawP1.ax, rawP3.ay - rawP1.ay, rawP3.az - rawP1.az ];
+		var cp1 = vec3.create();
+		cp1 = vec3.cross(v1, v2);
+		cp1 = vec3.normalize(v1, v2);
 
-				// Normal of triangle 2.
-				v1 = [ rawP3.ax - rawP1.ax, rawP3.ay - rawP1.ay, rawP3.az - rawP1.az ];
-				v2 = [ rawP4.ax - rawP1.ax, rawP4.ay - rawP1.ay, rawP4.az - rawP1.az ];
-				var cp2 = vec3.create();
-				cp2 = vec3.cross(v1, v2);
-				cp2 = vec3.normalize(v1, v2);
+		// Normal of triangle 2.
+		v1 = [ rawP3.ax - rawP1.ax, rawP3.ay - rawP1.ay, rawP3.az - rawP1.az ];
+		v2 = [ rawP4.ax - rawP1.ax, rawP4.ay - rawP1.ay, rawP4.az - rawP1.az ];
+		var cp2 = vec3.create();
+		cp2 = vec3.cross(v1, v2);
+		cp2 = vec3.normalize(v1, v2);
 
-				// Store normals for lighting.
-				vertexNormals.push(cp1[0]);
-				vertexNormals.push(cp1[1]);
-				vertexNormals.push(cp1[2]);
-				vertexNormals.push(cp1[0]);
-				vertexNormals.push(cp1[1]);
-				vertexNormals.push(cp1[2]);
-				vertexNormals.push(cp2[0]);
-				vertexNormals.push(cp2[1]);
-				vertexNormals.push(cp2[2]);
-				vertexNormals.push(cp2[0]);
-				vertexNormals.push(cp2[1]);
-				vertexNormals.push(cp2[2]);
+		// Store normals for lighting.
+		vertexNormals.push(cp1[0]);
+		vertexNormals.push(cp1[1]);
+		vertexNormals.push(cp1[2]);
+		vertexNormals.push(cp1[0]);
+		vertexNormals.push(cp1[1]);
+		vertexNormals.push(cp1[2]);
+		vertexNormals.push(cp2[0]);
+		vertexNormals.push(cp2[1]);
+		vertexNormals.push(cp2[2]);
+		vertexNormals.push(cp2[0]);
+		vertexNormals.push(cp2[1]);
+		vertexNormals.push(cp2[2]);
+
+		var radius = .4;
+		var lats = 2;
+		var longs = 2;
+
+		for ( var latNumber = 0; latNumber <= lats; ++latNumber) {
+			for ( var longNumber = 0; longNumber <= longs; ++longNumber) {
+				var theta = latNumber * Math.PI / lats;
+				var phi = longNumber * 2 * Math.PI / longs;
+				var sinTheta = Math.sin(theta);
+				var sinPhi = Math.sin(phi);
+				var cosTheta = Math.cos(theta);
+				var cosPhi = Math.cos(phi);
+
+				var x = cosPhi * sinTheta;
+				var y = cosTheta;
+				var z = sinPhi * sinTheta;
+				var u = 1 - (longNumber / longs);
+				var v = latNumber / lats;
+
+				// vertices.push(radius * x);
+				// vertices.push(radius * y);
+				// vertices.push(radius * z);
+				// colors.push(0.345);
+
+				point = new Point3D(x, y, z);
+				// vertexNormals.push(point);
+				// texCoordData.push(u);
+				// texCoordData.push(v);
+
 			}
 		}
 
+		printlnMessage('messages', 'GLSphere array length-' + ' vertices ' + vertices.length + ' colors '
+				+ colors.length + ' vertexNormals ' + vertexNormals.length);
+		printlnMessage('messages', 'GLSphere colors ' + JSON.stringify(colors));
+		printlnMessage('messages', 'GLSphere vertices ' + JSON.stringify(vertices));
 
-		
-		
-		
 		this.surfaceVertexPositionBuffer = this.gl.createBuffer();
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.surfaceVertexPositionBuffer);
 
@@ -157,80 +186,76 @@ GLSphere = function(data3D, surfacePlot) {
 		var colors = [];
 		var vertexNormals = [];
 
-		for (i = 0; i < this.numXPoints - 1; i++) {
-			for (j = 0; j < this.numYPoints - 1; j++) {
-				// Create surface vertices.
-				var rawP1 = data[j + (i * this.numYPoints)];
-				var rawP2 = data[j + (i * this.numYPoints) + this.numYPoints];
-				var rawP3 = data[j + (i * this.numYPoints) + this.numYPoints + 1];
-				var rawP4 = data[j + (i * this.numYPoints) + 1];
+		// Create surface vertices.
+		var rawP1 = data[j + (i * this.numYPoints)];
+		var rawP2 = data[j + (i * this.numYPoints) + this.numYPoints];
+		var rawP3 = data[j + (i * this.numYPoints) + this.numYPoints + 1];
+		var rawP4 = data[j + (i * this.numYPoints) + 1];
 
-				// rawP1.az = Math.random();
+		// rawP1.az = Math.random();
 
-				vertices.push(rawP1.ax);
-				vertices.push(rawP1.ay);
-				vertices.push(rawP1.az);
+		vertices.push(rawP1.ax);
+		vertices.push(rawP1.ay);
+		vertices.push(rawP1.az);
 
-				vertices.push(rawP2.ax);
-				vertices.push(rawP2.ay);
-				vertices.push(rawP2.az);
+		vertices.push(rawP2.ax);
+		vertices.push(rawP2.ay);
+		vertices.push(rawP2.az);
 
-				vertices.push(rawP3.ax);
-				vertices.push(rawP3.ay);
-				vertices.push(rawP3.az);
+		vertices.push(rawP3.ax);
+		vertices.push(rawP3.ay);
+		vertices.push(rawP3.az);
 
-				vertices.push(rawP4.ax);
-				vertices.push(rawP4.ay);
-				vertices.push(rawP4.az);
+		vertices.push(rawP4.ax);
+		vertices.push(rawP4.ay);
+		vertices.push(rawP4.az);
 
-				// Surface colours.
-				var rgb1 = this.colourGradientObject.getColour(rawP1.lz * 1.0);
-				var rgb2 = this.colourGradientObject.getColour(rawP2.lz * 1.0);
-				var rgb3 = this.colourGradientObject.getColour(rawP3.lz * 1.0);
-				var rgb4 = this.colourGradientObject.getColour(rawP4.lz * 1.0);
+		// Surface colours.
+		var rgb1 = this.colourGradientObject.getColour(rawP1.lz * 1.0);
+		var rgb2 = this.colourGradientObject.getColour(rawP2.lz * 1.0);
+		var rgb3 = this.colourGradientObject.getColour(rawP3.lz * 1.0);
+		var rgb4 = this.colourGradientObject.getColour(rawP4.lz * 1.0);
 
-				colors.push(rgb1.red / 255);
-				colors.push(rgb1.green / 255);
-				colors.push(rgb1.blue / 255, 1.0);
-				colors.push(rgb2.red / 255);
-				colors.push(rgb2.green / 255);
-				colors.push(rgb2.blue / 255, 1.0);
-				colors.push(rgb3.red / 255);
-				colors.push(rgb3.green / 255);
-				colors.push(rgb3.blue / 255, 1.0);
-				colors.push(rgb4.red / 255);
-				colors.push(rgb4.green / 255);
-				colors.push(rgb4.blue / 255, 1.0);
+		colors.push(rgb1.red / 255);
+		colors.push(rgb1.green / 255);
+		colors.push(rgb1.blue / 255, 1.0);
+		colors.push(rgb2.red / 255);
+		colors.push(rgb2.green / 255);
+		colors.push(rgb2.blue / 255, 1.0);
+		colors.push(rgb3.red / 255);
+		colors.push(rgb3.green / 255);
+		colors.push(rgb3.blue / 255, 1.0);
+		colors.push(rgb4.red / 255);
+		colors.push(rgb4.green / 255);
+		colors.push(rgb4.blue / 255, 1.0);
 
-				// Normal of triangle 1.
-				var v1 = [ rawP2.ax - rawP1.ax, rawP2.ay - rawP1.ay, rawP2.az - rawP1.az ];
-				var v2 = [ rawP3.ax - rawP1.ax, rawP3.ay - rawP1.ay, rawP3.az - rawP1.az ];
-				var cp1 = vec3.create();
-				cp1 = vec3.cross(v1, v2);
-				cp1 = vec3.normalize(v1, v2);
+		// Normal of triangle 1.
+		var v1 = [ rawP2.ax - rawP1.ax, rawP2.ay - rawP1.ay, rawP2.az - rawP1.az ];
+		var v2 = [ rawP3.ax - rawP1.ax, rawP3.ay - rawP1.ay, rawP3.az - rawP1.az ];
+		var cp1 = vec3.create();
+		cp1 = vec3.cross(v1, v2);
+		cp1 = vec3.normalize(v1, v2);
 
-				// Normal of triangle 2.
-				v1 = [ rawP3.ax - rawP1.ax, rawP3.ay - rawP1.ay, rawP3.az - rawP1.az ];
-				v2 = [ rawP4.ax - rawP1.ax, rawP4.ay - rawP1.ay, rawP4.az - rawP1.az ];
-				var cp2 = vec3.create();
-				cp2 = vec3.cross(v1, v2);
-				cp2 = vec3.normalize(v1, v2);
+		// Normal of triangle 2.
+		v1 = [ rawP3.ax - rawP1.ax, rawP3.ay - rawP1.ay, rawP3.az - rawP1.az ];
+		v2 = [ rawP4.ax - rawP1.ax, rawP4.ay - rawP1.ay, rawP4.az - rawP1.az ];
+		var cp2 = vec3.create();
+		cp2 = vec3.cross(v1, v2);
+		cp2 = vec3.normalize(v1, v2);
 
-				// Store normals for lighting.
-				vertexNormals.push(cp1[0]);
-				vertexNormals.push(cp1[1]);
-				vertexNormals.push(cp1[2]);
-				vertexNormals.push(cp1[0]);
-				vertexNormals.push(cp1[1]);
-				vertexNormals.push(cp1[2]);
-				vertexNormals.push(cp2[0]);
-				vertexNormals.push(cp2[1]);
-				vertexNormals.push(cp2[2]);
-				vertexNormals.push(cp2[0]);
-				vertexNormals.push(cp2[1]);
-				vertexNormals.push(cp2[2]);
-			}
-		}
+		// Store normals for lighting.
+		vertexNormals.push(cp1[0]);
+		vertexNormals.push(cp1[1]);
+		vertexNormals.push(cp1[2]);
+		vertexNormals.push(cp1[0]);
+		vertexNormals.push(cp1[1]);
+		vertexNormals.push(cp1[2]);
+		vertexNormals.push(cp2[0]);
+		vertexNormals.push(cp2[1]);
+		vertexNormals.push(cp2[2]);
+		vertexNormals.push(cp2[0]);
+		vertexNormals.push(cp2[1]);
+		vertexNormals.push(cp2[2]);
 
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.surfaceVertexPositionBuffer);
 		this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array(vertices));
