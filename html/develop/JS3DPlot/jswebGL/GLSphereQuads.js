@@ -5,7 +5,7 @@ GLSphere = function(data3D, surfacePlot) {
 	this.shaderProgram = surfacePlot.shaderProgram;
 	this.currentShader = null;
 	this.gl = surfacePlot.gl;
-	this.numXPoints;
+	this.numXPoints ;
 	this.numYPoints;
 	this.data3D = data3D;
 	this.colourGradientObject = surfacePlot.colourGradientObject;
@@ -17,7 +17,58 @@ GLSphere = function(data3D, surfacePlot) {
 	this.surfaceVertexIndexBuffer = null;
 	this.surfacePlot = surfacePlot;
 
+	
+	
+	this.makeSphere = function(radius,lats) {
+	
+		var radius = .4;
+		var lats = 3;
+		var longs = 3;
+		var vertexNormalArray = [];
+		var vertexArray = [];
 
+		for ( var latNumber = 0; latNumber <= lats; ++latNumber) {
+			for ( var longNumber = 0; longNumber <= longs; ++longNumber) {
+				var theta = latNumber * Math.PI / lats;
+				var phi = longNumber * 2 * Math.PI / longs;
+				var sinTheta = Math.sin(theta);
+				var sinPhi = Math.sin(phi);
+				var cosTheta = Math.cos(theta);
+				var cosPhi = Math.cos(phi);
+
+				var x = cosPhi * sinTheta;
+				var y = cosTheta;
+				var z = sinPhi * sinTheta;
+				var u = 1 - (longNumber / longs);
+				var v = latNumber / lats;
+
+				vertexArray.push(radius * x);
+				vertexArray.push(radius * y);
+				vertexArray.push(radius * z);
+				vertexNormalArray.push(x);
+				vertexNormalArray.push(y);
+				vertexNormalArray.push(z);
+
+				// vertices.push(radius * x);
+				// vertices.push(radius * y);
+				// vertices.push(radius * z);
+				// colors.push(0.345);
+
+				// point = new Point3D(x, y, z);
+				// vertexNormals.push(point);
+				// texCoordData.push(u);
+				// texCoordData.push(v);
+
+			}
+		}
+
+		// printlnMessage('messages', 'GLSphere vertexArray ' +
+		// JSON.stringify(vertexArray));
+		//printVectorArray('vertexArray', vertexArray);
+
+	
+	}
+	
 	this.createVertices = function(param, fourpoints, vertices, colors, vertexNormals) {
 		printlnMessage('messages', param);
 		printlnMessage('messages', fourpoints[0]);
@@ -54,16 +105,16 @@ GLSphere = function(data3D, surfacePlot) {
 		vertices.push(rawP4.az);
 
 		// Surface colours.
-		// var rgb1 = this.colourGradientObject.getColour(rawP1.lz * 1.0);
-		// var rgb2 = this.colourGradientObject.getColour(rawP2.lz * 1.0);
-		// var rgb3 = this.colourGradientObject.getColour(rawP3.lz * 1.0);
-		//var rgb4 = this.colourGradientObject.getColour(rawP4.lz * 1.0);
+		//var rgb1 = this.colourGradientObject.getColour(rawP1.lz * 1.0);
+		//var rgb2 = this.colourGradientObject.getColour(rawP2.lz * 1.0);
+		//var rgb3 = this.colourGradientObject.getColour(rawP3.lz * 1.0);
+		var rgb4 = this.colourGradientObject.getColour(rawP4.lz * 1.0);
 
 		var rgb1 = this.colourGradientObject.getColour(0.1);
 		var rgb2 = this.colourGradientObject.getColour(0.2);
 		var rgb3 = this.colourGradientObject.getColour(0.6);
-		var rgb4 = this.colourGradientObject.getColour(0.7);
 
+		
 		colors.push(rgb1.red / 255);
 		colors.push(rgb1.green / 255);
 		colors.push(rgb1.blue / 255, 1.0);
@@ -111,6 +162,7 @@ GLSphere = function(data3D, surfacePlot) {
 		return (vertices);
 	};
 
+	
 	this.initSurfaceBuffers = function() {
 		var vertices = [];
 		var colors = [];
@@ -123,8 +175,7 @@ GLSphere = function(data3D, surfacePlot) {
 
 		var pointArray = [ 0, 0, 0, .5, 0, 0, 0.5, 0.3, 0, 0.3, 0.3, 0.3 ];
 		var fourPoints = this.createVertices('hello', pointArray, vertices, colors, vertexNormals);
-		// printlnMessage('messages', 'GLSphere fourPoints' +
-		// JSON.stringify(fourPoints));
+		//printlnMessage('messages', 'GLSphere fourPoints' + JSON.stringify(fourPoints));
 		pointArray = [ -.3, 0, 0, -.5, -.2, -.3, 0.5, 0.3, 0, -0.3, 0.3, 0.2 ];
 		var fourPoints = this.createVertices('hello', pointArray, vertices, colors, vertexNormals);
 
@@ -135,86 +186,51 @@ GLSphere = function(data3D, surfacePlot) {
 		printVectorArray('vertices', vertices);
 		printlnMessage('messages', 'GLSphere colors ' + JSON.stringify(colors));
 		printlnMessage('messages', 'GLSphere vertexNormals ' + JSON.stringify(vertexNormals));
-		// printVectorArray('vertexNormals', vertexNormals);
+		//printVectorArray('vertexNormals', vertexNormals);
 
-		var latitudeBands = 30;
-		var longitudeBands = 30;
-		var radius = 0.6;
+		this.numXPoints=3;
+		this.numYPoints=2;
 
-		var vertexPositionData = [];
-		var normalData = [];
-		var textureCoordData = [];
-		for ( var latNumber = 0; latNumber <= latitudeBands; latNumber++) {
-			var theta = latNumber * Math.PI / latitudeBands;
-			var sinTheta = Math.sin(theta);
-			var cosTheta = Math.cos(theta);
+		
+		this.surfaceVertexPositionBuffer = this.gl.createBuffer();
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.surfaceVertexPositionBuffer);
 
-			for ( var longNumber = 0; longNumber <= longitudeBands; longNumber++) {
-				var phi = longNumber * 2 * Math.PI / longitudeBands;
-				var sinPhi = Math.sin(phi);
-				var cosPhi = Math.cos(phi);
-
-				var x = cosPhi * sinTheta;
-				var y = cosTheta;
-				var z = sinPhi * sinTheta;
-				var u = 1 - (longNumber / longitudeBands);
-				var v = 1 - (latNumber / latitudeBands);
-
-				normalData.push(x);
-				normalData.push(y);
-				normalData.push(z);
-				textureCoordData.push(u);
-				textureCoordData.push(v);
-				vertexPositionData.push(radius * x);
-				vertexPositionData.push(radius * y);
-				vertexPositionData.push(radius * z);
-			}
-		}
-
-		var indexData = [];
-		for ( var latNumber = 0; latNumber < latitudeBands; latNumber++) {
-			for ( var longNumber = 0; longNumber < longitudeBands; longNumber++) {
-				var first = (latNumber * (longitudeBands + 1)) + longNumber;
-				var second = first + longitudeBands + 1;
-				indexData.push(first);
-				indexData.push(second);
-				indexData.push(first + 1);
-
-				indexData.push(second);
-				indexData.push(second + 1);
-				indexData.push(first + 1);
-			}
-		}
+		this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertices), this.gl.DYNAMIC_DRAW);
+		this.surfaceVertexPositionBuffer.itemSize = 3;
+		this.surfaceVertexPositionBuffer.numItems = vertices.length / 3;
 
 		this.surfaceVertexNormalBuffer = this.gl.createBuffer();
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.surfaceVertexNormalBuffer);
-		this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(normalData), this.gl.DYNAMIC_DRAW);
-		this.surfaceVertexNormalBuffer.itemSize = 3;
-		this.surfaceVertexNormalBuffer.numItems = normalData.length / 3;
 
-		this.surfaceVertexTextureCoordBuffer = this.gl.createBuffer();
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.surfaceVertexTextureCoordBuffer);
-		this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(textureCoordData), this.gl.STATIC_DRAW);
-		this.surfaceVertexTextureCoordBuffer.itemSize = 2;
-		this.surfaceVertexTextureCoordBuffer.numItems = textureCoordData.length / 2;
-		
+		this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertexNormals), this.gl.DYNAMIC_DRAW);
+		this.surfaceVertexNormalBuffer.itemSize = 3;
+		this.surfaceVertexNormalBuffer.numItems = vertices.length / 3;
+
 		this.surfaceVertexColorBuffer = this.gl.createBuffer();
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.surfaceVertexColorBuffer);
+
 		this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(colors), this.gl.DYNAMIC_DRAW);
 		this.surfaceVertexColorBuffer.itemSize = 4;
 		this.surfaceVertexColorBuffer.numItems = vertices.length / 3;
 
-		this.surfaceVertexPositionBuffer = this.gl.createBuffer();
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.surfaceVertexPositionBuffer);
-		this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertexPositionData), this.gl.DYNAMIC_DRAW);
-		this.surfaceVertexPositionBuffer.itemSize = 3;
-		this.surfaceVertexPositionBuffer.numItems = vertexPositionData.length / 3;
-
 		this.surfaceVertexIndexBuffer = this.gl.createBuffer();
 		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.surfaceVertexIndexBuffer);
-		this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indexData), this.gl.DYNAMIC_DRAW);
+
+		var numQuads = ((this.numXPoints - 1) * (this.numYPoints - 1)) / 2;
+		var surfaceVertexIndices = [];
+
+		for ( var i = 0; i < (numQuads * 8); i += 4) {
+			surfaceVertexIndices.push(i);
+			surfaceVertexIndices.push(i + 1);
+			surfaceVertexIndices.push(i + 2);
+			surfaceVertexIndices.push(i);
+			surfaceVertexIndices.push(i + 2);
+			surfaceVertexIndices.push(i + 3);
+		}
+
+		this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(surfaceVertexIndices), this.gl.DYNAMIC_DRAW);
 		this.surfaceVertexIndexBuffer.itemSize = 1;
-		this.surfaceVertexIndexBuffer.numItems = indexData.length;
+		this.surfaceVertexIndexBuffer.numItems = surfaceVertexIndices.length;
 	};
 
 	this.updateSurface = function(data) {
@@ -224,6 +240,7 @@ GLSphere = function(data3D, surfacePlot) {
 
 		pointArray = [ -.3, 0, 0, -.5, -.2, -.3, 0.5, 0.3, 0, -0.3, 0.3, 0.2 ];
 		var fourPoints = this.createVertices('hello', pointArray, vertices, colors, vertexNormals);
+
 
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.surfaceVertexPositionBuffer);
 		this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array(vertices));
