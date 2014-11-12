@@ -5,8 +5,8 @@ GLSphere = function(data3D, surfacePlot) {
 	this.shaderProgram = surfacePlot.shaderProgram;
 	this.currentShader = null;
 	this.gl = surfacePlot.gl;
-	this.numXPoints = surfacePlot.numXPoints;
-	this.numYPoints = surfacePlot.numYPoints;
+	this.numXPoints ;
+	this.numYPoints;
 	this.data3D = data3D;
 	this.colourGradientObject = surfacePlot.colourGradientObject;
 	this.setMatrixUniforms = surfacePlot.setMatrixUniforms;
@@ -17,6 +17,58 @@ GLSphere = function(data3D, surfacePlot) {
 	this.surfaceVertexIndexBuffer = null;
 	this.surfacePlot = surfacePlot;
 
+	
+	
+	this.makeSphere = function(radius,lats) {
+	
+		var radius = .4;
+		var lats = 3;
+		var longs = 3;
+		var vertexNormalArray = [];
+		var vertexArray = [];
+
+		for ( var latNumber = 0; latNumber <= lats; ++latNumber) {
+			for ( var longNumber = 0; longNumber <= longs; ++longNumber) {
+				var theta = latNumber * Math.PI / lats;
+				var phi = longNumber * 2 * Math.PI / longs;
+				var sinTheta = Math.sin(theta);
+				var sinPhi = Math.sin(phi);
+				var cosTheta = Math.cos(theta);
+				var cosPhi = Math.cos(phi);
+
+				var x = cosPhi * sinTheta;
+				var y = cosTheta;
+				var z = sinPhi * sinTheta;
+				var u = 1 - (longNumber / longs);
+				var v = latNumber / lats;
+
+				vertexArray.push(radius * x);
+				vertexArray.push(radius * y);
+				vertexArray.push(radius * z);
+				vertexNormalArray.push(x);
+				vertexNormalArray.push(y);
+				vertexNormalArray.push(z);
+
+				// vertices.push(radius * x);
+				// vertices.push(radius * y);
+				// vertices.push(radius * z);
+				// colors.push(0.345);
+
+				// point = new Point3D(x, y, z);
+				// vertexNormals.push(point);
+				// texCoordData.push(u);
+				// texCoordData.push(v);
+
+			}
+		}
+
+		// printlnMessage('messages', 'GLSphere vertexArray ' +
+		// JSON.stringify(vertexArray));
+		//printVectorArray('vertexArray', vertexArray);
+
+	
+	}
+	
 	this.createVertices = function(param, fourpoints, vertices, colors, vertexNormals) {
 		printlnMessage('messages', param);
 		printlnMessage('messages', fourpoints[0]);
@@ -55,7 +107,7 @@ GLSphere = function(data3D, surfacePlot) {
 		// Surface colours.
 		//var rgb1 = this.colourGradientObject.getColour(rawP1.lz * 1.0);
 		//var rgb2 = this.colourGradientObject.getColour(rawP2.lz * 1.0);
-		var rgb3 = this.colourGradientObject.getColour(rawP3.lz * 1.0);
+		//var rgb3 = this.colourGradientObject.getColour(rawP3.lz * 1.0);
 		var rgb4 = this.colourGradientObject.getColour(rawP4.lz * 1.0);
 
 		var rgb1 = this.colourGradientObject.getColour(0.1);
@@ -136,51 +188,10 @@ GLSphere = function(data3D, surfacePlot) {
 		printlnMessage('messages', 'GLSphere vertexNormals ' + JSON.stringify(vertexNormals));
 		//printVectorArray('vertexNormals', vertexNormals);
 
-		var radius = .4;
-		var lats = 3;
-		var longs = 3;
-		var vertexNormalArray = [];
-		var vertexArray = [];
+		this.numXPoints=3;
+		this.numYPoints=2;
 
-		for ( var latNumber = 0; latNumber <= lats; ++latNumber) {
-			for ( var longNumber = 0; longNumber <= longs; ++longNumber) {
-				var theta = latNumber * Math.PI / lats;
-				var phi = longNumber * 2 * Math.PI / longs;
-				var sinTheta = Math.sin(theta);
-				var sinPhi = Math.sin(phi);
-				var cosTheta = Math.cos(theta);
-				var cosPhi = Math.cos(phi);
-
-				var x = cosPhi * sinTheta;
-				var y = cosTheta;
-				var z = sinPhi * sinTheta;
-				var u = 1 - (longNumber / longs);
-				var v = latNumber / lats;
-
-				vertexArray.push(radius * x);
-				vertexArray.push(radius * y);
-				vertexArray.push(radius * z);
-				vertexNormalArray.push(x);
-				vertexNormalArray.push(y);
-				vertexNormalArray.push(z);
-
-				// vertices.push(radius * x);
-				// vertices.push(radius * y);
-				// vertices.push(radius * z);
-				// colors.push(0.345);
-
-				// point = new Point3D(x, y, z);
-				// vertexNormals.push(point);
-				// texCoordData.push(u);
-				// texCoordData.push(v);
-
-			}
-		}
-
-		// printlnMessage('messages', 'GLSphere vertexArray ' +
-		// JSON.stringify(vertexArray));
-		//printVectorArray('vertexArray', vertexArray);
-
+		
 		this.surfaceVertexPositionBuffer = this.gl.createBuffer();
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.surfaceVertexPositionBuffer);
 
