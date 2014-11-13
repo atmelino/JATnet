@@ -139,7 +139,7 @@ GLSphere = function(data3D, surfacePlot) {
 
 		var latitudeBands = 30;
 		var longitudeBands = 30;
-		var radius = 0.6;
+		var radius = 0.1;
 
 		var vertexPositionData = [];
 		var normalData = [];
@@ -168,6 +168,16 @@ GLSphere = function(data3D, surfacePlot) {
 				vertexPositionData.push(radius * x);
 				vertexPositionData.push(radius * y);
 				vertexPositionData.push(radius * z);
+
+				var rgb1 = this.colourGradientObject.getColour(0.1);
+				var rgb2 = this.colourGradientObject.getColour(0.2);
+				var rgb3 = this.colourGradientObject.getColour(0.6);
+				var rgb4 = this.colourGradientObject.getColour(0.7);
+
+				colors.push(rgb1.red / 255);
+				colors.push(rgb1.green / 255);
+				colors.push(rgb1.blue / 255, 1.0);
+
 			}
 		}
 
