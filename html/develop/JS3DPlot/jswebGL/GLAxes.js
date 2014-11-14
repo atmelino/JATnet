@@ -166,6 +166,8 @@ GLAxes = function(data3D, surfacePlot){
         this.axesMinorVertexPositionBuffer.numItems = minorVertices.length / 3;
     };
     
+	//printlnMessage('messages', 'GLTexture gl ' + surfacePlot.gl);
+
     this.initAxesBuffers();
 };
 

@@ -74,11 +74,10 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 	var tTip = new Tooltip(false, tooltipColour);
 
 	this.glSurface = null;
-	// this.glSurface2 = null;
 	this.glAxes = null;
+	this.glAxes2 = null;
 	this.glLines = null;
-	//this.glTexture = null;
-	this.glTexture2 = null;
+	this.glTexture = null;
 	this.glSphere = null;
 	this.useWebGL = false;
 	this.gl = null;
@@ -310,11 +309,10 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		this.data = null;
 		this.colourGradientObject = null;
 		this.glSurface = null;
-		// this.glSurface2 = null;
 		this.glAxes = null;
+		this.glAxes2 = null;
 		this.glLines = null;
-		//this.glTexture = null;
-		this.glTexture2 = null;
+		this.glTexture = null;
 		this.glSphere = null;
 		this.shaderProgram = null;
 		this.shaderTextureProgram = null;
@@ -848,25 +846,29 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		if (this.frames) {
 			this.glSurface = new GLSurface(data3D[0], this);
 			this.glAxes = new GLAxes(data3D[0], this);
+			this.glAxes2 = new GLAxes2(data3D[0], this);
 			this.glLines = new GLLines(linePoints, this);
-			labelPos = {
-				x : 0.4,
-				y : 0.4,
-				z : 0.4
-			};
-			this.glTexture2 = new GLTexture2(this, data3D[0], "bla", labelPos, 90, "x");
+			// labelPos = {
+			// x : 0.4,
+			// y : 0.4,
+			// z : 0.4
+			// };
+			// this.glTexture2 = new GLTexture2(this, data3D[0], "bla",
+			// labelPos, 90, "x");
 			//this.glTexture = new GLTexture(this);
 			this.glSphere = new GLSphere(data3D[0], this);
 		} else {
 			this.glSurface = new GLSurface(data3D, this);
 			this.glAxes = new GLAxes(data3D, this);
+			this.glAxes2 = new GLAxes2(data3D, this);
 			this.glLines = new GLLines(linePoints, this);
-			labelPos = {
-					x : 0.4,
-					y : 0.4,
-					z : 0.4
-			};
-			this.glTexture2 = new GLTexture2(this, data3D, "bla", labelPos, 90, "x");
+			// labelPos = {
+			// x : 0.4,
+			// y : 0.4,
+			// z : 0.4
+			// };
+			// this.glTexture2 = new GLTexture2(this, data3D, "bla", labelPos,
+			// 90, "x");
 			//this.glTexture = new GLTexture(this);
 			this.glSphere = new GLSphere(data3D, this);
 		}
@@ -922,9 +924,10 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		this.gl.disableVertexAttribArray(this.shaderProgram.vertexColorAttribute);
 
 		this.glAxes.draw();
+		this.glAxes2.draw();
 		this.glLines.draw();
 		//this.glTexture.draw();
-		this.glTexture2.draw();
+		//this.glTexture2.draw();
 		this.glSphere.draw();
 
 		if (this.frames && !this.allFramesRendered) {

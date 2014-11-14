@@ -13,28 +13,27 @@ GLTexture = function(surfacePlot) {
 	this.texture;
 	this.surfacePlot = surfacePlot;
 
-	// this.handleLoadedTexture = function(moonTexture) {
-	function handleLoadedTexture(moonTexture, gl) {
+	this.handleLoadedTexture = function(moonTexture) {
+		// function handleLoadedTexture(moonTexture, gl) {
 
-		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-		gl.bindTexture(gl.TEXTURE_2D, texture);
-		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
-		gl.generateMipmap(gl.TEXTURE_2D);
-		gl.bindTexture(gl.TEXTURE_2D, null);
+		// gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+		// gl.bindTexture(gl.TEXTURE_2D, texture);
+		// gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
+		// texture.image);
+		// gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+		// gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER,
+		// gl.LINEAR_MIPMAP_NEAREST);
+		// gl.generateMipmap(gl.TEXTURE_2D);
+		// gl.bindTexture(gl.TEXTURE_2D, null);
 
-		// this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, true);
-		// this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
-		// this.gl.texImage2D(gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA,
-		// this.gl.UNSIGNED_BYTE, texture.image);
-		// this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER,
-		// this.gl.LINEAR);
-		// this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER,
-		// this.gl.LINEAR_MIPMAP_NEAREST);
-		// this.gl.generateMipmap(this.gl.TEXTURE_2D);
-		// this.gl.bindTexture(gl.TEXTURE_2D, null);
-	}
+		this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, true);
+		this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
+		this.gl.texImage2D(gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, texture.image);
+		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
+		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR_MIPMAP_NEAREST);
+		this.gl.generateMipmap(this.gl.TEXTURE_2D);
+		this.gl.bindTexture(gl.TEXTURE_2D, null);
+	};
 
 	this.initTextureBuffers = function() {
 
@@ -42,8 +41,8 @@ GLTexture = function(surfacePlot) {
 		moonTexture.image = new Image();
 		moonTexture.image.onload = function() {
 			printlnMessage('messages', 'image loaded');
-			// this.handleLoadedTexture(moonTexture);
-			handleLoadedTexture(moonTexture, this.gl);
+			this.handleLoadedTexture(moonTexture);
+			// handleLoadedTexture(moonTexture, this.gl);
 
 		};
 
@@ -90,6 +89,9 @@ GLTexture = function(surfacePlot) {
 
 		this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(textureCoords), this.gl.STATIC_DRAW);
 	};
+
+	// printlnMessage('messages', 'GLTexture gl ' +
+	// JSON.stringify(surfacePlot.gl));
 
 	this.initTextureBuffers();
 
