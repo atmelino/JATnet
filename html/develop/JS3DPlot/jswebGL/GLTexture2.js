@@ -1,53 +1,87 @@
 /*
  * This class represents the texture for the webGL plot.
  */
-GLTexture = function(surfacePlot) {
+GLTexture2 = function(surfacePlot, data3D, text, pos, angle, axis, align) {
 	this.shaderTextureProgram = surfacePlot.shaderTextureProgram;
 	this.currenShader = null;
 	this.gl = surfacePlot.gl;
 	this.setMatrixUniforms = surfacePlot.setMatrixUniforms;
+
 	this.vertexTextureCoordBuffer = null;
 	this.textureVertexPositionBuffer = null;
 	this.textureVertexIndexBuffer = null;
 	this.context2D = surfacePlot.context2D;
+	this.mvPushMatrix = surfacePlot.mvPushMatrix;
+	this.mvPopMatrix = surfacePlot.mvPopMatrix;
 	this.texture;
+	this.text = text;
+	this.angle = angle;
+	this.pos = pos;
 	this.surfacePlot = surfacePlot;
+	this.textMetrics = null;
+	this.axis = axis;
+	this.align = align;
 
-	// this.handleLoadedTexture = function(moonTexture) {
-	function handleLoadedTexture(moonTexture, gl) {
+	this.setUpTextArea = function() {
+		this.context2D.font = 'normal 28px Verdana';
+		this.context2D.fillStyle = 'rgba(255,255,255,0)';
+		this.context2D.fillRect(0, 0, 512, 512);
+		this.context2D.lineWidth = 3;
+		this.context2D.textAlign = 'left';
+		this.context2D.textBaseline = 'top';
+	};
 
-		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-		gl.bindTexture(gl.TEXTURE_2D, texture);
-		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
-		gl.generateMipmap(gl.TEXTURE_2D);
-		gl.bindTexture(gl.TEXTURE_2D, null);
+	this.writeTextToCanvas = function(text, idx) {
+		this.context2D.save();
+		this.context2D.clearRect(0, 0, 512, 512);
+		this.context2D.fillStyle = 'rgba(255, 255, 255, 0)';
+		this.context2D.fillRect(0, 0, 512, 512);
 
-		// this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, true);
-		// this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
-		// this.gl.texImage2D(gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA,
-		// this.gl.UNSIGNED_BYTE, texture.image);
-		// this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER,
-		// this.gl.LINEAR);
-		// this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER,
-		// this.gl.LINEAR_MIPMAP_NEAREST);
-		// this.gl.generateMipmap(this.gl.TEXTURE_2D);
-		// this.gl.bindTexture(gl.TEXTURE_2D, null);
+		var r = hexToR(this.surfacePlot.axisTextColour);
+		var g = hexToG(this.surfacePlot.axisTextColour);
+		var b = hexToB(this.surfacePlot.axisTextColour);
+		// Set the axis label colour.
+		this.context2D.fillStyle = 'rgba(' + r + ', ' + g + ', ' + b + ', 255)';
+		this.textMetrics = this.context2D.measureText(text);
+
+		if (this.axis == "y" || this.align == "left")
+			this.context2D.fillText(text, 0, 0);
+		else if (!this.align)
+			this.context2D.fillText(text, 512 - this.textMetrics.width, 0);
+
+		if (this.align == "centre")
+			this.context2D.fillText(text, 256 - this.textMetrics.width / 2, 0);
+		if (this.align == "right")
+			this.context2D.fillText(text, 512 - this.textMetrics.width, 0);
+
+		this.setTextureFromCanvas(this.context2D.canvas, this.texture, 0);
+
+		this.context2D.restore();
+	};
+
+	this.setTextureFromCanvas = function(canvas, textTexture, idx) {
+		this.gl.activeTexture(this.gl.TEXTURE0 + idx);
+		this.gl.bindTexture(this.gl.TEXTURE_2D, textTexture);
+		this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, true);
+		this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, canvas);
+
+		if (isPowerOfTwo(canvas.width) && isPowerOfTwo(canvas.height)) {
+			this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
+			this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
+		} else {
+			this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
+			this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
+			this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
+		}
+
+		this.gl.bindTexture(this.gl.TEXTURE_2D, textTexture);
+	};
+
+	function isPowerOfTwo(value) {
+		return ((value & (value - 1)) == 0);
 	}
 
-	this.initTextureBuffers = function() {
-
-		moonTexture = this.gl.createTexture();
-		moonTexture.image = new Image();
-		moonTexture.image.onload = function() {
-			printlnMessage('messages', 'image loaded');
-			// this.handleLoadedTexture(moonTexture);
-			handleLoadedTexture(moonTexture, this.gl);
-
-		};
-
-		moonTexture.image.src = "moon.gif";
+	this.initTextBuffers = function() {
 
 		// Text texture vertices
 		this.textureVertexPositionBuffer = this.gl.createBuffer();
@@ -91,12 +125,45 @@ GLTexture = function(surfacePlot) {
 		this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(textureCoords), this.gl.STATIC_DRAW);
 	};
 
-	this.initTextureBuffers();
+	this.initTextBuffers();
+	this.setUpTextArea();
 
 	this.texture = this.gl.createTexture();
+	this.writeTextToCanvas(this.text, this.idx);
 };
 
-GLTexture.prototype.draw = function() {
+GLTexture2.prototype.draw = function() {
+	this.mvPushMatrix(this.surfacePlot);
+
+	var rotationMatrix = mat4.create();
+	mat4.identity(rotationMatrix);
+
+	if (this.axis == "y") {
+		mat4.translate(rotationMatrix, [ 0.0, 0.5, 0.5 ]);
+		mat4.translate(rotationMatrix, [ this.pos.x + 0.53, this.pos.y + 0.6, this.pos.z - 0.5 ]);
+		mat4.rotate(rotationMatrix, degToRad(this.angle), [ 1, 0, 0 ]);
+		mat4.translate(rotationMatrix, [ 0.0, -0.5, -0.5 ]);
+	} else if (this.axis == "x") {
+		mat4.translate(rotationMatrix, [ 0.5, 0.5, 0.0 ]);
+		mat4.translate(rotationMatrix, [ this.pos.x - 0.5, this.pos.y + 0.47, this.pos.z - 0.5 ]);
+		mat4.rotate(rotationMatrix, degToRad(this.angle), [ 0, 0, 1 ]);
+		mat4.translate(rotationMatrix, [ -0.5, -0.5, 0 ]);
+	} else if (this.axis == "z" && this.align == "centre") // Main Z-axis
+	// label.
+	{
+		mat4.translate(rotationMatrix, [ 0.0, 0.5, 0.5 ]);
+		mat4.translate(rotationMatrix, [ this.pos.x - 0.3, this.pos.y + 0.5, this.pos.z - 0.5 ]);
+		mat4.rotate(rotationMatrix, degToRad(this.angle), [ 1, 0, 0 ]);
+		mat4.rotate(rotationMatrix, degToRad(this.angle), [ 0, 0, 1 ]);
+		mat4.translate(rotationMatrix, [ 0.0, -0.5, -0.5 ]);
+	} else if (this.axis == "z" && !this.align) {
+		mat4.translate(rotationMatrix, [ 0.0, 0.5, 0.5 ]);
+		mat4.translate(rotationMatrix, [ this.pos.x - 0.53, this.pos.y + 0.5, this.pos.z - 0.5 ]);
+		mat4.rotate(rotationMatrix, degToRad(this.angle), [ 1, 0, 0 ]);
+		mat4.translate(rotationMatrix, [ 0.0, -0.5, -0.5 ]);
+	}
+
+	mat4.multiply(this.surfacePlot.mvMatrix, rotationMatrix);
 
 	// Enable blending for transparency.
 	this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
@@ -140,4 +207,5 @@ GLTexture.prototype.draw = function() {
 	this.gl.disableVertexAttribArray(this.currentShader.vertexPositionAttribute);
 	this.gl.disableVertexAttribArray(this.currentShader.textureCoordAttribute);
 
+	this.mvPopMatrix(this.surfacePlot);
 };

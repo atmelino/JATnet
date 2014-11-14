@@ -19,8 +19,8 @@ GLSphere = function(data3D, surfacePlot) {
 
 
 	this.createVertices = function(param, fourpoints, vertices, colors, vertexNormals) {
-		printlnMessage('messages', param);
-		printlnMessage('messages', fourpoints[0]);
+		//printlnMessage('messages', param);
+		//printlnMessage('messages', fourpoints[0]);
 		// a=fourpoints[0];
 		// b=fourpoints[1];
 		// c=fourpoints[2];
@@ -131,10 +131,10 @@ GLSphere = function(data3D, surfacePlot) {
 		// printlnMessage('messages', 'GLSphere array length-' + ' vertices ' +
 		// vertices.length + ' colors '
 		// + colors.length + ' vertexNormals ' + vertexNormals.length);
-		printlnMessage('messages', 'GLSphere vertices ' + JSON.stringify(vertices));
-		printVectorArray('vertices', vertices);
-		printlnMessage('messages', 'GLSphere colors ' + JSON.stringify(colors));
-		printlnMessage('messages', 'GLSphere vertexNormals ' + JSON.stringify(vertexNormals));
+		//printlnMessage('messages', 'GLSphere vertices ' + JSON.stringify(vertices));
+		//printVectorArray('vertices', vertices);
+		//printlnMessage('messages', 'GLSphere colors ' + JSON.stringify(colors));
+		//printlnMessage('messages', 'GLSphere vertexNormals ' + JSON.stringify(vertexNormals));
 		// printVectorArray('vertexNormals', vertexNormals);
 
 		var latitudeBands = 30;

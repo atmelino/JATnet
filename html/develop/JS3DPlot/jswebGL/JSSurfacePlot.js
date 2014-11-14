@@ -77,7 +77,8 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 	// this.glSurface2 = null;
 	this.glAxes = null;
 	this.glLines = null;
-	this.glTexture = null;
+	//this.glTexture = null;
+	this.glTexture2 = null;
 	this.glSphere = null;
 	this.useWebGL = false;
 	this.gl = null;
@@ -312,7 +313,8 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		// this.glSurface2 = null;
 		this.glAxes = null;
 		this.glLines = null;
-		this.glTexture = null;
+		//this.glTexture = null;
+		this.glTexture2 = null;
 		this.glSphere = null;
 		this.shaderProgram = null;
 		this.shaderTextureProgram = null;
@@ -852,8 +854,8 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 				y : 0.4,
 				z : 0.4
 			};
-			this.glTexture = new GLTexture(this, data3D[0], "bla", labelPos, 90, "x");
-
+			this.glTexture2 = new GLTexture2(this, data3D[0], "bla", labelPos, 90, "x");
+			//this.glTexture = new GLTexture(this);
 			this.glSphere = new GLSphere(data3D[0], this);
 		} else {
 			this.glSurface = new GLSurface(data3D, this);
@@ -864,7 +866,8 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 					y : 0.4,
 					z : 0.4
 			};
-			this.glTexture = new GLTexture(this, data3D, "bla", labelPos, 90, "x");
+			this.glTexture2 = new GLTexture2(this, data3D, "bla", labelPos, 90, "x");
+			//this.glTexture = new GLTexture(this);
 			this.glSphere = new GLSphere(data3D, this);
 		}
 	};
@@ -920,7 +923,8 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 
 		this.glAxes.draw();
 		this.glLines.draw();
-		this.glTexture.draw();
+		//this.glTexture.draw();
+		this.glTexture2.draw();
 		this.glSphere.draw();
 
 		if (this.frames && !this.allFramesRendered) {
