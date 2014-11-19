@@ -21,10 +21,8 @@ GLText2 = function(data3D, text, pos, angle, surfacePlot, axis, align) {
 	var moonVertexNormalBuffer;
 	var moonVertexTextureCoordBuffer;
 	var moonVertexIndexBuffer;
-	var moonTexture;
+	this.moonTexture;
 
-	
-	
 	this.setUpTextArea = function() {
 		this.context2D.font = 'normal 28px Verdana';
 		this.context2D.fillStyle = 'rgba(255,255,255,0)';
@@ -33,39 +31,6 @@ GLText2 = function(data3D, text, pos, angle, surfacePlot, axis, align) {
 		this.context2D.textAlign = 'left';
 		this.context2D.textBaseline = 'top';
 	};
-
-	this.writeTextToCanvas = function(text, idx) {
-		this.context2D.save();
-		this.context2D.clearRect(0, 0, 512, 512);
-		this.context2D.fillStyle = 'rgba(255, 255, 255, 0)';
-		this.context2D.fillRect(0, 0, 512, 512);
-
-		// Set the axis label colour.
-		this.context2D.fillStyle = 'rgba(' + hexToR('#aaaaaa') + ', ' + hexToG('#000000') + ', ' + hexToB('#000000') + ', 255)';
-		this.textMetrics = this.context2D.measureText(text);
-
-		if (this.align == "centre")
-			this.context2D.fillText(text, 256 - this.textMetrics.width / 2, 0);
-
-		this.gl.activeTexture(this.gl.TEXTURE0 + 0);
-		this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
-		this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, true);
-		this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, this.context2D.canvas);
-
-		if (isPowerOfTwo(this.context2D.canvas.width) && isPowerOfTwo(this.context2D.canvas.height)) {
-			this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
-			this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
-		} else {
-			this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
-			this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
-			this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
-		}
-
-		this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
-
-		this.context2D.restore();
-	};
-
 
 	function isPowerOfTwo(value) {
 		return ((value & (value - 1)) == 0);
@@ -115,6 +80,64 @@ GLText2 = function(data3D, text, pos, angle, surfacePlot, axis, align) {
 		this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(textureCoords), this.gl.STATIC_DRAW);
 	};
 
+	this.writeTextToCanvas = function(text, idx) {
+		this.context2D.save();
+		this.context2D.clearRect(0, 0, 512, 512);
+		this.context2D.fillStyle = 'rgba(255, 255, 255, 0)';
+		this.context2D.fillRect(0, 0, 512, 512);
+
+		// Set the label colour.
+		this.context2D.fillStyle = 'rgba(' + hexToR('#aaaaaa') + ', ' + hexToG('#000000') + ', ' + hexToB('#000000')
+				+ ', 255)';
+		this.textMetrics = this.context2D.measureText(text);
+
+		if (this.align == "centre")
+			this.context2D.fillText(text, 256 - this.textMetrics.width / 2, 0);
+
+		this.gl.activeTexture(this.gl.TEXTURE0 + 0);
+		this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
+		this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, true);
+		this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE,
+				this.context2D.canvas);
+
+		if (isPowerOfTwo(this.context2D.canvas.width) && isPowerOfTwo(this.context2D.canvas.height)) {
+			this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
+			this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
+		} else {
+			this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
+			this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
+			this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
+		}
+
+		this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
+
+		this.context2D.restore();
+	};
+
+	this.initTexture = function(message1, thisvar) {
+		this.moonTexture = this.gl.createTexture();
+		this.moonTexture.image = new Image();
+		this.moonTexture.image.onload = function() {
+			printlnMessage('messages', 'GLText2 image loaded');
+			printlnMessage('messages', message1);
+			printlnMessage('messages', thisvar);
+			printlnMessage('messages', thisvar.align);
+
+			thisvar.gl.pixelStorei(thisvar.gl.UNPACK_FLIP_Y_WEBGL, true);
+			thisvar.gl.bindTexture(thisvar.gl.TEXTURE_2D, thisvar.moonTexture);
+			thisvar.gl.texImage2D(thisvar.gl.TEXTURE_2D, 0, thisvar.gl.RGBA, thisvar.gl.RGBA, thisvar.gl.UNSIGNED_BYTE,
+					thisvar.moonTexture.image);
+			thisvar.gl.texParameteri(thisvar.gl.TEXTURE_2D, thisvar.gl.TEXTURE_MAG_FILTER, thisvar.gl.LINEAR);
+			thisvar.gl.texParameteri(thisvar.gl.TEXTURE_2D, thisvar.gl.TEXTURE_MIN_FILTER, thisvar.gl.LINEAR_MIPMAP_NEAREST);
+			thisvar.gl.generateMipmap(thisvar.gl.TEXTURE_2D);
+
+			thisvar.gl.bindTexture(thisvar.gl.TEXTURE_2D, null);
+		};
+
+		this.moonTexture.image.src = "moon.gif";
+	};
+
+	this.initTexture("test", this);
 	this.initTextBuffers();
 	this.setUpTextArea();
 

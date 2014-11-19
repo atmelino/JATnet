@@ -64,7 +64,9 @@
 	var moonVertexTextureCoordBuffer;
 	var moonVertexIndexBuffer;
 	var moonTexture;
-
+	var mvMatrix = mat4.create();
+	var mvMatrixStack = [];
+	var pMatrix = mat4.create();
 	
 	
 	function initGL(canvas) {
@@ -148,28 +150,6 @@
 		shaderProgram.lightingDirectionUniform = gl.getUniformLocation(shaderProgram, "uLightingDirection");
 		shaderProgram.directionalColorUniform = gl.getUniformLocation(shaderProgram, "uDirectionalColor");
 	}
-
-
-	function initTexture() {
-		moonTexture = gl.createTexture();
-		moonTexture.image = new Image();
-		moonTexture.image.onload = function() {
-			gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-			gl.bindTexture(gl.TEXTURE_2D, moonTexture);
-			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, moonTexture.image);
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
-			gl.generateMipmap(gl.TEXTURE_2D);
-
-			gl.bindTexture(gl.TEXTURE_2D, null);
-		}
-
-		moonTexture.image.src = "moon.gif";
-	}
-
-	var mvMatrix = mat4.create();
-	var mvMatrixStack = [];
-	var pMatrix = mat4.create();
 
 	function mvPushMatrix() {
 		var copy = mat4.create();
@@ -309,6 +289,23 @@
 		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indexData), gl.STATIC_DRAW);
 		moonVertexIndexBuffer.itemSize = 1;
 		moonVertexIndexBuffer.numItems = indexData.length;
+	}
+
+	function initTexture() {
+		moonTexture = gl.createTexture();
+		moonTexture.image = new Image();
+		moonTexture.image.onload = function() {
+			gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+			gl.bindTexture(gl.TEXTURE_2D, moonTexture);
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, moonTexture.image);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+			gl.generateMipmap(gl.TEXTURE_2D);
+
+			gl.bindTexture(gl.TEXTURE_2D, null);
+		}
+
+		moonTexture.image.src = "moon.gif";
 	}
 
 	function drawScene() {
