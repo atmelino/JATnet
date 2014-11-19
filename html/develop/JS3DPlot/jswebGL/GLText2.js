@@ -22,6 +22,10 @@ GLText2 = function(data3D, text, pos, angle, surfacePlot, axis, align) {
 	this.moonVertexTextureCoordBuffer;
 	this.moonVertexIndexBuffer;
 	this.moonTexture;
+	this.mvMatrix = mat4.create();
+	this.mvMatrixStack = [];
+	this.pMatrix = mat4.create();
+	this.original = true;
 
 	this.setUpTextArea = function() {
 		this.context2D.font = 'normal 28px Verdana';
@@ -214,129 +218,109 @@ GLText2 = function(data3D, text, pos, angle, surfacePlot, axis, align) {
 	};
 
 	// Call them up
-	var original = true;
-	if (!original) { // from lesson example
+	if (!this.original) { // from lesson example
 		this.initTexture("test", this);
 		this.initBuffers();
 	} else {
 		// original label
-		 this.initTextBuffers();
-		 this.setUpTextArea();
-		 this.texture = this.gl.createTexture();
-		 this.writeTextToCanvas(this.text, this.idx);
+		this.initTextBuffers();
+		this.setUpTextArea();
+		this.texture = this.gl.createTexture();
+		this.writeTextToCanvas(this.text, this.idx);
 	}
 };
 
 GLText2.prototype.draw = function() {
-	this.gl.viewport(0, 0, this.gl.viewportWidth, this.gl.viewportHeight);
-	this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+	if (!this.original) { // from lesson example
+		this.gl.viewport(0, 0, this.gl.viewportWidth, this.gl.viewportHeight);
+		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
-	mat4.perspective(45, this.gl.viewportWidth / this.gl.viewportHeight, 0.1, 100.0, pMatrix);
+		// mat4.perspective(45, this.gl.viewportWidth / this.gl.viewportHeight,
+		// 0.1, 100.0, pMatrix);
 
-	var lighting = document.getElementById("lighting").checked;
-	this.gl.uniform1i(shaderProgram.useLightingUniform, lighting);
-	if (lighting) {
-		this.gl.uniform3f(shaderProgram.ambientColorUniform, parseFloat(document.getElementById("ambientR").value),
-				parseFloat(document.getElementById("ambientG").value),
-				parseFloat(document.getElementById("ambientB").value));
+		this.gl.uniform1i(this.shaderTextureProgram.useLightingUniform, false);
 
-		var lightingDirection = [ parseFloat(document.getElementById("lightDirectionX").value),
-				parseFloat(document.getElementById("lightDirectionY").value),
-				parseFloat(document.getElementById("lightDirectionZ").value) ];
-		var adjustedLD = vec3.create();
-		vec3.normalize(lightingDirection, adjustedLD);
-		vec3.scale(adjustedLD, -1);
-		this.gl.uniform3fv(shaderProgram.lightingDirectionUniform, adjustedLD);
+		// mat4.identity(mvMatrix);
 
-		this.gl.uniform3f(shaderProgram.directionalColorUniform,
-				parseFloat(document.getElementById("directionalR").value), parseFloat(document
-						.getElementById("directionalG").value),
-				parseFloat(document.getElementById("directionalB").value));
+		// mat4.translate(mvMatrix, [ 0, 0, -6 ]);
+
+		// mat4.multiply(mvMatrix, moonRotationMatrix);
+
+		this.gl.activeTexture(this.gl.TEXTURE0);
+		this.gl.bindTexture(this.gl.TEXTURE_2D, this.moonTexture);
+		this.gl.uniform1i(this.shaderTextureProgram.samplerUniform, 0);
+
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.moonVertexPositionBuffer);
+		this.gl.vertexAttribPointer(this.shaderTextureProgram.vertexPositionAttribute,
+				this.moonVertexPositionBuffer.itemSize, this.gl.FLOAT, false, 0, 0);
+
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.moonVertexTextureCoordBuffer);
+		this.gl.vertexAttribPointer(this.shaderTextureProgram.textureCoordAttribute,
+				this.moonVertexTextureCoordBuffer.itemSize, this.gl.FLOAT, false, 0, 0);
+
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.moonVertexNormalBuffer);
+		this.gl.vertexAttribPointer(this.shaderTextureProgram.vertexNormalAttribute,
+				this.moonVertexNormalBuffer.itemSize, this.gl.FLOAT, false, 0, 0);
+
+		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.moonVertexIndexBuffer);
+		// setMatrixUniforms();
+		this.gl.drawElements(this.gl.TRIANGLES, this.moonVertexIndexBuffer.numItems, this.gl.UNSIGNED_SHORT, 0);
+	} else {
+		this.mvPushMatrix(this.surfacePlot);
+
+		var rotationMatrix = mat4.create();
+		mat4.identity(rotationMatrix);
+
+		if (this.axis == "x") {
+			mat4.translate(rotationMatrix, [ 0.5, 0.5, 0.0 ]);
+			mat4.translate(rotationMatrix, [ this.pos.x - 0.5, this.pos.y + 0.47, this.pos.z - 0.5 ]);
+			mat4.rotate(rotationMatrix, degToRad(this.angle), [ 0, 0, 1 ]);
+			mat4.translate(rotationMatrix, [ -0.5, -0.5, 0 ]);
+		}
+		mat4.multiply(this.surfacePlot.mvMatrix, rotationMatrix);
+
+		// Enable blending for transparency.
+		this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
+		this.gl.enable(this.gl.BLEND);
+		this.gl.disable(this.gl.DEPTH_TEST);
+
+		// Text
+		this.currentShader = this.shaderTextureProgram;
+		this.gl.useProgram(this.currentShader);
+
+		// Enable the vertex arrays for the current shader.
+		this.currentShader.vertexPositionAttribute = this.gl.getAttribLocation(this.currentShader, "aVertexPosition");
+		this.gl.enableVertexAttribArray(this.currentShader.vertexPositionAttribute);
+		this.currentShader.textureCoordAttribute = this.gl.getAttribLocation(this.currentShader, "aTextureCoord");
+		this.gl.enableVertexAttribArray(this.currentShader.textureCoordAttribute);
+
+		this.shaderTextureProgram.samplerUniform = this.gl.getUniformLocation(this.shaderTextureProgram, "uSampler");
+
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.textureVertexPositionBuffer);
+		this.gl.vertexAttribPointer(this.currentShader.vertexPositionAttribute,
+				this.textureVertexPositionBuffer.itemSize, this.gl.FLOAT, false, 0, 0);
+
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexTextureCoordBuffer);
+		this.gl.vertexAttribPointer(this.currentShader.textureCoordAttribute, this.vertexTextureCoordBuffer.itemSize,
+				this.gl.FLOAT, false, 0, 0);
+
+		this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
+		this.gl.uniform1i(this.currentShader.samplerUniform, 0);
+
+		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.textureVertexIndexBuffer);
+
+		this.setMatrixUniforms(this.currentShader, this.surfacePlot.pMatrix, this.surfacePlot.mvMatrix);
+
+		this.gl.drawElements(this.gl.TRIANGLES, this.textureVertexIndexBuffer.numItems, this.gl.UNSIGNED_SHORT, 0);
+
+		// Disable blending for transparency.
+		this.gl.disable(this.gl.BLEND);
+		this.gl.enable(this.gl.DEPTH_TEST);
+
+		// Disable the vertex arrays for the current shader.
+		this.gl.disableVertexAttribArray(this.currentShader.vertexPositionAttribute);
+		this.gl.disableVertexAttribArray(this.currentShader.textureCoordAttribute);
+
+		this.mvPopMatrix(this.surfacePlot);
 	}
-
-	mat4.identity(mvMatrix);
-
-	mat4.translate(mvMatrix, [ 0, 0, -6 ]);
-
-	mat4.multiply(mvMatrix, moonRotationMatrix);
-
-	this.gl.activeTexture(this.gl.TEXTURE0);
-	this.gl.bindTexture(this.gl.TEXTURE_2D, moonTexture);
-	this.gl.uniform1i(shaderProgram.samplerUniform, 0);
-
-	this.gl.bindBuffer(this.gl.ARRAY_BUFFER, moonVertexPositionBuffer);
-	this.gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, moonVertexPositionBuffer.itemSize,
-			this.gl.FLOAT, false, 0, 0);
-
-	this.gl.bindBuffer(this.gl.ARRAY_BUFFER, moonVertexTextureCoordBuffer);
-	this.gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, moonVertexTextureCoordBuffer.itemSize,
-			this.gl.FLOAT, false, 0, 0);
-
-	this.gl.bindBuffer(this.gl.ARRAY_BUFFER, moonVertexNormalBuffer);
-	this.gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, moonVertexNormalBuffer.itemSize, this.gl.FLOAT,
-			false, 0, 0);
-
-	this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, moonVertexIndexBuffer);
-	setMatrixUniforms();
-	this.gl.drawElements(this.gl.TRIANGLES, moonVertexIndexBuffer.numItems, this.gl.UNSIGNED_SHORT, 0);
-
-};
-
-GLText2.prototype.drawold = function() {
-	this.mvPushMatrix(this.surfacePlot);
-
-	var rotationMatrix = mat4.create();
-	mat4.identity(rotationMatrix);
-
-	if (this.axis == "x") {
-		mat4.translate(rotationMatrix, [ 0.5, 0.5, 0.0 ]);
-		mat4.translate(rotationMatrix, [ this.pos.x - 0.5, this.pos.y + 0.47, this.pos.z - 0.5 ]);
-		mat4.rotate(rotationMatrix, degToRad(this.angle), [ 0, 0, 1 ]);
-		mat4.translate(rotationMatrix, [ -0.5, -0.5, 0 ]);
-	}
-	mat4.multiply(this.surfacePlot.mvMatrix, rotationMatrix);
-
-	// Enable blending for transparency.
-	this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
-	this.gl.enable(this.gl.BLEND);
-	this.gl.disable(this.gl.DEPTH_TEST);
-
-	// Text
-	this.currentShader = this.shaderTextureProgram;
-	this.gl.useProgram(this.currentShader);
-
-	// Enable the vertex arrays for the current shader.
-	this.currentShader.vertexPositionAttribute = this.gl.getAttribLocation(this.currentShader, "aVertexPosition");
-	this.gl.enableVertexAttribArray(this.currentShader.vertexPositionAttribute);
-	this.currentShader.textureCoordAttribute = this.gl.getAttribLocation(this.currentShader, "aTextureCoord");
-	this.gl.enableVertexAttribArray(this.currentShader.textureCoordAttribute);
-
-	this.shaderTextureProgram.samplerUniform = this.gl.getUniformLocation(this.shaderTextureProgram, "uSampler");
-
-	this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.textureVertexPositionBuffer);
-	this.gl.vertexAttribPointer(this.currentShader.vertexPositionAttribute, this.textureVertexPositionBuffer.itemSize,
-			this.gl.FLOAT, false, 0, 0);
-
-	this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexTextureCoordBuffer);
-	this.gl.vertexAttribPointer(this.currentShader.textureCoordAttribute, this.vertexTextureCoordBuffer.itemSize,
-			this.gl.FLOAT, false, 0, 0);
-
-	this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
-	this.gl.uniform1i(this.currentShader.samplerUniform, 0);
-
-	this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.textureVertexIndexBuffer);
-
-	this.setMatrixUniforms(this.currentShader, this.surfacePlot.pMatrix, this.surfacePlot.mvMatrix);
-
-	this.gl.drawElements(this.gl.TRIANGLES, this.textureVertexIndexBuffer.numItems, this.gl.UNSIGNED_SHORT, 0);
-
-	// Disable blending for transparency.
-	this.gl.disable(this.gl.BLEND);
-	this.gl.enable(this.gl.DEPTH_TEST);
-
-	// Disable the vertex arrays for the current shader.
-	this.gl.disableVertexAttribArray(this.currentShader.vertexPositionAttribute);
-	this.gl.disableVertexAttribArray(this.currentShader.textureCoordAttribute);
-
-	this.mvPopMatrix(this.surfacePlot);
 };
