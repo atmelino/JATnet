@@ -44,7 +44,6 @@ SurfacePlot.prototype.draw = function(data, linePoints, options, basicPlotOption
 	var backColour = options.backColour;
 	var axisTextColour = options.axisTextColour;
 	var hideFlatMinPolygons = options.hideFlatMinPolygons;
-	var tooltipColour = options.tooltipColour;
 	var origin = options.origin;
 	var startXAngle_canvas = options.startXAngle;
 	var startZAngle_canvas = options.startZAngle;
@@ -64,11 +63,10 @@ SurfacePlot.prototype.draw = function(data, linePoints, options, basicPlotOption
 	}
 
 	this.surfacePlot = new JSSurfacePlot(xPos, yPos, w, h, colourGradient, this.containerElement, fillPolygons,
-			tooltips, xTitle, yTitle, zTitle, renderPoints, backColour, axisTextColour, hideFlatMinPolygons,
-			tooltipColour, origin, startXAngle_canvas, startZAngle_canvas, rotationMatrix, zAxisTextPosition,
+			tooltips, xTitle, yTitle, zTitle, renderPoints, backColour, axisTextColour, hideFlatMinPolygons, origin, startXAngle_canvas, startZAngle_canvas, rotationMatrix, zAxisTextPosition,
 			glOptions, data,linePoints);
 
-	this.surfacePlot.init();
+	this.surfacePlot.webGLStart();
 	this.surfacePlot.redraw();
 };
 
