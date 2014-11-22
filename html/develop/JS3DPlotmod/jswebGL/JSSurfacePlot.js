@@ -46,6 +46,10 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 	var lastMouseX = null;
 	var lastMouseY = null;
 	var shiftPressed = false;
+	this.testMessage = "hello";
+	this.cubeVertexPositionBuffer;
+	this.cubeVertexTextureCoordBuffer;
+	this.cubeVertexIndexBuffer;
 
 	// printlnMessage('messages','JSSurfacePlot called');
 	// /printlnMessage('messages', 'JSSurfacePlot data ' +
@@ -83,8 +87,8 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		} catch (e) {
 		}
 		return true;
-	};	
-	
+	};
+
 	this.getShader = function(id) {
 		printlnMessage('messages', 'JSSurfacePlot id: ' + id);
 		var shaderScript = document.getElementById(id);
@@ -139,7 +143,7 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 
 		return true;
 	};
-	
+
 	this.createProgram = function(fragmentShaderID, vertexShaderID) {
 
 		var fragmentShader = this.getShader(fragmentShaderID);
@@ -160,6 +164,150 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		shaderProgram.directionalColorUniform = this.gl.getUniformLocation(shaderProgram, "uDirectionalColor");
 
 		return shaderProgram;
+	};
+
+	this.initBuffers = function() {
+		this.cubeVertexPositionBuffer = this.gl.createBuffer();
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.cubeVertexPositionBuffer);
+		vertices = [];
+		var Point1 = [ 0, 0, 0 ];
+		var Point2 = [ 1, 0, 0 ];
+		var Point3 = [ .5, .6, 2.3 ];
+		var Point4 = [ 0, 0, .4 ];
+		vertices = vertices.concat(Point1);
+		vertices = vertices.concat(Point2);
+		vertices = vertices.concat(Point3);
+		vertices = vertices.concat(Point4);
+
+		vertices = [ -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0, ];
+		printlnMessage('messages', 'JSSurfacePlot vertices: ' + vertices);
+
+		this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertices), this.gl.STATIC_DRAW);
+		this.cubeVertexPositionBuffer.itemSize = 3;
+		this.cubeVertexPositionBuffer.numItems = 4;
+
+		this.cubeVertexTextureCoordBuffer = this.gl.createBuffer();
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.cubeVertexTextureCoordBuffer);
+		var textureCoords = [ 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, ];
+		this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(textureCoords), this.gl.STATIC_DRAW);
+		this.cubeVertexTextureCoordBuffer.itemSize = 2;
+		this.cubeVertexTextureCoordBuffer.numItems = 4;
+
+		this.cubeVertexIndexBuffer = this.gl.createBuffer();
+		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.cubeVertexIndexBuffer);
+		var cubeVertexIndices = [ 0, 1, 2, 0, 2, 3, ];
+		this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeVertexIndices), this.gl.STATIC_DRAW);
+		this.cubeVertexIndexBuffer.itemSize = 1;
+		this.cubeVertexIndexBuffer.numItems = 6;
+	};
+
+	this.initTexture = function(thisvar) {
+		this.moonTexture = this.gl.createTexture();
+		this.moonTexture.image = new Image();
+		this.moonTexture.image.onload = function() {
+			printlnMessage('messages', 'GLText2 image loaded');
+			printlnMessage('messages', thisvar);
+			printlnMessage('messages', thisvar.testMessage);
+
+			thisvar.gl.pixelStorei(thisvar.gl.UNPACK_FLIP_Y_WEBGL, true);
+			thisvar.gl.bindTexture(thisvar.gl.TEXTURE_2D, thisvar.moonTexture);
+			thisvar.gl.texImage2D(thisvar.gl.TEXTURE_2D, 0, thisvar.gl.RGBA, thisvar.gl.RGBA, thisvar.gl.UNSIGNED_BYTE,
+					thisvar.moonTexture.image);
+			thisvar.gl.texParameteri(thisvar.gl.TEXTURE_2D, thisvar.gl.TEXTURE_MAG_FILTER, thisvar.gl.LINEAR);
+			thisvar.gl.texParameteri(thisvar.gl.TEXTURE_2D, thisvar.gl.TEXTURE_MIN_FILTER,
+					thisvar.gl.LINEAR_MIPMAP_NEAREST);
+			thisvar.gl.generateMipmap(thisvar.gl.TEXTURE_2D);
+
+			thisvar.gl.bindTexture(thisvar.gl.TEXTURE_2D, null);
+		};
+
+		this.moonTexture.image.src = "moon.gif";
+	};
+
+	this.drawScene = function() {
+		//printlnMessage('messages', 'JSSurfacePlot drawScene');
+
+		this.mvPushMatrix(this);
+
+		this.gl.useProgram(this.shaderProgram);
+
+		// Enable the vertex arrays for the current shader.
+		this.shaderProgram.vertexPositionAttribute = this.gl.getAttribLocation(this.shaderProgram, "aVertexPosition");
+		this.gl.enableVertexAttribArray(this.shaderProgram.vertexPositionAttribute);
+		this.shaderProgram.vertexNormalAttribute = this.gl.getAttribLocation(this.shaderProgram, "aVertexNormal");
+		this.gl.enableVertexAttribArray(this.shaderProgram.vertexNormalAttribute);
+		this.shaderProgram.vertexColorAttribute = this.gl.getAttribLocation(this.shaderProgram, "aVertexColor");
+		this.gl.enableVertexAttribArray(this.shaderProgram.vertexColorAttribute);
+
+		this.gl.viewport(0, 0, this.gl.viewportWidth, this.gl.viewportHeight);
+		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+		mat4.perspective(5, this.gl.viewportWidth / this.gl.viewportHeight, 0.1, 100.0, this.pMatrix);
+		mat4.identity(this.mvMatrix);
+
+		mat4.translate(this.mvMatrix, [ 0.0, -0.1, -19.0 ]);
+
+		mat4.multiply(this.mvMatrix, this.rotationMatrix);
+
+		var useLighting = true;
+
+		if (useLighting) {
+			this.gl.uniform3f(this.shaderProgram.ambientColorUniform, 0.2, 0.2, 0.2);
+
+			var lightingDirection = [ 0.0, 0.0, 1.0 ];
+
+			var adjustedLD = vec3.create();
+			vec3.normalize(lightingDirection, adjustedLD);
+			vec3.scale(adjustedLD, -1);
+			this.gl.uniform3fv(this.shaderProgram.lightingDirectionUniform, adjustedLD);
+
+			this.gl.uniform3f(this.shaderProgram.directionalColorUniform, 0.8, 0.8, 0.8);
+		}
+
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.cubeVertexPositionBuffer);
+		this.gl.vertexAttribPointer(this.shaderProgram.vertexPositionAttribute, this.cubeVertexPositionBuffer.itemSize,
+				this.gl.FLOAT, false, 0, 0);
+
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.cubeVertexTextureCoordBuffer);
+		this.gl.vertexAttribPointer(this.shaderProgram.textureCoordAttribute,
+				this.cubeVertexTextureCoordBuffer.itemSize, this.gl.FLOAT, false, 0, 0);
+
+		this.gl.activeTexture(this.gl.TEXTURE0);
+		this.gl.bindTexture(this.gl.TEXTURE_2D, this.moonTexture);
+		this.gl.uniform1i(this.shaderProgram.samplerUniform, 0);
+
+		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.cubeVertexIndexBuffer);
+		// this.setMatrixUniforms();
+		this.gl.drawElements(this.gl.TRIANGLES, this.cubeVertexIndexBuffer.numItems, this.gl.UNSIGNED_SHORT, 0);
+
+		// Disable the vertex arrays for the current shader.
+		this.gl.disableVertexAttribArray(this.shaderProgram.vertexPositionAttribute);
+		this.gl.disableVertexAttribArray(this.shaderProgram.vertexNormalAttribute);
+		this.gl.disableVertexAttribArray(this.shaderProgram.vertexColorAttribute);
+
+		this.glAxes.draw();
+		this.glAxes2.draw();
+		this.glLines.draw();
+		// this.glSphere.draw();
+		this.glSurface.draw();
+
+		this.mvPopMatrix(this);
+	};
+
+	this.tick = function() {
+		var self = this;
+
+		if (this.gl == null)
+			return;
+
+		var animator = function() {
+			if (self.gl == null || self.bail)
+				return;
+
+			self.drawScene();
+			requestAnimFrame(animator);
+		};
+
+		requestAnimFrame(animator);
 	};
 
 	this.webGLStart = function() {
@@ -185,7 +333,9 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 
 		this.initGL(canvas);
 		this.initShaders();
+		this.initBuffers();
 		this.initMouse(canvas);
+		this.initTexture(this);
 
 		this.createHiddenCanvasForGLText();
 
@@ -324,9 +474,6 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 				var y = yPos;
 
 				colIndex = this.numYPoints - 1 - j;
-				// printlnMessage('messages', 'JSSurfacePlot redraw
-				// dataToRender '
-				// + JSON.stringify(this.dataToRender[i][colIndex]));
 
 				// Reverse the y-axis to match the non-webGL surface.
 				data3ds[index] = new Point3D(x, y, this.dataToRender[i][colIndex]);
@@ -405,74 +552,6 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		mouseDown = false;
 	};
 
-	this.drawScene = function() {
-		this.mvPushMatrix(this);
-
-		this.gl.useProgram(this.shaderProgram);
-
-		// Enable the vertex arrays for the current shader.
-		this.shaderProgram.vertexPositionAttribute = this.gl.getAttribLocation(this.shaderProgram, "aVertexPosition");
-		this.gl.enableVertexAttribArray(this.shaderProgram.vertexPositionAttribute);
-		this.shaderProgram.vertexNormalAttribute = this.gl.getAttribLocation(this.shaderProgram, "aVertexNormal");
-		this.gl.enableVertexAttribArray(this.shaderProgram.vertexNormalAttribute);
-		this.shaderProgram.vertexColorAttribute = this.gl.getAttribLocation(this.shaderProgram, "aVertexColor");
-		this.gl.enableVertexAttribArray(this.shaderProgram.vertexColorAttribute);
-
-		this.gl.viewport(0, 0, this.gl.viewportWidth, this.gl.viewportHeight);
-		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
-		mat4.perspective(5, this.gl.viewportWidth / this.gl.viewportHeight, 0.1, 100.0, this.pMatrix);
-		mat4.identity(this.mvMatrix);
-
-		mat4.translate(this.mvMatrix, [ 0.0, -0.1, -19.0 ]);
-
-		mat4.multiply(this.mvMatrix, this.rotationMatrix);
-
-		var useLighting = true;
-
-		if (useLighting) {
-			this.gl.uniform3f(this.shaderProgram.ambientColorUniform, 0.2, 0.2, 0.2);
-
-			var lightingDirection = [ 0.0, 0.0, 1.0 ];
-
-			var adjustedLD = vec3.create();
-			vec3.normalize(lightingDirection, adjustedLD);
-			vec3.scale(adjustedLD, -1);
-			this.gl.uniform3fv(this.shaderProgram.lightingDirectionUniform, adjustedLD);
-
-			this.gl.uniform3f(this.shaderProgram.directionalColorUniform, 0.8, 0.8, 0.8);
-		}
-
-		// Disable the vertex arrays for the current shader.
-		this.gl.disableVertexAttribArray(this.shaderProgram.vertexPositionAttribute);
-		this.gl.disableVertexAttribArray(this.shaderProgram.vertexNormalAttribute);
-		this.gl.disableVertexAttribArray(this.shaderProgram.vertexColorAttribute);
-
-		this.glAxes.draw();
-		this.glAxes2.draw();
-		this.glLines.draw();
-		this.glSphere.draw();
-		this.glSurface.draw();
-
-		this.mvPopMatrix(this);
-	};
-
-	this.tick = function() {
-		var self = this;
-
-		if (this.gl == null)
-			return;
-
-		var animator = function() {
-			if (self.gl == null || self.bail)
-				return;
-
-			self.drawScene();
-			requestAnimFrame(animator);
-		};
-
-		requestAnimFrame(animator);
-	};
-
 	this.rotate = function(deltaX, deltaY) {
 		var newRotationMatrix = mat4.create();
 		mat4.identity(newRotationMatrix);
@@ -540,9 +619,9 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		document.onmousemove = function(event) {
 			self.handleMouseMove(event, self)
 		};// this.handleMouseMove;
-	
+
 	};
-	
+
 	this.scaleAndNormalise = function(scaleFactor) {
 		if (this.frames) {
 			// Need to clone the data.

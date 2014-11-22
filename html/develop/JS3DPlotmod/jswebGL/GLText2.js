@@ -218,54 +218,20 @@ GLText2 = function(data3D, text, pos, angle, surfacePlot, axis, align) {
 	};
 
 	// Call them up
-	if (!this.original) { // from lesson example
-		this.initTexture("test", this);
-		this.initBuffers();
-	} else {
+	if (this.original) {
 		// original label
 		this.initTextBuffers();
 		this.setUpTextArea();
 		this.texture = this.gl.createTexture();
 		this.writeTextToCanvas(this.text, this.idx);
+	} else { // from lesson example
+		this.initTexture("test", this);
+		this.initBuffers();
 	}
 };
 
 GLText2.prototype.draw = function() {
-	if (!this.original) { // from lesson example
-		this.gl.viewport(0, 0, this.gl.viewportWidth, this.gl.viewportHeight);
-		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
-
-		// mat4.perspective(45, this.gl.viewportWidth / this.gl.viewportHeight,
-		// 0.1, 100.0, pMatrix);
-
-		this.gl.uniform1i(this.shaderTextureProgram.useLightingUniform, false);
-
-		// mat4.identity(mvMatrix);
-
-		// mat4.translate(mvMatrix, [ 0, 0, -6 ]);
-
-		// mat4.multiply(mvMatrix, moonRotationMatrix);
-
-		this.gl.activeTexture(this.gl.TEXTURE0);
-		this.gl.bindTexture(this.gl.TEXTURE_2D, this.moonTexture);
-		this.gl.uniform1i(this.shaderTextureProgram.samplerUniform, 0);
-
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.moonVertexPositionBuffer);
-		this.gl.vertexAttribPointer(this.shaderTextureProgram.vertexPositionAttribute,
-				this.moonVertexPositionBuffer.itemSize, this.gl.FLOAT, false, 0, 0);
-
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.moonVertexTextureCoordBuffer);
-		this.gl.vertexAttribPointer(this.shaderTextureProgram.textureCoordAttribute,
-				this.moonVertexTextureCoordBuffer.itemSize, this.gl.FLOAT, false, 0, 0);
-
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.moonVertexNormalBuffer);
-		this.gl.vertexAttribPointer(this.shaderTextureProgram.vertexNormalAttribute,
-				this.moonVertexNormalBuffer.itemSize, this.gl.FLOAT, false, 0, 0);
-
-		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.moonVertexIndexBuffer);
-		// setMatrixUniforms();
-		this.gl.drawElements(this.gl.TRIANGLES, this.moonVertexIndexBuffer.numItems, this.gl.UNSIGNED_SHORT, 0);
-	} else {
+	if (this.original) {
 		this.mvPushMatrix(this.surfacePlot);
 
 		var rotationMatrix = mat4.create();
@@ -322,5 +288,40 @@ GLText2.prototype.draw = function() {
 		this.gl.disableVertexAttribArray(this.currentShader.textureCoordAttribute);
 
 		this.mvPopMatrix(this.surfacePlot);
+
+	} else { // from lesson example
+		this.gl.viewport(0, 0, this.gl.viewportWidth, this.gl.viewportHeight);
+		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+
+		// mat4.perspective(45, this.gl.viewportWidth / this.gl.viewportHeight,
+		// 0.1, 100.0, pMatrix);
+
+		this.gl.uniform1i(this.shaderTextureProgram.useLightingUniform, false);
+
+		// mat4.identity(mvMatrix);
+
+		// mat4.translate(mvMatrix, [ 0, 0, -6 ]);
+
+		// mat4.multiply(mvMatrix, moonRotationMatrix);
+
+		this.gl.activeTexture(this.gl.TEXTURE0);
+		this.gl.bindTexture(this.gl.TEXTURE_2D, this.moonTexture);
+		this.gl.uniform1i(this.shaderTextureProgram.samplerUniform, 0);
+
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.moonVertexPositionBuffer);
+		this.gl.vertexAttribPointer(this.shaderTextureProgram.vertexPositionAttribute,
+				this.moonVertexPositionBuffer.itemSize, this.gl.FLOAT, false, 0, 0);
+
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.moonVertexTextureCoordBuffer);
+		this.gl.vertexAttribPointer(this.shaderTextureProgram.textureCoordAttribute,
+				this.moonVertexTextureCoordBuffer.itemSize, this.gl.FLOAT, false, 0, 0);
+
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.moonVertexNormalBuffer);
+		this.gl.vertexAttribPointer(this.shaderTextureProgram.vertexNormalAttribute,
+				this.moonVertexNormalBuffer.itemSize, this.gl.FLOAT, false, 0, 0);
+
+		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.moonVertexIndexBuffer);
+		// setMatrixUniforms();
+		this.gl.drawElements(this.gl.TRIANGLES, this.moonVertexIndexBuffer.numItems, this.gl.UNSIGNED_SHORT, 0);
 	}
 };
