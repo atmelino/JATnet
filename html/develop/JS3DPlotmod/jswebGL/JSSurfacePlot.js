@@ -259,10 +259,13 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 			vec3.normalize(lightingDirection, adjustedLD);
 			vec3.scale(adjustedLD, -1);
 			this.gl.uniform3fv(this.shaderProgram.lightingDirectionUniform, adjustedLD);
+			//printlnMessage('messages', 'JSSurfacePlot drawScene');
 
 			this.gl.uniform3f(this.shaderProgram.directionalColorUniform, 0.8, 0.8, 0.8);
 		}
 
+		
+		
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.cubeVertexPositionBuffer);
 		this.gl.vertexAttribPointer(this.shaderProgram.vertexPositionAttribute, this.cubeVertexPositionBuffer.itemSize,
 				this.gl.FLOAT, false, 0, 0);
@@ -279,6 +282,8 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		// this.setMatrixUniforms();
 		this.gl.drawElements(this.gl.TRIANGLES, this.cubeVertexIndexBuffer.numItems, this.gl.UNSIGNED_SHORT, 0);
 
+		
+		
 		// Disable the vertex arrays for the current shader.
 		this.gl.disableVertexAttribArray(this.shaderProgram.vertexPositionAttribute);
 		this.gl.disableVertexAttribArray(this.shaderProgram.vertexNormalAttribute);
@@ -347,6 +352,8 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		this.glOptions.zTicksNum = this.glOptions.zLabels.length - 1;
 	};
 
+	//==============================================
+	
 	this.determineMinMaxZValues = function() {
 		this.numXPoints = this.data.nRows;
 		this.numYPoints = this.data.nCols;

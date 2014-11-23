@@ -1,6 +1,5 @@
 GLText2 = function(data3D, text, pos, angle, surfacePlot, axis, align) {
 	this.shaderTextureProgram = surfacePlot.shaderTextureProgram;
-	this.currenShader = null;
 	this.gl = surfacePlot.gl;
 	this.setMatrixUniforms = surfacePlot.setMatrixUniforms;
 	this.vertexTextureCoordBuffer = null;
