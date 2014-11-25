@@ -29,7 +29,7 @@ GLLines = function(linePoints, surfacePlot) {
 			vertices = vertices.concat(linePoints[i + 5]);
 		}
 
-		printlnMessage('messages', 'GLLines.js vertices ' + JSON.stringify(vertices));
+		//printlnMessage('messages', 'GLLines.js vertices ' + JSON.stringify(vertices));
 		this.linesVertexPositionBuffer = this.gl.createBuffer();
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.linesVertexPositionBuffer);
 
