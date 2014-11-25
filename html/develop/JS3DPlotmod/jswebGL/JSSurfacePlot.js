@@ -244,11 +244,10 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 
 		this.gl.viewport(0, 0, this.gl.viewportWidth, this.gl.viewportHeight);
 		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+		
 		mat4.perspective(5, this.gl.viewportWidth / this.gl.viewportHeight, 0.1, 100.0, this.pMatrix);
 		mat4.identity(this.mvMatrix);
-
 		mat4.translate(this.mvMatrix, [ 0.0, -0.1, -19.0 ]);
-
 		mat4.multiply(this.mvMatrix, this.rotationMatrix);
 
 		var useLighting = true;
@@ -296,11 +295,10 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 
 		this.gl.viewport(0, 0, this.gl.viewportWidth, this.gl.viewportHeight);
 		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+
 		mat4.perspective(5, this.gl.viewportWidth / this.gl.viewportHeight, 0.1, 100.0, this.pMatrix);
 		mat4.identity(this.mvMatrix);
-
 		mat4.translate(this.mvMatrix, [ 0.0, -0.1, -19.0 ]);
-
 		mat4.multiply(this.mvMatrix, this.rotationMatrix);
 
 		// Disable the vertex arrays for the current shader.
@@ -379,11 +377,10 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 
 		this.gl.viewport(0, 0, this.gl.viewportWidth, this.gl.viewportHeight);
 		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+
 		mat4.perspective(5, this.gl.viewportWidth / this.gl.viewportHeight, 0.1, 100.0, this.pMatrix);
 		mat4.identity(this.mvMatrix);
-
 		mat4.translate(this.mvMatrix, [ 0.0, -0.1, -19.0 ]);
-
 		mat4.multiply(this.mvMatrix, this.rotationMatrix);
 
 		// Disable the vertex arrays for the current shader.
@@ -432,12 +429,6 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		this.gl.viewport(0, 0, this.gl.viewportWidth, this.gl.viewportHeight);
 		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
-		mat4.perspective(45, this.gl.viewportWidth / this.gl.viewportHeight, 0.1, 100.0, this.pMatrix);
-
-		mat4.identity(this.mvMatrix);
-
-		mat4.translate(this.mvMatrix, [ 0.0, 0.0, -5.0 ]);
-
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
 		this.gl.vertexAttribPointer(this.shaderTextureProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, this.gl.FLOAT,
 				false, 0, 0);
@@ -455,51 +446,12 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		this.setMatrixUniforms(this.shaderTextureProgram, this.pMatrix, this.mvMatrix);
 		this.gl.drawElements(this.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, this.gl.UNSIGNED_SHORT, 0);
 
+		
+		this.glLines.draw();
+		this.glAxes.draw();
+		this.glSurface.draw();
+
 		this.mvPopMatrix(this);
-	};
-
-	this.drawSceneTemp = function() {
-		this.shaderProgram = this.shaderTextureProgram;
-		this.gl.useProgram(this.shaderProgram);
-
-		this.shaderProgram.vertexPositionAttribute = this.gl.getAttribLocation(this.shaderProgram, "aVertexPosition");
-		this.gl.enableVertexAttribArray(this.shaderProgram.vertexPositionAttribute);
-
-		this.shaderProgram.textureCoordAttribute = this.gl.getAttribLocation(this.shaderProgram, "aTextureCoord");
-		this.gl.enableVertexAttribArray(this.shaderProgram.textureCoordAttribute);
-
-		// this.shaderProgram.pMatrixUniform =
-		// this.gl.getUniformLocation(this.shaderProgram, "uPMatrix");
-		// this.shaderProgram.mvMatrixUniform =
-		// this.gl.getUniformLocation(this.shaderProgram, "uMVMatrix");
-		// this.shaderProgram.samplerUniform =
-		// this.gl.getUniformLocation(this.shaderProgram, "uSampler");
-
-		this.gl.viewport(0, 0, this.gl.viewportWidth, this.gl.viewportHeight);
-		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
-
-		mat4.perspective(45, this.gl.viewportWidth / this.gl.viewportHeight, 0.1, 100.0, this.pMatrix);
-
-		mat4.identity(this.mvMatrix);
-
-		mat4.translate(this.mvMatrix, [ 0.0, 0.0, -5.0 ]);
-
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.cubeVertexPositionBuffer);
-		this.gl.vertexAttribPointer(this.shaderProgram.vertexPositionAttribute, this.cubeVertexPositionBuffer.itemSize,
-				this.gl.FLOAT, false, 0, 0);
-
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.cubeVertexTextureCoordBuffer);
-		this.gl.vertexAttribPointer(this.shaderProgram.textureCoordAttribute,
-				this.cubeVertexTextureCoordBuffer.itemSize, this.gl.FLOAT, false, 0, 0);
-
-		this.gl.activeTexture(this.gl.TEXTURE0);
-		this.gl.bindTexture(this.gl.TEXTURE_2D, this.moonTexture);
-		this.gl.uniform1i(this.shaderProgram.samplerUniform, 0);
-
-		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.cubeVertexIndexBuffer);
-		// this.setMatrixUniforms();
-		this.gl.drawElements(this.gl.TRIANGLES, this.cubeVertexIndexBuffer.numItems, this.gl.UNSIGNED_SHORT, 0);
-
 	};
 
 	this.tick = function() {
@@ -514,6 +466,7 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 
 			// self.drawSceneOrig();
 			// self.drawSceneLines();
+			//self.drawSceneMoonFirst();
 			self.drawSceneMoon();
 			requestAnimFrame(animator);
 		};
@@ -813,6 +766,7 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 
 	this.initMouse = function(canvas) {
 		var self = this;
+		printlnMessage('messages','JSSurfacePlot.js initMouse called');
 
 		var handleMouseDown = function(event) {
 			shiftPressed = isShiftPressed(event);
@@ -1106,6 +1060,102 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		this.mvMatrixStack = null;
 		this.pMatrix = null;
 	};
+
+	this.drawSceneMoonFirst = function() {
+
+		this.mvPushMatrix(this);
+
+		this.gl.useProgram(this.shaderProgram);
+
+		// Enable the vertex arrays for the current shader.
+		this.shaderProgram.vertexPositionAttribute = this.gl.getAttribLocation(this.shaderProgram, "aVertexPosition");
+		this.gl.enableVertexAttribArray(this.shaderProgram.vertexPositionAttribute);
+		this.shaderProgram.vertexNormalAttribute = this.gl.getAttribLocation(this.shaderProgram, "aVertexNormal");
+		this.gl.enableVertexAttribArray(this.shaderProgram.vertexNormalAttribute);
+		this.shaderProgram.vertexColorAttribute = this.gl.getAttribLocation(this.shaderProgram, "aVertexColor");
+		this.gl.enableVertexAttribArray(this.shaderProgram.vertexColorAttribute);
+
+		this.gl.viewport(0, 0, this.gl.viewportWidth, this.gl.viewportHeight);
+		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+		mat4.perspective(5, this.gl.viewportWidth / this.gl.viewportHeight, 0.1, 100.0, this.pMatrix);
+		mat4.identity(this.mvMatrix);
+
+		mat4.translate(this.mvMatrix, [ 0.0, -0.1, -19.0 ]);
+
+		mat4.multiply(this.mvMatrix, this.rotationMatrix);
+
+		// Disable the vertex arrays for the current shader.
+		this.gl.disableVertexAttribArray(this.shaderProgram.vertexPositionAttribute);
+		this.gl.disableVertexAttribArray(this.shaderProgram.vertexNormalAttribute);
+		this.gl.disableVertexAttribArray(this.shaderProgram.vertexColorAttribute);
+
+		var cubeVertexPositionBuffer;
+		var cubeVertexTextureCoordBuffer;
+		var cubeVertexIndexBuffer;
+
+		cubeVertexPositionBuffer = this.gl.createBuffer();
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
+		vertices = [ -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0, ];
+		this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertices), this.gl.STATIC_DRAW);
+		cubeVertexPositionBuffer.itemSize = 3;
+		cubeVertexPositionBuffer.numItems = 4;
+
+		cubeVertexTextureCoordBuffer = this.gl.createBuffer();
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, cubeVertexTextureCoordBuffer);
+		var textureCoords = [ 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, ];
+		this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(textureCoords), this.gl.STATIC_DRAW);
+		cubeVertexTextureCoordBuffer.itemSize = 2;
+		cubeVertexTextureCoordBuffer.numItems = 4;
+
+		cubeVertexIndexBuffer = this.gl.createBuffer();
+		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
+		var cubeVertexIndices = [ 0, 1, 2, 0, 2, 3, ];
+		this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeVertexIndices), this.gl.STATIC_DRAW);
+		cubeVertexIndexBuffer.itemSize = 1;
+		cubeVertexIndexBuffer.numItems = 6;
+
+		// code from lesson05
+		this.gl.useProgram(this.shaderTextureProgram);
+
+		this.shaderTextureProgram.vertexPositionAttribute = this.gl.getAttribLocation(this.shaderTextureProgram, "aVertexPosition");
+		this.gl.enableVertexAttribArray(this.shaderTextureProgram.vertexPositionAttribute);
+
+		this.shaderTextureProgram.textureCoordAttribute = this.gl.getAttribLocation(this.shaderTextureProgram, "aTextureCoord");
+		this.gl.enableVertexAttribArray(this.shaderTextureProgram.textureCoordAttribute);
+
+		this.shaderTextureProgram.pMatrixUniform = this.gl.getUniformLocation(this.shaderTextureProgram, "uPMatrix");
+		this.shaderTextureProgram.mvMatrixUniform = this.gl.getUniformLocation(this.shaderTextureProgram, "uMVMatrix");
+		this.shaderTextureProgram.samplerUniform = this.gl.getUniformLocation(this.shaderTextureProgram, "uSampler");
+
+		this.gl.viewport(0, 0, this.gl.viewportWidth, this.gl.viewportHeight);
+		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+
+		mat4.perspective(45, this.gl.viewportWidth / this.gl.viewportHeight, 0.1, 100.0, this.pMatrix);
+
+		mat4.identity(this.mvMatrix);
+
+		mat4.translate(this.mvMatrix, [ 0.0, 0.0, -5.0 ]);
+
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
+		this.gl.vertexAttribPointer(this.shaderTextureProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, this.gl.FLOAT,
+				false, 0, 0);
+
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, cubeVertexTextureCoordBuffer);
+		this.gl.vertexAttribPointer(this.shaderTextureProgram.textureCoordAttribute, cubeVertexTextureCoordBuffer.itemSize, this.gl.FLOAT,
+				false, 0, 0);
+
+		this.gl.activeTexture(this.gl.TEXTURE0);
+		this.gl.bindTexture(this.gl.TEXTURE_2D, this.moonTexture);
+		this.gl.uniform1i(this.shaderTextureProgram.samplerUniform, 0);
+
+		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
+		//setMatrixUniforms();
+		this.setMatrixUniforms(this.shaderTextureProgram, this.pMatrix, this.mvMatrix);
+		this.gl.drawElements(this.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, this.gl.UNSIGNED_SHORT, 0);
+
+		this.mvPopMatrix(this);
+	};
+
 
 };
 
