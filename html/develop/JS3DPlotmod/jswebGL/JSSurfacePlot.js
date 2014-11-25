@@ -34,8 +34,8 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 	this.glAxes = null;
 	this.glAxes2 = null;
 	this.glLines = null;
-	this.glTexture = null;
 	this.glSphere = null;
+	this.glTextureSphere = null;
 	this.gl = null;
 	this.shaderProgram = null;
 	this.shaderTextureProgram = null;
@@ -168,41 +168,6 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		return shaderProgram;
 	};
 
-	this.initBuffers = function() {
-		this.cubeVertexPositionBuffer = this.gl.createBuffer();
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.cubeVertexPositionBuffer);
-		vertices = [];
-		var Point1 = [ 0, 0, 0 ];
-		var Point2 = [ 1, 0, 0 ];
-		var Point3 = [ .5, .6, 2.3 ];
-		var Point4 = [ 0, 0, .4 ];
-		vertices = vertices.concat(Point1);
-		vertices = vertices.concat(Point2);
-		vertices = vertices.concat(Point3);
-		vertices = vertices.concat(Point4);
-
-		vertices = [ -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0, ];
-		// printlnMessage('messages', 'JSSurfacePlot vertices: ' + vertices);
-
-		this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertices), this.gl.STATIC_DRAW);
-		this.cubeVertexPositionBuffer.itemSize = 3;
-		this.cubeVertexPositionBuffer.numItems = 4;
-
-		this.cubeVertexTextureCoordBuffer = this.gl.createBuffer();
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.cubeVertexTextureCoordBuffer);
-		var textureCoords = [ 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, ];
-		this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(textureCoords), this.gl.STATIC_DRAW);
-		this.cubeVertexTextureCoordBuffer.itemSize = 2;
-		this.cubeVertexTextureCoordBuffer.numItems = 4;
-
-		this.cubeVertexIndexBuffer = this.gl.createBuffer();
-		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.cubeVertexIndexBuffer);
-		var cubeVertexIndices = [ 0, 1, 2, 0, 2, 3, ];
-		this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeVertexIndices), this.gl.STATIC_DRAW);
-		this.cubeVertexIndexBuffer.itemSize = 1;
-		this.cubeVertexIndexBuffer.numItems = 6;
-	};
-
 	this.initTexture = function(thisvar) {
 		this.moonTexture = this.gl.createTexture();
 		this.moonTexture.image = new Image();
@@ -275,6 +240,7 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		this.glLines.draw();
 		// this.glSphere.draw();
 		this.glSurface.draw();
+		this.glTextureSphere.draw();
 
 		this.mvPopMatrix(this);
 	};
@@ -464,10 +430,10 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 			if (self.gl == null || self.bail)
 				return;
 
-			// self.drawSceneOrig();
+			 self.drawSceneOrig();
 			// self.drawSceneLines();
 			//self.drawSceneMoonFirst();
-			self.drawSceneMoon();
+			//self.drawSceneMoon();
 			requestAnimFrame(animator);
 		};
 
@@ -497,7 +463,6 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 
 		this.initGL(canvas);
 		this.initShaders();
-		this.initBuffers();
 		this.initMouse(canvas);
 		this.initTexture(this);
 
@@ -711,6 +676,7 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		this.glAxes2 = new GLAxes2(data3D, this);
 		this.glLines = new GLLines(linePoints, this);
 		this.glSphere = new GLSphere(data3D, this);
+		this.glTextureSphere = new glTextureSphere(linePoints, this);
 	};
 
 	// WebGL mouse handlers:
@@ -1042,7 +1008,8 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		document.onmousemove = null;
 
 		this.numXPoints = 0;
-		this.numYPoints = 0;
+		this.numYPoints = 0;		this.glTexture = null;
+
 		canvas = null;
 		canvasContext = null;
 		this.data = null;
@@ -1051,8 +1018,8 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		this.glAxes = null;
 		this.glAxes2 = null;
 		this.glLines = null;
-		this.glTexture = null;
 		this.glSphere = null;
+		this.glTextureSphere = null;
 		this.shaderProgram = null;
 		this.shaderTextureProgram = null;
 		this.shaderAxesProgram = null;
