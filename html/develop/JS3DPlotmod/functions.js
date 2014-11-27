@@ -18,19 +18,29 @@ function clearMessage(target) {
 	document.getElementById(target).innerHTML = '';
 }
 
-function printVectorArray(title,a) {
-	//printlnMessage('messages', 'Vector Array ' + a);
+function printVectorArray(title, a) {
+	// printlnMessage('messages', 'Vector Array ' + a);
 	printlnMessage('messages', title);
-	for ( var i = 0; i < a.length ; i+=3) {
-		sindex=sprintf("%2d",i);
-		sx=sprintf("%3.2f",a[i]);
-		sy=sprintf("%3.2f",a[i+1]);
-		sz=sprintf("%3.2f",a[i+2]);
-		
-		//printlnMessage('messages', i + ' ' + a[i].toFixed(2));
-		//printlnMessage('messages', sindex+ ' ' + sprintf("%3.2f",a[i]));
-		printlnMessage('messages', sindex+ ' ' + sprintf("%5s",sx) + sprintf("%5s",sy) + sprintf("%5s",sz));
+	for ( var i = 0; i < a.length; i += 3) {
+		sindex = sprintf("%2d", i);
+		sx = sprintf("%3.2f", a[i]);
+		sy = sprintf("%3.2f", a[i + 1]);
+		sz = sprintf("%3.2f", a[i + 2]);
+
+		// printlnMessage('messages', i + ' ' + a[i].toFixed(2));
+		// printlnMessage('messages', sindex+ ' ' + sprintf("%3.2f",a[i]));
+		printlnMessage('messages', sindex + ' ' + sprintf("%5s", sx) + sprintf("%5s", sy) + sprintf("%5s", sz));
 	}
+};
+
+function printArrayFormatted(title, a) {
+	printlnMessage('messages', title);
+	result = '';
+	for ( var i = 0; i < a.length; i++) {
+		sx = sprintf("%3.1f", a[i]);
+		result = result + sx+',';
+	}
+	printlnMessage('messages', result);
 };
 
 function sortByKey(array, key) {

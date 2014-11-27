@@ -75,7 +75,6 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 
 	this.glSurface = null;
 	this.glAxes = null;
-	this.glAxes2 = null;
 	this.glLines = null;
 	this.glTexture = null;
 	this.glSphere = null;
@@ -310,7 +309,6 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		this.colourGradientObject = null;
 		this.glSurface = null;
 		this.glAxes = null;
-		this.glAxes2 = null;
 		this.glLines = null;
 		this.glTexture = null;
 		this.glSphere = null;
@@ -846,7 +844,6 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		if (this.frames) {
 			this.glSurface = new GLSurface(data3D[0], this);
 			this.glAxes = new GLAxes(data3D[0], this);
-			this.glAxes2 = new GLAxes2(data3D[0], this);
 			this.glLines = new GLLines(linePoints, this);
 			// labelPos = {
 			// x : 0.4,
@@ -860,7 +857,6 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		} else {
 			this.glSurface = new GLSurface(data3D, this);
 			this.glAxes = new GLAxes(data3D, this);
-			this.glAxes2 = new GLAxes2(data3D, this);
 			this.glLines = new GLLines(linePoints, this);
 			// labelPos = {
 			// x : 0.4,
@@ -924,7 +920,6 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		this.gl.disableVertexAttribArray(this.shaderProgram.vertexColorAttribute);
 
 		this.glAxes.draw();
-		this.glAxes2.draw();
 		this.glLines.draw();
 		//this.glTexture.draw();
 		//this.glTexture2.draw();
