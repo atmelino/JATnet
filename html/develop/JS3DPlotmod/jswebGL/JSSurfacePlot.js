@@ -212,7 +212,7 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		this.glAxes.draw();
 		this.glAxes2.draw();
 		this.glLines.draw();
-		// this.glSphere.draw();
+		this.glSphere.draw();
 		this.glSurface.draw();
 
 		this.mvPopMatrix(this);

@@ -31,34 +31,38 @@ glTextureQuad = function(linePoints, surfacePlot) {
 	};
 
 	this.initTextureSphereBuffers = function() {
+		var vertexPositionData = [];
+		var normalData = [];
+		var textureCoordData = [];
+		var indexData = [];
 
+
+		l = 0.4;
+		vertexPositionData = vertexPositionData.concat(0, 0, 0);
+		vertexPositionData = vertexPositionData.concat(0, l, 0);
+		vertexPositionData = vertexPositionData.concat(l, l, 0);
+		vertexPositionData = vertexPositionData.concat(l, 0, 0);
+		textureCoordData = [ 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, ];
+		indexData = [ 0, 1, 2, 0, 2, 3, ];
+
+		
 		this.cubeVertexPositionBuffer = this.gl.createBuffer();
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.cubeVertexPositionBuffer);
-
-		factor =0.4;
-		vertices = [];
-		vertices = vertices.concat(0, -0.3	, 0);
-		vertices = vertices.concat(1.0*factor, -1.0*factor, 0);
-		vertices = vertices.concat(1.0*factor, 1.0*factor, 0);
-		vertices = vertices.concat(-1.0*factor, 1.0*factor, 0);
-
-		this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertices), this.gl.STATIC_DRAW);
+		this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertexPositionData), this.gl.STATIC_DRAW);
 		this.cubeVertexPositionBuffer.itemSize = 3;
-		this.cubeVertexPositionBuffer.numItems = 4;
+		this.cubeVertexPositionBuffer.numItems = vertexPositionData.length / 3;
 
 		this.cubeVertexTextureCoordBuffer = this.gl.createBuffer();
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.cubeVertexTextureCoordBuffer);
-		var textureCoords = [ 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, ];
-		this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(textureCoords), this.gl.STATIC_DRAW);
+		this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(textureCoordData), this.gl.STATIC_DRAW);
 		this.cubeVertexTextureCoordBuffer.itemSize = 2;
-		this.cubeVertexTextureCoordBuffer.numItems = 4;
+		this.cubeVertexTextureCoordBuffer.numItems = textureCoordData.length / 2;
 
 		this.cubeVertexIndexBuffer = this.gl.createBuffer();
 		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.cubeVertexIndexBuffer);
-		var cubeVertexIndices = [ 0, 1, 2, 0, 2, 3, ];
-		this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeVertexIndices), this.gl.STATIC_DRAW);
+		this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indexData), this.gl.STATIC_DRAW);
 		this.cubeVertexIndexBuffer.itemSize = 1;
-		this.cubeVertexIndexBuffer.numItems = 6;
+		this.cubeVertexIndexBuffer.numItems = indexData.length;
 
 	};
 
@@ -81,6 +85,7 @@ glTextureQuad.prototype.draw = function() {
 	this.currentShader.mvMatrixUniform = this.gl.getUniformLocation(this.currentShader, "uMVMatrix");
 	this.currentShader.samplerUniform = this.gl.getUniformLocation(this.currentShader, "uSampler");
 
+	
 	this.gl.viewport(0, 0, this.gl.viewportWidth, this.gl.viewportHeight);
 	this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 

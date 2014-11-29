@@ -7,6 +7,8 @@
 
 <script type="text/javascript" src="glMatrix-0.9.5.min.js"></script>
 <script type="text/javascript" src="webgl-utils.js"></script>
+<script type="text/javascript" src="functions.js"></script>
+<script type="text/javascript" src="sprintf.js"></script>
 
 <script id="shader-fs" type="x-shader/x-fragment">
     precision mediump float;
@@ -67,8 +69,7 @@
 	var mvMatrix = mat4.create();
 	var mvMatrixStack = [];
 	var pMatrix = mat4.create();
-	
-	
+
 	function initGL(canvas) {
 		try {
 			gl = canvas.getContext("experimental-webgl");
@@ -115,7 +116,6 @@
 
 		return shader;
 	}
-
 
 	function initShaders() {
 		var fragmentShader = getShader(gl, "shader-fs");
@@ -219,7 +219,7 @@
 	function initBuffers() {
 		var latitudeBands = 30;
 		var longitudeBands = 30;
-		var radius = 2;
+		var radius = 1.8;
 
 		var vertexPositionData = [];
 		var normalData = [];
@@ -265,6 +265,11 @@
 				indexData.push(first + 1);
 			}
 		}
+
+		printArrayFormatted('vertexPositionData', vertexPositionData);
+		printArrayFormatted('normalData', normalData);
+		printlnMessage('messages', 'textureCoordData: ' + textureCoordData);
+		printlnMessage('messages', 'indexData: ' + indexData);
 
 		moonVertexNormalBuffer = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, moonVertexNormalBuffer);
@@ -401,6 +406,10 @@
 	<input type="checkbox" id="lighting" checked /> Use lighting
 	<br /> Spin the moon by dragging it with the mouse.
 	<br />
+	<div id='messagesDiv'>
+		<textarea id="messages" style="width: 90%;" rows=10></textarea>
+		<!-- cols=60  -->
+	</div>
 
 	<h2>Directional light:</h2>
 
