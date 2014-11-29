@@ -33,12 +33,14 @@ function printVectorArray(title, a) {
 	}
 };
 
-function printArrayFormatted(title, a) {
+function printArrayFormatted(title, a, dim) {
 	printlnMessage('messages', title);
 	result = '';
 	for ( var i = 0; i < a.length; i++) {
+		if (i % dim==0)
+			result = result + ' ';
 		sx = sprintf("%3.1f", a[i]);
-		result = result + sx+',';
+		result = result + sx + ',';
 	}
 	printlnMessage('messages', result);
 };

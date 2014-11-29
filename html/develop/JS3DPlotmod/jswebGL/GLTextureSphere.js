@@ -98,39 +98,34 @@ glTextureSphere = function(linePoints, surfacePlot) {
 
 		} else {
 
-			/*
-			 * 
-			 * vertexPositionData = []; vertexPositionData =
-			 * vertexPositionData.concat(0.0, 1.0, 0.0); vertexPositionData =
-			 * vertexPositionData.concat(0.0, 1.0, 0.0); vertexPositionData =
-			 * vertexPositionData.concat(0.0, 1.0, 0.0); vertexPositionData =
-			 * vertexPositionData.concat(1.0, 0.0, 0.0); vertexPositionData =
-			 * vertexPositionData.concat(-1.0, 0.0, 0.0); vertexPositionData =
-			 * vertexPositionData.concat(1.0, 0.0, 0.0); vertexPositionData =
-			 * vertexPositionData.concat(0.0, -1.0, 0.0); vertexPositionData =
-			 * vertexPositionData.concat(0.0, -1.0, 0.0); vertexPositionData =
-			 * vertexPositionData.concat(0.0, -1.0, 0.0);
-			 * 
-			 * normalData = [ 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0,
-			 * 0.0, 0.0, -1.0, 0.0, 0.0, 1.0, 0.0, -0.0, 0.0, -1.0, 0.0, -0.0,
-			 * -1.0, 0.0, 0.0, -1.0, -0.0 ];
-			 * 
-			 * textureCoordData = [ 1, 1, 0.5, 1, 0, 1, 1, 0.5, 0.5, 0.5, 0,
-			 * 0.5, 1, 0, 0.5, 0, 0, 0 ];
-			 * 
-			 * indexData = [ 0, 3, 1, 3, 4, 1, 1, 4, 2, 4, 5, 2, 3, 6, 4, 6, 7,
-			 * 4, 4, 7, 5, 7, 8, 5 ];
-			 */
+			if (false) {
+				vertexPositionData = [];
+				vertexPositionData = vertexPositionData.concat(0.0, 1.0, 0.0);
+				vertexPositionData = vertexPositionData.concat(0.0, 1.0, 0.0);
+				vertexPositionData = vertexPositionData.concat(0.0, 1.0, 0.0);
+				vertexPositionData = vertexPositionData.concat(1.0, 0.0, 0.0);
+				vertexPositionData = vertexPositionData.concat(-1.0, 0.0, 0.0);
+				vertexPositionData = vertexPositionData.concat(1.0, 0.0, 0.0);
+				vertexPositionData = vertexPositionData.concat(0.0, -1.0, 0.0);
+				vertexPositionData = vertexPositionData.concat(0.0, -1.0, 0.0);
+				vertexPositionData = vertexPositionData.concat(0.0, -1.0, 0.0);
 
+				normalData = [ 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, -1.0, 0.0, 0.0, 1.0, 0.0,
+						-0.0, 0.0, -1.0, 0.0, -0.0, -1.0, 0.0, 0.0, -1.0, -0.0 ];
+
+				textureCoordData = [ 1, 1, 0.5, 1, 0, 1, 1, 0.5, 0.5, 0.5, 0, 0.5, 1, 0, 0.5, 0, 0, 0 ];
+
+				indexData = [ 0, 3, 1, 3, 4, 1, 1, 4, 2, 4, 5, 2, 3, 6, 4, 6, 7, 4, 4, 7, 5, 7, 8, 5 ];
+			}	
 
 			if (false) {
 				/*
-				 * vertexPositionData = [ 0.0, 0.2, 0.90,// 0.0, 0.2, 0.0, // 0.0,
-				 * 0.2, 0.0, // 0.0, 0.2, 0.0, // 0.2, 0.1, 0.0, // -0.1, 0.1,
-				 * 0.2,// -0.1, 0.1, -0.1, // 0.2, 0.1, -0.0, // 0.2, -0.1, 0.0, //
-				 * -0.1, -0.1, 0.2, // -0.1, -0.1, -0.1,// 0.2, -0.1, -0.0, // 0.0,
-				 * -0.2, 0.0, // -0.0, -0.2, 0.0, // -0.0, -0.2, -0.0,// 0.0, -0.2,
-				 * -0.0 ];
+				 * vertexPositionData = [ 0.0, 0.2, 0.90,// 0.0, 0.2, 0.0, //
+				 * 0.0, 0.2, 0.0, // 0.0, 0.2, 0.0, // 0.2, 0.1, 0.0, // -0.1,
+				 * 0.1, 0.2,// -0.1, 0.1, -0.1, // 0.2, 0.1, -0.0, // 0.2, -0.1,
+				 * 0.0, // -0.1, -0.1, 0.2, // -0.1, -0.1, -0.1,// 0.2, -0.1,
+				 * -0.0, // 0.0, -0.2, 0.0, // -0.0, -0.2, 0.0, // -0.0, -0.2,
+				 * -0.0,// 0.0, -0.2, -0.0 ];
 				 */
 				vertexPositionData = [ 0, 0, 0,//
 				0, 0, 0, //
@@ -159,7 +154,23 @@ glTextureSphere = function(linePoints, surfacePlot) {
 						6, 6, 10, 7, 10, 11, 7, 8, 12, 9, 12, 13, 9, 9, 13, 10, 13, 14, 10, 10, 14, 11, 14, 15 ];
 			}
 
-			if (true) {
+			if (false) {
+				vertexPositionData = [ 0.0, 1.3, 0.0, 0.0, 1.3, 0.0, 0.0, 1.3, 0.0, 0.0, 1.3, 0.0, 1.1, 0.7, 0.0, -0.6,
+						0.7, 1.0, -0.6, 0.7, -1.0, 1.1, 0.7, -0.0, 1.1, -0.6, 0.0, -0.6, -0.6, 1.0, -0.6, -0.6, -1.0,
+						1.1, -0.6, -0.0, 0.0, -1.3, 0.0, -0.0, -1.3, 0.0, -0.0, -1.3, -0.0, 0.0, -1.3, -0.0 ];
+				normalData = [ 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.9, 0.5, 0.0, -0.4, 0.5,
+						0.8, -0.4, 0.5, -0.7, 0.9, 0.5, -0.0, 0.9, -0.5, 0.0, -0.4, -0.5, 0.8, -0.4, -0.5, -0.7, 0.9,
+						-0.5, -0.0, 0.0, -1.0, 0.0, -0.0, -1.0, 0.0, -0.0, -1.0, -0.0, 0.0, -1.0, -0.0 ];
+				textureCoordData = [ 1, 1, 0.6666666666666667, 1, 0.33333333333333337, 1, 0, 1, 1, 0.6666666666666667,
+						0.6666666666666667, 0.6666666666666667, 0.33333333333333337, 0.6666666666666667, 0,
+						0.6666666666666667, 1, 0.33333333333333337, 0.6666666666666667, 0.33333333333333337,
+						0.33333333333333337, 0.33333333333333337, 0, 0.33333333333333337, 1, 0, 0.6666666666666667, 0,
+						0.33333333333333337, 0, 0, 0 ];
+				indexData = [ 0, 4, 1, 4, 5, 1, 1, 5, 2, 5, 6, 2, 2, 6, 3, 6, 7, 3, 4, 8, 5, 8, 9, 5, 5, 9, 6, 9, 10,
+						6, 6, 10, 7, 10, 11, 7, 8, 12, 9, 12, 13, 9, 9, 13, 10, 13, 14, 10, 10, 14, 11, 14, 15, 11 ];
+			}
+
+			if (false) {
 				l = 0.7;
 				vertexPositionData = vertexPositionData.concat(0, 0, 0);
 				vertexPositionData = vertexPositionData.concat(0, l, 0);
@@ -173,29 +184,30 @@ glTextureSphere = function(linePoints, surfacePlot) {
 				indexData = [ 0, 1, 2, 0, 2, 3 ];
 			}
 
-			if (false) {
-			vertexPositionData = [ 0.0, 1.3, 0.0, 0.0, 1.3, 0.0, 0.0, 1.3, 0.0, 0.0, 1.3, 0.0, 1.1, 0.7, 0.0, -0.6,
-					0.7, 1.0, -0.6, 0.7, -1.0, 1.1, 0.7, -0.0, 1.1, -0.6, 0.0, -0.6, -0.6, 1.0, -0.6, -0.6, -1.0, 1.1,
-					-0.6, -0.0, 0.0, -1.3, 0.0, -0.0, -1.3, 0.0, -0.0, -1.3, -0.0, 0.0, -1.3, -0.0 ];
-			normalData = [ 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.9, 0.5, 0.0, -0.4, 0.5, 0.8,
-					-0.4, 0.5, -0.7, 0.9, 0.5, -0.0, 0.9, -0.5, 0.0, -0.4, -0.5, 0.8, -0.4, -0.5, -0.7, 0.9, -0.5,
-					-0.0, 0.0, -1.0, 0.0, -0.0, -1.0, 0.0, -0.0, -1.0, -0.0, 0.0, -1.0, -0.0 ];
-			textureCoordData = [ 1, 1, 0.6666666666666667, 1, 0.33333333333333337, 1, 0, 1, 1, 0.6666666666666667,
-					0.6666666666666667, 0.6666666666666667, 0.33333333333333337, 0.6666666666666667, 0,
-					0.6666666666666667, 1, 0.33333333333333337, 0.6666666666666667, 0.33333333333333337,
-					0.33333333333333337, 0.33333333333333337, 0, 0.33333333333333337, 1, 0, 0.6666666666666667, 0,
-					0.33333333333333337, 0, 0, 0 ];
-			indexData = [ 0, 4, 1, 4, 5, 1, 1, 5, 2, 5, 6, 2, 2, 6, 3, 6, 7, 3, 4, 8, 5, 8, 9, 5, 5, 9, 6, 9, 10, 6, 6,
-					10, 7, 10, 11, 7, 8, 12, 9, 12, 13, 9, 9, 13, 10, 13, 14, 10, 10, 14, 11, 14, 15, 11 ];
+			if (true) {
+				l = 0.3;
+				vertexPositionData = vertexPositionData.concat(0, 0, 0);
+				vertexPositionData = vertexPositionData.concat(0, l, 0);
+				vertexPositionData = vertexPositionData.concat(l, l, 0);
+				vertexPositionData = vertexPositionData.concat(l, 0, 0);
+				vertexPositionData = vertexPositionData.concat(l, 0, l);
+				normalData = normalData.concat(0, 0, 0);
+				normalData = normalData.concat(0, l, 0);
+				normalData = normalData.concat(l, l, 0);
+				normalData = normalData.concat(l, 0, 0);
+				normalData = normalData.concat(l, 0, l);
+				textureCoordData = [ 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0 ];
+				indexData = [ 0, 1, 2, 0, 2, 3, 2, 3, 4 ];
 			}
+
 		}
 
 		// printlnMessage('messages', 'GLTextureSphere.js vertexPositionData ' +
 		// JSON.stringify(vertexPositionData));
 		// printVectorArray('vertices', vertexPositionData);
 
-		printArrayFormatted('vertexPositionData', vertexPositionData);
-		printArrayFormatted('normalData', normalData);
+		printArrayFormatted('vertexPositionData', vertexPositionData, 3);
+		printArrayFormatted('normalData', normalData, 3);
 		printlnMessage('messages', 'textureCoordData: ' + textureCoordData);
 		printlnMessage('messages', 'indexData: ' + indexData);
 
