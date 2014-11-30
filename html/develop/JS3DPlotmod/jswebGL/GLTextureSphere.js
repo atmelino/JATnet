@@ -28,22 +28,23 @@ glTextureSphere = function(linePoints, surfacePlot) {
 			thisvar.gl.bindTexture(thisvar.gl.TEXTURE_2D, null);
 		};
 
-		this.moonTexture.image.src = "moon.gif";
+		// this.moonTexture.image.src = "texture/moon.gif";
+		this.moonTexture.image.src = "texture/earth.gif";
+		// this.moonTexture.image.src = "texture/earthmap1k.jpg";
 	};
-	loop = false;
 
 	this.initBuffers = function() {
 		var latitudeBands = 30;
 		var longitudeBands = 30;
-		var radius = 0.2;
+		var radius = 0.54;
 
 		var vertexPositionData = [];
 		var normalData = [];
 		var textureCoordData = [];
 		var indexData = [];
 
-		loop = true;
 		loop = false;
+		loop = true;
 
 		if (loop) {
 			for ( var latNumber = 0; latNumber <= latitudeBands; latNumber++) {
@@ -57,14 +58,16 @@ glTextureSphere = function(linePoints, surfacePlot) {
 					var cosPhi = Math.cos(phi);
 
 					var x = cosPhi * sinTheta;
-					var y = cosTheta;
-					var z = sinPhi * sinTheta;
-					var u = 1 - (longNumber / longitudeBands);
-					var v = 1 - (latNumber / latitudeBands);
+					var y = sinPhi * sinTheta;
+					var z = cosTheta;
+					// var u = 1 - (longNumber / longitudeBands);
+					// var v = 1 - (latNumber / latitudeBands);
+					var u = (longNumber / longitudeBands);
+					var v = 1-(latNumber / latitudeBands);
 
-					normalData.push(x);
-					normalData.push(y);
-					normalData.push(z);
+					normalData.push(radius * x);
+					normalData.push(radius * y);
+					normalData.push(radius * z);
 					textureCoordData.push(u);
 					textureCoordData.push(v);
 					vertexPositionData.push(radius * x);
@@ -116,9 +119,9 @@ glTextureSphere = function(linePoints, surfacePlot) {
 				textureCoordData = [ 1, 1, 0.5, 1, 0, 1, 1, 0.5, 0.5, 0.5, 0, 0.5, 1, 0, 0.5, 0, 0, 0 ];
 
 				indexData = [ 0, 3, 1, 3, 4, 1, 1, 4, 2, 4, 5, 2, 3, 6, 4, 6, 7, 4, 4, 7, 5, 7, 8, 5 ];
-			}	
+			}
 
-			if (false) {
+			if (true) {
 				/*
 				 * vertexPositionData = [ 0.0, 0.2, 0.90,// 0.0, 0.2, 0.0, //
 				 * 0.0, 0.2, 0.0, // 0.0, 0.2, 0.0, // 0.2, 0.1, 0.0, // -0.1,
@@ -143,9 +146,43 @@ glTextureSphere = function(linePoints, surfacePlot) {
 				0, 0, 0, //
 				0, 0, 0, //
 				0, 0, 0 ];
-				normalData = [ 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.9, 0.5, 0.0, -0.4, 0.5,
+				l = 0.4;
+				vertexPositionData = [ 0.0, l, 0.0, //
+				0.0, l, 0.0, //
+				0.0, l, 0.0, //
+				0.0, l, 0.0, // 
+				l, l / 2, 0.0, // 
+				-l / 2, l / 2, l,// 
+				-l / 2, l / 2, -l / 2, //
+				l, l / 2, -0.0, // 
+				l, -l / 2, 0.0, // 
+				-l / 2, -l / 2, l, // 
+				-l / 2, -l / 2, -l / 2,// 
+				l, -l / 2, -0.0, // 
+				0.0, -l, 0.0, // 
+				-0.0, -l, 0.0, // 
+				-0.0, -l, -0.0,//
+				0.0, -l, -0.0 ];
+				normalData = [ 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.9, 0.5, 0.0, -0.4, 0.5,
 						0.8, -0.4, 0.5, -0.7, 0.9, 0.5, -0.0, 0.9, -0.5, 0.0, -0.4, -0.5, 0.8, -0.4, -0.5, -0.7, 0.9,
 						-0.5, -0.0, 0.0, -1.0, 0.0, -0.0, -1.0, 0.0, -0.0, -1.0, -0.0, 0.0, -1.0, -0.0 ];
+				normalData = [ 0.0, l, 0.0, //
+				0.0, l, 0.0, //
+				0.0, l, 0.0, //
+				0.0, l, 0.0, // 
+				l, l / 2, 0.0, // 
+				-l / 2, l / 2, l,// 
+				-l / 2, l / 2, -l / 2, //
+				l, l / 2, -0.0, // 
+				l, -l / 2, 0.0, // 
+				-l / 2, -l / 2, l, // 
+				-l / 2, -l / 2, -l / 2,// 
+				l, -l / 2, -0.0, // 
+				0.0, -l, 0.0, // 
+				-0.0, -l, 0.0, // 
+				-0.0, -l, -0.0,//
+				0.0, -l, -0.0 ];
+
 				textureCoordData = [ 1, 1, //
 				0.666, 1, //
 				0.333, 1, 0, 1, 1, 0.666, 0.666, 0.666, 0.333, 0.666, 0, 0.666, 1, 0.333, 0.666, 0.333, 0.333, 0.333,
@@ -184,7 +221,7 @@ glTextureSphere = function(linePoints, surfacePlot) {
 				indexData = [ 0, 1, 2, 0, 2, 3 ];
 			}
 
-			if (true) {
+			if (false) {
 				l = 0.3;
 				vertexPositionData = vertexPositionData.concat(0, 0, 0);
 				vertexPositionData = vertexPositionData.concat(0, l, 0);
@@ -206,16 +243,10 @@ glTextureSphere = function(linePoints, surfacePlot) {
 		// JSON.stringify(vertexPositionData));
 		// printVectorArray('vertices', vertexPositionData);
 
-		printArrayFormatted('vertexPositionData', vertexPositionData, 3);
-		printArrayFormatted('normalData', normalData, 3);
-		printlnMessage('messages', 'textureCoordData: ' + textureCoordData);
-		printlnMessage('messages', 'indexData: ' + indexData);
-
-		this.moonVertexPositionBuffer = this.gl.createBuffer();
-		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.moonVertexPositionBuffer);
-		this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertexPositionData), this.gl.STATIC_DRAW);
-		this.moonVertexPositionBuffer.itemSize = 3;
-		this.moonVertexPositionBuffer.numItems = vertexPositionData.length / 3;
+		// printArrayFormatted('vertexPositionData', vertexPositionData, 3);
+		// printArrayFormatted('normalData', normalData, 3);
+		// printlnMessage('messages', 'textureCoordData: ' + textureCoordData);
+		// printlnMessage('messages', 'indexData: ' + indexData);
 
 		this.moonVertexNormalBuffer = this.gl.createBuffer();
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.moonVertexNormalBuffer);
@@ -228,6 +259,12 @@ glTextureSphere = function(linePoints, surfacePlot) {
 		this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(textureCoordData), this.gl.STATIC_DRAW);
 		this.moonVertexTextureCoordBuffer.itemSize = 2;
 		this.moonVertexTextureCoordBuffer.numItems = textureCoordData.length / 2;
+
+		this.moonVertexPositionBuffer = this.gl.createBuffer();
+		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.moonVertexPositionBuffer);
+		this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertexPositionData), this.gl.STATIC_DRAW);
+		this.moonVertexPositionBuffer.itemSize = 3;
+		this.moonVertexPositionBuffer.numItems = vertexPositionData.length / 3;
 
 		this.moonVertexIndexBuffer = this.gl.createBuffer();
 		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.moonVertexIndexBuffer);
@@ -259,6 +296,37 @@ glTextureSphere.prototype.draw = function() {
 	this.gl.viewport(0, 0, this.gl.viewportWidth, this.gl.viewportHeight);
 	this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
+	// this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.moonVertexPositionBuffer);
+	// this.gl.vertexAttribPointer(this.currentShader.vertexPositionAttribute,
+	// this.moonVertexPositionBuffer.itemSize,
+	// this.gl.FLOAT, false, 0, 0);
+	//
+	// this.gl.bindBuffer(this.gl.ARRAY_BUFFER,
+	// this.moonVertexTextureCoordBuffer);
+	// this.gl.vertexAttribPointer(this.currentShader.textureCoordAttribute,
+	// this.moonVertexTextureCoordBuffer.itemSize,
+	// this.gl.FLOAT, false, 0, 0);
+	//
+	// this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.moonVertexNormalBuffer);
+	// this.gl.vertexAttribPointer(this.currentShader.vertexNormalAttribute,
+	// this.moonVertexNormalBuffer.itemSize,
+	// this.gl.FLOAT, false, 0, 0);
+	//
+	// this.gl.activeTexture(this.gl.TEXTURE0);
+	// this.gl.bindTexture(this.gl.TEXTURE_2D, this.moonTexture);
+	// this.gl.uniform1i(this.currentShader.samplerUniform, 0);
+	//
+	// this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER,
+	// this.moonVertexIndexBuffer);
+	// this.setMatrixUniforms(this.currentShader, this.surfacePlot.pMatrix,
+	// this.surfacePlot.mvMatrix);
+	// this.gl.drawElements(this.gl.TRIANGLES,
+	// this.moonVertexIndexBuffer.numItems, this.gl.UNSIGNED_SHORT, 0);
+
+	this.gl.activeTexture(this.gl.TEXTURE0);
+	this.gl.bindTexture(this.gl.TEXTURE_2D, this.moonTexture);
+	this.gl.uniform1i(this.currentShader.samplerUniform, 0);
+
 	this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.moonVertexPositionBuffer);
 	this.gl.vertexAttribPointer(this.currentShader.vertexPositionAttribute, this.moonVertexPositionBuffer.itemSize,
 			this.gl.FLOAT, false, 0, 0);
@@ -270,10 +338,6 @@ glTextureSphere.prototype.draw = function() {
 	this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.moonVertexNormalBuffer);
 	this.gl.vertexAttribPointer(this.currentShader.vertexNormalAttribute, this.moonVertexNormalBuffer.itemSize,
 			this.gl.FLOAT, false, 0, 0);
-
-	this.gl.activeTexture(this.gl.TEXTURE0);
-	this.gl.bindTexture(this.gl.TEXTURE_2D, this.moonTexture);
-	this.gl.uniform1i(this.currentShader.samplerUniform, 0);
 
 	this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.moonVertexIndexBuffer);
 	this.setMatrixUniforms(this.currentShader, this.surfacePlot.pMatrix, this.surfacePlot.mvMatrix);

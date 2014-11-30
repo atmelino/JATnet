@@ -27,7 +27,7 @@ glTextureQuad = function(linePoints, surfacePlot) {
 			thisvar.gl.bindTexture(thisvar.gl.TEXTURE_2D, null);
 		};
 
-		this.cubeTexture.image.src = "moon.gif";
+		this.cubeTexture.image.src = "texture/moon.gif";
 	};
 
 	this.initTextureSphereBuffers = function() {

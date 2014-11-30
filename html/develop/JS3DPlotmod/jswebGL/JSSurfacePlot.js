@@ -471,7 +471,7 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		this.glAxes2 = new GLAxes2(data3D, this);
 		this.glLines = new GLLines(linePoints, this);
 		this.glSphere = new GLSphere(data3D, this);
-		this.glTextureQuad = new glTextureQuad(linePoints, this);
+		//this.glTextureQuad = new glTextureQuad(linePoints, this);
 		this.glTextureSphere = new glTextureSphere(linePoints, this);
 	};
 
