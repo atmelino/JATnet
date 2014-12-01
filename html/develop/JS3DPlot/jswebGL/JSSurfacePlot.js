@@ -3,8 +3,8 @@
  * *********************************
  */
 JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fillRegions, tooltips, xTitle, yTitle,
-		zTitle, renderPoints, backColour, axisTextColour, hideFlatMinPolygons, tooltipColour, origin,
-		startXAngle_canvas, startZAngle_canvas, rotationMatrix, zAxisTextPosition, glOptions, data, linePoints) {
+		zTitle, renderPoints, backColour, axisTextColour, hideFlatMinPolygons, origin, startXAngle_canvas,
+		startZAngle_canvas, rotationMatrix, zAxisTextPosition, glOptions, data, linePoints) {
 	this.xTitle = xTitle;
 	this.yTitle = yTitle;
 	this.zTitle = zTitle;
@@ -14,10 +14,40 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 	var targetDiv;
 	var id;
 	var canvas;
-	var canvasContext = null;
 	this.context2D = null;
 	var scale = JSSurfacePlot.DEFAULT_SCALE;
-	var zTextPosition = 0.5;
+	this.data = data;
+	var data3ds = null;
+	this.numXPoints = 0;
+	this.numYPoints = 0;
+	var colourGradient;
+	var mouseDown1 = false;
+	var mouseDown3 = false;
+	var mousePosX = null;
+	var mousePosY = null;
+	var lastMousePos = new Point(0, 0);
+	var mouseButton1Up = null;
+	var mouseButton3Up = null;
+	var mouseButton1Down = new Point(0, 0);
+	var mouseButton3Down = new Point(0, 0);
+	this.glSurface = null;
+	this.glAxes = null;
+	this.glAxes2 = null;
+	this.glLines = null;
+	this.glSphere = null;
+	this.glTextureQuad = null;
+	this.glTextureSphere = null;
+	this.gl = null;
+	this.shaderProgram = null;
+	this.shaderTextureProgram = null;
+	this.mvMatrix = mat4.create();
+	this.mvMatrixStack = [];
+	this.pMatrix = mat4.create();
+	var mouseDown = false;
+	var lastMouseX = null;
+	var lastMouseY = null;
+	var shiftPressed = false;
+	this.once = true;
 
 	// printlnMessage('messages','JSSurfacePlot called');
 	// /printlnMessage('messages', 'JSSurfacePlot data ' +
@@ -45,195 +75,172 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 	if (zAxisTextPosition != null && zAxisTextPosition != void 0)
 		zTextPosition = zAxisTextPosition;
 
-	this.data = data;
-	var data3ds = null;
-	var dataframes = null;
-	var displayValues = null;
-	this.numXPoints = 0;
-	this.numYPoints = 0;
-	var transformation;
-	var cameraPosition;
-	var colourGradient;
-
-	var mouseDown1 = false;
-	var mouseDown3 = false;
-	var mousePosX = null;
-	var mousePosY = null;
-	var lastMousePos = new Point(0, 0);
-	var mouseButton1Up = null;
-	var mouseButton3Up = null;
-	var mouseButton1Down = new Point(0, 0);
-	var mouseButton3Down = new Point(0, 0);
-	var closestPointToMouse = null;
-	var xAxisHeader = "";
-	var yAxisHeader = "";
-	var zAxisHeader = "";
-	var xAxisTitleLabel = new Tooltip(true);
-	var yAxisTitleLabel = new Tooltip(true);
-	var zAxisTitleLabel = new Tooltip(true);
-	var tTip = new Tooltip(false, tooltipColour);
-
-	this.glSurface = null;
-	this.glAxes = null;
-	this.glLines = null;
-	this.glTexture = null;
-	this.glSphere = null;
-	this.useWebGL = false;
-	this.gl = null;
-	this.shaderProgram = null;
-	this.shaderTextureProgram = null;
-	this.mvMatrix = mat4.create();
-	this.mvMatrixStack = [];
-	this.pMatrix = mat4.create();
-	var mouseDown = false;
-	var lastMouseX = null;
-	var lastMouseY = null;
-	var canvas_support_checked = false;
-	var canvas_supported = true;
-
-	this.reRender = function(data, glOptions) {
-		printlnMessage('messages', 'JSSurfacePlot reRender called');
-
-		this.bail = true;
-		this.glOptions = glOptions;
-		this.data = data;
-		this.dataToRender = this.data.formattedValues;
-		this.frames = this.data.frames;
-		this.determineMinMaxZValues();
-
-		if (!this.useWebGL) {
-			var maxAxisValue = this.nice_num(this.maxZValue);
-			this.scaleAndNormalise(this.maxZValue / maxAxisValue);
-		} else {
-			if (this.glOptions.autoCalcZScale)
-				this.calculateZScale();
-
-			this.glOptions.xTicksNum = this.glOptions.xLabels.length - 1;
-			this.glOptions.yTicksNum = this.glOptions.yLabels.length - 1;
-			this.glOptions.zTicksNum = this.glOptions.zLabels.length - 1;
+	this.initGL = function(canvas) {
+		try {
+			this.gl = canvas.getContext("experimental-webgl", {
+				alpha : false
+			});
+			this.gl.viewportWidth = canvas.width;
+			this.gl.viewportHeight = canvas.height;
+		} catch (e) {
 		}
-
-		var cGradient;
-
-		if (colourGradient)
-			cGradient = colourGradient;
-		else
-			cGradient = getDefaultColourRamp();
-
-		this.colourGradientObject = new ColourGradient(this.minZValue, this.maxZValue, cGradient);
-
-		var canvasWidth = width;
-		var canvasHeight = height;
-
-		var minMargin = 20;
-		var drawingDim = canvasWidth - minMargin * 2;
-		var marginX = minMargin;
-		var marginY = minMargin;
-
-		if (canvasWidth > canvasHeight) {
-			drawingDim = canvasHeight - minMargin * 2;
-			marginX = (canvasWidth - drawingDim) / 2;
-		} else if (canvasWidth < canvasHeight) {
-			drawingDim = canvasWidth - minMargin * 2;
-			marginY = (canvasHeight - drawingDim) / 2;
-		}
-
-		var xDivision = 1 / (this.numXPoints - 1);
-		var yDivision = 1 / (this.numYPoints - 1);
-		var xPos, yPos;
-		var i, j;
-		var numPoints = this.numXPoints * this.numYPoints;
-		data3ds = new Array();
-		dataframe = new Array();
-		var index = 0;
-		var colIndex;
-
-		printlnMessage('messages', 'JSSurfacePlot this.frames is ' + this.frames);
-
-		if (this.frames) {
-			for ( var k = 0; k < this.numFrames; k++) {
-				index = 0;
-				dataframe = new Array();
-				for (i = 0, xPos = -0.5; i < this.numXPoints; i++, xPos += xDivision) {
-					for (j = 0, yPos = 0.5; j < this.numYPoints; j++, yPos -= yDivision) {
-						var x = xPos;
-						var y = yPos;
-
-						if (this.useWebGL)
-							colIndex = this.numYPoints - 1 - j;
-						else
-							colIndex = j;
-
-						// Reverse the y-axis to match the non-webGL surface.
-						dataframe[index] = new Point3D(x, y, this.dataToRender[k][i][colIndex]);
-						index++;
-					}
-				}
-				data3ds.push(dataframe);
-			}
-		} else {
-			for (i = 0, xPos = -0.5; i < this.numXPoints; i++, xPos += xDivision) {
-				for (j = 0, yPos = 0.5; j < this.numYPoints; j++, yPos -= yDivision) {
-					var x = xPos;
-					var y = yPos;
-
-					if (this.useWebGL)
-						colIndex = this.numYPoints - 1 - j;
-					else
-						colIndex = j;
-
-					// Reverse the y-axis to match the non-webGL surface.
-					data3ds[index] = new Point3D(x, y, this.dataToRender[i][colIndex]);
-					index++;
-				}
-			}
-		}
-
-		var r = hexToR(this.backColour) / 255;
-		var g = hexToG(this.backColour) / 255;
-		var b = hexToB(this.backColour) / 255;
-
-		this.initWorldObjects(data3ds);
-
-		this.gl.clearColor(r, g, b, 0); // Set the background colour.
-		this.gl.enable(this.gl.DEPTH_TEST);
-
-		this.allFramesRendered = false;
-		this.bail = false;
-		this.tick();
-
+		return true;
 	};
 
-	function getInternetExplorerVersion() // Returns the version of Internet
-	// Explorer or a -1
-	// (indicating the use of another browser).
-	{
-		var rv = -1; // Return value assumes failure.
-		if (navigator.appName == 'Microsoft Internet Explorer') {
-			var ua = navigator.userAgent;
-			var re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
-			if (re.exec(ua) != null)
-				rv = parseFloat(RegExp.$1);
+	this.getShader = function(id) {
+		// printlnMessage('messages', 'JSSurfacePlot id: ' + id);
+		var shaderScript = document.getElementById(id);
+		var str = "";
+		var k = shaderScript.firstChild;
+
+		while (k) {
+			if (k.nodeType == 3) {
+				str += k.textContent;
+			}
+
+			k = k.nextSibling;
 		}
-		return rv;
-	}
 
-	function supports_canvas() {
-		if (canvas_support_checked)
-			return canvas_supported;
+		var shader;
 
-		canvas_support_checked = true;
-		canvas_supported = !!document.createElement('canvas').getContext;
-		return canvas_supported;
-	}
+		if (shaderScript.type == "x-shader/x-fragment") {
+			shader = this.gl.createShader(this.gl.FRAGMENT_SHADER);
+		} else if (shaderScript.type == "x-shader/x-vertex") {
+			shader = this.gl.createShader(this.gl.VERTEX_SHADER);
+		} else {
+			return null;
+		}
 
-	this.init = function() {
+		this.gl.shaderSource(shader, str);
+		this.gl.compileShader(shader);
+
+		if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
+			alert(this.gl.getShaderInfoLog(shader));
+			return null;
+		}
+
+		return shader;
+	};
+
+	this.initShaders = function() {
+		if (this.gl == null)
+			return false;
+
+		// Non-texture shaders
+		this.shaderProgram = this.createProgram("shader-fs", "shader-vs");
+
+		// Texture shaders
+		this.shaderTextureProgram = this.createProgram("texture-shader-fs", "texture-shader-vs");
+
+		// Axes shaders
+		this.shaderAxesProgram = this.createProgram("axes-shader-fs", "axes-shader-vs");
+
+		if (!this.gl.getProgramParameter(this.shaderProgram, this.gl.LINK_STATUS)) {
+			return false;
+		}
+
+		return true;
+	};
+
+	this.createProgram = function(fragmentShaderID, vertexShaderID) {
+
+		var fragmentShader = this.getShader(fragmentShaderID);
+		var vertexShader = this.getShader(vertexShaderID);
+
+		var shaderProgram = this.gl.createProgram();
+		this.gl.attachShader(shaderProgram, vertexShader);
+		this.gl.attachShader(shaderProgram, fragmentShader);
+		this.gl.linkProgram(shaderProgram);
+
+		shaderProgram.pMatrixUniform = this.gl.getUniformLocation(shaderProgram, "uPMatrix");
+		shaderProgram.mvMatrixUniform = this.gl.getUniformLocation(shaderProgram, "uMVMatrix");
+
+		shaderProgram.nMatrixUniform = this.gl.getUniformLocation(shaderProgram, "uNMatrix");
+		shaderProgram.axesColour = this.gl.getUniformLocation(shaderProgram, "uAxesColour");
+		shaderProgram.ambientColorUniform = this.gl.getUniformLocation(shaderProgram, "uAmbientColor");
+		shaderProgram.lightingDirectionUniform = this.gl.getUniformLocation(shaderProgram, "uLightingDirection");
+		shaderProgram.directionalColorUniform = this.gl.getUniformLocation(shaderProgram, "uDirectionalColor");
+
+		return shaderProgram;
+	};
+
+	this.drawSceneOrig = function() {
+		// printlnMessage('messages', 'JSSurfacePlot drawScene');
+
+		this.mvPushMatrix(this);
+
+		this.gl.useProgram(this.shaderProgram);
+
+		// Enable the vertex arrays for the current shader.
+		this.shaderProgram.vertexPositionAttribute = this.gl.getAttribLocation(this.shaderProgram, "aVertexPosition");
+		this.gl.enableVertexAttribArray(this.shaderProgram.vertexPositionAttribute);
+		this.shaderProgram.vertexNormalAttribute = this.gl.getAttribLocation(this.shaderProgram, "aVertexNormal");
+		this.gl.enableVertexAttribArray(this.shaderProgram.vertexNormalAttribute);
+		this.shaderProgram.vertexColorAttribute = this.gl.getAttribLocation(this.shaderProgram, "aVertexColor");
+		this.gl.enableVertexAttribArray(this.shaderProgram.vertexColorAttribute);
+
+		this.gl.viewport(0, 0, this.gl.viewportWidth, this.gl.viewportHeight);
+		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+		
+		mat4.perspective(5, this.gl.viewportWidth / this.gl.viewportHeight, 0.1, 100.0, this.pMatrix);
+		mat4.identity(this.mvMatrix);
+		mat4.translate(this.mvMatrix, [ 0.0, -0.1, -19.0 ]);
+		mat4.multiply(this.mvMatrix, this.rotationMatrix);
+
+		var useLighting = true;
+
+		if (useLighting) {
+			this.gl.uniform3f(this.shaderProgram.ambientColorUniform, 0.2, 0.2, 0.2);
+
+			var lightingDirection = [ 0.0, 0.0, 1.0 ];
+
+			var adjustedLD = vec3.create();
+			vec3.normalize(lightingDirection, adjustedLD);
+			vec3.scale(adjustedLD, -1);
+			this.gl.uniform3fv(this.shaderProgram.lightingDirectionUniform, adjustedLD);
+
+			this.gl.uniform3f(this.shaderProgram.directionalColorUniform, 0.8, 0.8, 0.8);
+		}
+
+		// Disable the vertex arrays for the current shader.
+		this.gl.disableVertexAttribArray(this.shaderProgram.vertexPositionAttribute);
+		this.gl.disableVertexAttribArray(this.shaderProgram.vertexNormalAttribute);
+		this.gl.disableVertexAttribArray(this.shaderProgram.vertexColorAttribute);
+
+		//this.glTextureQuad.draw();
+		this.glTextureSphere.draw();
+		this.glAxes.draw();
+		this.glAxes2.draw();
+		this.glLines.draw();
+		this.glSphere.draw();
+		this.glSurface.draw();
+
+		this.mvPopMatrix(this);
+	};
+
+
+	this.tick = function() {
+		var self = this;
+
+		if (this.gl == null)
+			return;
+
+		var animator = function() {
+			if (self.gl == null || self.bail)
+				return;
+
+			 self.drawSceneOrig();
+			requestAnimFrame(animator);
+		};
+
+		requestAnimFrame(animator);
+	};
+
+	this.webGLStart = function() {
 		if (id)
 			targetElement.removeChild(targetDiv);
 
 		id = this.allocateId();
-
-		transformation = new Th3dtran();
 
 		this.createTargetDiv();
 
@@ -241,22 +248,30 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 			return;
 
 		this.dataToRender = this.data.formattedValues;
-		this.frames = this.data.frames;
 		this.determineMinMaxZValues();
-		this.createCanvas();
+		canvas = document.createElement("canvas");
+		canvas.className = "surfacePlotCanvas";
+		canvas.setAttribute("width", width);
+		canvas.setAttribute("height", height);
+		canvas.style.left = '0px';
+		canvas.style.top = '0px';
+		targetDiv.appendChild(canvas);
 
-		if (!this.useWebGL) {
-			var maxAxisValue = this.nice_num(this.maxZValue);
-			this.scaleAndNormalise(this.maxZValue / maxAxisValue);
-		} else {
-			if (this.glOptions.autoCalcZScale)
-				this.calculateZScale();
+		this.initGL(canvas);
+		this.initShaders();
+		this.initMouse(canvas);
 
-			this.glOptions.xTicksNum = this.glOptions.xLabels.length - 1;
-			this.glOptions.yTicksNum = this.glOptions.yLabels.length - 1;
-			this.glOptions.zTicksNum = this.glOptions.zLabels.length - 1;
-		}
+		this.createHiddenCanvasForGLText();
+
+		if (this.glOptions.autoCalcZScale)
+			this.calculateZScale();
+
+		this.glOptions.xTicksNum = this.glOptions.xLabels.length - 1;
+		this.glOptions.yTicksNum = this.glOptions.yLabels.length - 1;
+		this.glOptions.zTicksNum = this.glOptions.zLabels.length - 1;
 	};
+
+	// ==============================================
 
 	this.determineMinMaxZValues = function() {
 		this.numXPoints = this.data.nRows;
@@ -264,223 +279,31 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		this.minZValue = Number.MAX_VALUE;
 		this.maxZValue = Number.MIN_VALUE;
 
-		if (this.frames) {
-			this.numFrames = this.dataToRender.length;
-			for ( var k = 0; k < this.numFrames; k++) {
-				for ( var i = 0; i < this.numXPoints; i++) {
-					for ( var j = 0; j < this.numYPoints; j++) {
-						var value = this.dataToRender[k][i][j];
+		for ( var i = 0; i < this.numXPoints; i++) {
+			for ( var j = 0; j < this.numYPoints; j++) {
+				var value = this.dataToRender[i][j];
 
-						if (value < this.minZValue)
-							this.minZValue = value;
+				if (value < this.minZValue)
+					this.minZValue = value;
 
-						if (value > this.maxZValue)
-							this.maxZValue = value;
-					}
-				}
+				if (value > this.maxZValue)
+					this.maxZValue = value;
 			}
-		} else {
-			for ( var i = 0; i < this.numXPoints; i++) {
-				for ( var j = 0; j < this.numYPoints; j++) {
-					var value = this.dataToRender[i][j];
-
-					if (value < this.minZValue)
-						this.minZValue = value;
-
-					if (value > this.maxZValue)
-						this.maxZValue = value;
-				}
-			}
-		}
-	}
-
-	this.cleanUp = function() {
-		this.gl = null;
-
-		canvas.onmousedown = null;
-		document.onmouseup = null;
-		document.onmousemove = null;
-
-		this.numXPoints = 0;
-		this.numYPoints = 0;
-		canvas = null;
-		canvasContext = null;
-		this.data = null;
-		this.colourGradientObject = null;
-		this.glSurface = null;
-		this.glAxes = null;
-		this.glLines = null;
-		this.glTexture = null;
-		this.glSphere = null;
-		this.shaderProgram = null;
-		this.shaderTextureProgram = null;
-		this.shaderAxesProgram = null;
-		this.mvMatrix = null;
-		this.mvMatrixStack = null;
-		this.pMatrix = null;
-	}
-
-	function hideTooltip() {
-		tTip.hide();
-	}
-
-	function displayTooltip(e) {
-		var position = new Point(e.x, e.y);
-		tTip.show(tooltips[closestPointToMouse], 200);
-	}
-
-	this.render = function() {
-
-		if (this.useWebGL) // Render shiny WebGL surface plot.
-		{
-			var r = hexToR(this.backColour) / 255;
-			var g = hexToG(this.backColour) / 255;
-			var b = hexToB(this.backColour) / 255;
-
-			this.initWorldObjects(data3ds);
-			this.gl.clearColor(r, g, b, 0); // Set the background colour.
-			this.gl.enable(this.gl.DEPTH_TEST);
-			this.tick();
-
-			return;
-		} else // Render not quite so shiny non-GL surface-plot.
-		{
-			canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-			canvasContext.fillStyle = this.backColour;
-			canvasContext.fillRect(0, 0, canvas.width, canvas.height);
-
-			var canvasWidth = width;
-			var canvasHeight = height;
-
-			var minMargin = 20;
-			var drawingDim = canvasWidth - minMargin * 2;
-			var marginX = minMargin;
-			var marginY = minMargin;
-
-			transformation.init();
-			transformation.rotate(this.currentXAngle_canvas, 0.0, this.currentZAngle_canvas);
-			transformation.scale(scale);
-
-			if (origin != null && origin != void 0)
-				transformation.translate(origin.x, origin.y, 0.0);
-			else
-				transformation.translate(drawingDim / 2.0 + marginX, drawingDim / 2.0 + marginY, 0.0);
-
-			cameraPosition = new Point3D(drawingDim / 2.0 + marginX, drawingDim / 2.0 + marginY, -1000.0);
-
-			if (renderPoints) {
-				for (i = 0; i < data3ds.length; i++) {
-					var point3d = data3ds[i];
-					canvasContext.fillStyle = '#ff2222';
-					var transformedPoint = transformation.ChangeObjectPoint(point3d);
-					transformedPoint.dist = distance({
-						x : transformedPoint.ax,
-						y : transformedPoint.ay
-					}, {
-						x : cameraPosition.ax,
-						y : cameraPosition.ay
-					});
-
-					var x = transformedPoint.ax;
-					var y = transformedPoint.ay;
-
-					canvasContext.beginPath();
-					var dotSize = JSSurfacePlot.DATA_DOT_SIZE;
-
-					canvasContext.arc((x - (dotSize / 2)), (y - (dotSize / 2)), 1, 0, self.Math.PI * 2, true);
-					canvasContext.fill();
-				}
-			}
-
-			var axes = this.createAxes();
-			var polygons = this.createPolygons(data3ds);
-
-			for (i = 0; i < axes.length; i++)
-				polygons[polygons.length] = axes[i];
-
-			// Sort the polygons so that the closest ones are rendered last
-			// and therefore are not occluded by those behind them.
-			// This is really Painter's algorithm.
-			polygons.sort(PolygonComaparator);
-
-			canvasContext.lineWidth = 1;
-			canvasContext.strokeStyle = '#888';
-			canvasContext.lineJoin = "round";
-
-			for (i = 0; i < polygons.length; i++) {
-				var polygon = polygons[i];
-
-				if (polygon.isAnAxis()) {
-					var p1 = polygon.getPoint(0);
-					var p2 = polygon.getPoint(1);
-
-					canvasContext.beginPath();
-					canvasContext.moveTo(p1.ax, p1.ay);
-					canvasContext.lineTo(p2.ax, p2.ay);
-					canvasContext.stroke();
-				} else {
-					var p1 = polygon.getPoint(0);
-					var p2 = polygon.getPoint(1);
-					var p3 = polygon.getPoint(2);
-					var p4 = polygon.getPoint(3);
-
-					var colourValue = (p1.lz * 1.0 + p2.lz * 1.0 + p3.lz * 1.0 + p4.lz * 1.0) / 4.0;
-
-					var rgbColour = this.colourGradientObject.getColour(colourValue);
-					var colr = "rgb(" + rgbColour.red + "," + rgbColour.green + "," + rgbColour.blue + ")";
-					canvasContext.fillStyle = colr;
-
-					canvasContext.beginPath();
-					canvasContext.moveTo(p1.ax, p1.ay);
-					canvasContext.lineTo(p2.ax, p2.ay);
-					canvasContext.lineTo(p3.ax, p3.ay);
-					canvasContext.lineTo(p4.ax, p4.ay);
-					canvasContext.lineTo(p1.ax, p1.ay);
-
-					if (fillRegions)
-						canvasContext.fill();
-					else
-						canvasContext.stroke();
-				}
-			}
-
-			if (supports_canvas())
-				this.renderAxisText(axes);
 		}
 	};
 
-	this.renderAxisText = function(axes) {
-		var xLabelPoint = new Point3D(0.0, 0.5, 0.0);
-		var yLabelPoint = new Point3D(-0.5, 0.0, 0.0);
-		var zLabelPoint = new Point3D(-0.5, 0.5, zTextPosition);
+	this.render = function() {
 
-		var transformedxLabelPoint = transformation.ChangeObjectPoint(xLabelPoint);
-		var transformedyLabelPoint = transformation.ChangeObjectPoint(yLabelPoint);
-		var transformedzLabelPoint = transformation.ChangeObjectPoint(zLabelPoint);
+		var r = hexToR(this.backColour) / 255;
+		var g = hexToG(this.backColour) / 255;
+		var b = hexToB(this.backColour) / 255;
 
-		var xAxis = axes[0];
-		var yAxis = axes[1];
-		var zAxis = axes[2];
+		this.initWorldObjects(data3ds);
+		this.gl.clearColor(r, g, b, 0); // Set the background colour.
+		this.gl.enable(this.gl.DEPTH_TEST);
+		this.tick();
 
-		canvasContext.fillStyle = this.axisTextColour;
-
-		if (xAxis.distanceFromCamera > yAxis.distanceFromCamera) {
-			var xAxisLabelPosX = transformedxLabelPoint.ax;
-			var xAxisLabelPosY = transformedxLabelPoint.ay;
-			canvasContext.fillText(xTitle, xAxisLabelPosX, xAxisLabelPosY);
-		}
-
-		if (xAxis.distanceFromCamera < yAxis.distanceFromCamera) {
-			var yAxisLabelPosX = transformedyLabelPoint.ax;
-			var yAxisLabelPosY = transformedyLabelPoint.ay;
-			canvasContext.fillText(yTitle, yAxisLabelPosX, yAxisLabelPosY);
-		}
-
-		if (xAxis.distanceFromCamera < zAxis.distanceFromCamera) {
-			var zAxisLabelPosX = transformedzLabelPoint.ax;
-			var zAxisLabelPosY = transformedzLabelPoint.ay;
-			canvasContext.fillText(zTitle, zAxisLabelPosX, zAxisLabelPosY);
-		}
+		return;
 	};
 
 	var sort = function(array) {
@@ -506,83 +329,6 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 
 		result = result.concat(left, right);
 		return result;
-	};
-
-	this.createAxes = function() {
-		var axisOrigin = new Point3D(-0.5, 0.5, 0);
-		var xAxisEndPoint = new Point3D(0.5, 0.5, 0);
-		var yAxisEndPoint = new Point3D(-0.5, -0.5, 0);
-		var zAxisEndPoint = new Point3D(-0.5, 0.5, 1);
-
-		var transformedAxisOrigin = transformation.ChangeObjectPoint(axisOrigin);
-		var transformedXAxisEndPoint = transformation.ChangeObjectPoint(xAxisEndPoint);
-		var transformedYAxisEndPoint = transformation.ChangeObjectPoint(yAxisEndPoint);
-		var transformedZAxisEndPoint = transformation.ChangeObjectPoint(zAxisEndPoint);
-
-		var axes = new Array();
-
-		var xAxis = new Polygon(cameraPosition, true);
-		xAxis.addPoint(transformedAxisOrigin);
-		xAxis.addPoint(transformedXAxisEndPoint);
-		xAxis.calculateCentroid();
-		xAxis.calculateDistance();
-		axes[axes.length] = xAxis;
-
-		var yAxis = new Polygon(cameraPosition, true);
-		yAxis.addPoint(transformedAxisOrigin);
-		yAxis.addPoint(transformedYAxisEndPoint);
-		yAxis.calculateCentroid();
-		yAxis.calculateDistance();
-		axes[axes.length] = yAxis;
-
-		var zAxis = new Polygon(cameraPosition, true);
-		zAxis.addPoint(transformedAxisOrigin);
-		zAxis.addPoint(transformedZAxisEndPoint);
-		zAxis.calculateCentroid();
-		zAxis.calculateDistance();
-		axes[axes.length] = zAxis;
-
-		return axes;
-	};
-
-	this.createPolygons = function(data3D) {
-		var i;
-		var j;
-		var polygons = new Array();
-		var index = 0;
-
-		for (i = 0; i < this.numXPoints - 1; i++) {
-			for (j = 0; j < this.numYPoints - 1; j++) {
-				var polygon = new Polygon(cameraPosition, false);
-
-				var rawP1 = data3D[j + (i * this.numYPoints)];
-				var rawP2 = data3D[j + (i * this.numYPoints) + this.numYPoints];
-				var rawP3 = data3D[j + (i * this.numYPoints) + this.numYPoints + 1];
-				var rawP4 = data3D[j + (i * this.numYPoints) + 1];
-
-				if (hideFlatMinPolygons
-						&& (rawP2.lz == this.minZValue || (rawP1.lz == this.minZValue && rawP4.lz == this.minZValue) || ((rawP4.lz == this.minZValue || rawP3.lz == this.minZValue)
-								&& i > 1 && j > 0)))
-					continue;
-
-				var p1 = transformation.ChangeObjectPoint(rawP1);
-				var p2 = transformation.ChangeObjectPoint(rawP2);
-				var p3 = transformation.ChangeObjectPoint(rawP3);
-				var p4 = transformation.ChangeObjectPoint(rawP4);
-
-				polygon.addPoint(p1);
-				polygon.addPoint(p2);
-				polygon.addPoint(p3);
-				polygon.addPoint(p4);
-				polygon.calculateCentroid();
-				polygon.calculateDistance();
-
-				polygons[index] = polygon;
-				index++;
-			}
-		}
-
-		return polygons;
 	};
 
 	this.getDefaultColourRamp = function() {
@@ -630,8 +376,6 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 
 		var minMargin = 20;
 		var drawingDim = canvasWidth - minMargin * 2;
-		var marginX = minMargin;
-		var marginY = minMargin;
 
 		if (canvasWidth > canvasHeight) {
 			drawingDim = canvasHeight - minMargin * 2;
@@ -645,57 +389,24 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		var yDivision = 1 / (this.numYPoints - 1);
 		var xPos, yPos;
 		var i, j;
-		var numPoints = this.numXPoints * this.numYPoints;
 		data3ds = new Array();
 		dataframe = new Array();
 		var index = 0;
 		var colIndex;
 
-		// printlnMessage('messages', 'JSSurfacePlot this.frames is ' +
-		// this.frames);
+		for (i = 0, xPos = -0.5; i < this.numXPoints; i++, xPos += xDivision) {
+			for (j = 0, yPos = 0.5; j < this.numYPoints; j++, yPos -= yDivision) {
+				var x = xPos;
+				var y = yPos;
 
-		if (this.frames) {
-			for ( var k = 0; k < this.numFrames; k++) {
-				index = 0;
-				dataframe = new Array();
-				for (i = 0, xPos = -0.5; i < this.numXPoints; i++, xPos += xDivision) {
-					for (j = 0, yPos = 0.5; j < this.numYPoints; j++, yPos -= yDivision) {
-						var x = xPos;
-						var y = yPos;
+				colIndex = this.numYPoints - 1 - j;
 
-						if (this.useWebGL)
-							colIndex = this.numYPoints - 1 - j;
-						else
-							colIndex = j;
-
-						// Reverse the y-axis to match the non-webGL surface.
-						dataframe[index] = new Point3D(x, y, this.dataToRender[k][i][colIndex]);
-						index++;
-					}
-				}
-				data3ds.push(dataframe);
-			}
-		} else {
-			for (i = 0, xPos = -0.5; i < this.numXPoints; i++, xPos += xDivision) {
-				for (j = 0, yPos = 0.5; j < this.numYPoints; j++, yPos -= yDivision) {
-					var x = xPos;
-					var y = yPos;
-
-					if (this.useWebGL)
-						colIndex = this.numYPoints - 1 - j;
-					else
-						colIndex = j;
-
-					// printlnMessage('messages', 'JSSurfacePlot redraw
-					// dataToRender '
-					// + JSON.stringify(this.dataToRender[i][colIndex]));
-
-					// Reverse the y-axis to match the non-webGL surface.
-					data3ds[index] = new Point3D(x, y, this.dataToRender[i][colIndex]);
-					index++;
-				}
+				// Reverse the y-axis to match the non-webGL surface.
+				data3ds[index] = new Point3D(x, y, this.dataToRender[i][colIndex]);
+				index++;
 			}
 		}
+
 		// printlnMessage('messages', 'JSSurfacePlot redraw data3ds ' +
 		// JSON.stringify(data3ds));
 
@@ -730,92 +441,6 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		targetDiv.style.top = y + "px";
 	};
 
-	this.getShader = function(id) {
-		var shaderScript = document.getElementById(id);
-
-		if (!shaderScript) {
-			return null;
-		}
-
-		var str = "";
-		var k = shaderScript.firstChild;
-
-		while (k) {
-			if (k.nodeType == 3) {
-				str += k.textContent;
-			}
-
-			k = k.nextSibling;
-		}
-
-		var shader;
-
-		if (shaderScript.type == "x-shader/x-fragment") {
-			shader = this.gl.createShader(this.gl.FRAGMENT_SHADER);
-		} else if (shaderScript.type == "x-shader/x-vertex") {
-			shader = this.gl.createShader(this.gl.VERTEX_SHADER);
-		} else {
-			return null;
-		}
-
-		this.gl.shaderSource(shader, str);
-		this.gl.compileShader(shader);
-
-		if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
-			alert(this.gl.getShaderInfoLog(shader));
-			return null;
-		}
-
-		return shader;
-	};
-
-	this.createProgram = function(fragmentShaderID, vertexShaderID) {
-		if (this.gl == null)
-			return null;
-
-		var fragmentShader = this.getShader(fragmentShaderID);
-		var vertexShader = this.getShader(vertexShaderID);
-
-		if (fragmentShader == null || vertexShader == null)
-			return null;
-
-		var program = this.gl.createProgram();
-		this.gl.attachShader(program, vertexShader);
-		this.gl.attachShader(program, fragmentShader);
-		this.gl.linkProgram(program);
-
-		program.pMatrixUniform = this.gl.getUniformLocation(program, "uPMatrix");
-		program.mvMatrixUniform = this.gl.getUniformLocation(program, "uMVMatrix");
-
-		program.nMatrixUniform = this.gl.getUniformLocation(program, "uNMatrix");
-		program.axesColour = this.gl.getUniformLocation(program, "uAxesColour");
-		program.ambientColorUniform = this.gl.getUniformLocation(program, "uAmbientColor");
-		program.lightingDirectionUniform = this.gl.getUniformLocation(program, "uLightingDirection");
-		program.directionalColorUniform = this.gl.getUniformLocation(program, "uDirectionalColor");
-
-		return program;
-	};
-
-	this.initShaders = function() {
-		if (this.gl == null)
-			return false;
-
-		// Non-texture shaders
-		this.shaderProgram = this.createProgram("shader-fs", "shader-vs");
-
-		// Texture shaders
-		this.shaderTextureProgram = this.createProgram("texture-shader-fs", "texture-shader-vs");
-
-		// Axes shaders
-		this.shaderAxesProgram = this.createProgram("axes-shader-fs", "axes-shader-vs");
-
-		if (!this.gl.getProgramParameter(this.shaderProgram, this.gl.LINK_STATUS)) {
-			return false;
-		}
-
-		return true;
-	};
-
 	this.mvPushMatrix = function(surfacePlot) {
 		var copy = mat4.create();
 		mat4.set(surfacePlot.mvMatrix, copy);
@@ -841,151 +466,18 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 	};
 
 	this.initWorldObjects = function(data3D) {
-		if (this.frames) {
-			this.glSurface = new GLSurface(data3D[0], this);
-			this.glAxes = new GLAxes(data3D[0], this);
-			this.glLines = new GLLines(linePoints, this);
-			// labelPos = {
-			// x : 0.4,
-			// y : 0.4,
-			// z : 0.4
-			// };
-			// this.glTexture2 = new GLTexture2(this, data3D[0], "bla",
-			// labelPos, 90, "x");
-			//this.glTexture = new GLTexture(this);
-			this.glSphere = new GLSphere(data3D[0], this);
-		} else {
-			this.glSurface = new GLSurface(data3D, this);
-			this.glAxes = new GLAxes(data3D, this);
-			this.glLines = new GLLines(linePoints, this);
-			// labelPos = {
-			// x : 0.4,
-			// y : 0.4,
-			// z : 0.4
-			// };
-			// this.glTexture2 = new GLTexture2(this, data3D, "bla", labelPos,
-			// 90, "x");
-			//this.glTexture = new GLTexture(this);
-			this.glSphere = new GLSphere(data3D, this);
-		}
+		this.glSurface = new GLSurface(data3D, this);
+		this.glAxes = new GLAxes(data3D, this);
+		this.glAxes2 = new GLAxes2(data3D, this);
+		this.glLines = new GLLines(linePoints, this);
+		this.glSphere = new GLSphere(data3D, this);
+		//this.glTextureQuad = new glTextureQuad(linePoints, this);
+		this.glTextureSphere = new glTextureSphere(linePoints, this);
 	};
 
 	// WebGL mouse handlers:
-	var shiftPressed = false;
-
 	this.handleMouseUp = function(event) {
 		mouseDown = false;
-	};
-
-	this.drawScene = function() {
-		this.mvPushMatrix(this);
-
-		this.gl.useProgram(this.shaderProgram);
-
-		// Enable the vertex arrays for the current shader.
-		this.shaderProgram.vertexPositionAttribute = this.gl.getAttribLocation(this.shaderProgram, "aVertexPosition");
-		this.gl.enableVertexAttribArray(this.shaderProgram.vertexPositionAttribute);
-		this.shaderProgram.vertexNormalAttribute = this.gl.getAttribLocation(this.shaderProgram, "aVertexNormal");
-		this.gl.enableVertexAttribArray(this.shaderProgram.vertexNormalAttribute);
-		this.shaderProgram.vertexColorAttribute = this.gl.getAttribLocation(this.shaderProgram, "aVertexColor");
-		this.gl.enableVertexAttribArray(this.shaderProgram.vertexColorAttribute);
-
-		this.gl.viewport(0, 0, this.gl.viewportWidth, this.gl.viewportHeight);
-		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
-		mat4.perspective(5, this.gl.viewportWidth / this.gl.viewportHeight, 0.1, 100.0, this.pMatrix);
-		mat4.identity(this.mvMatrix);
-
-		mat4.translate(this.mvMatrix, [ 0.0, -0.1, -19.0 ]);
-
-		mat4.multiply(this.mvMatrix, this.rotationMatrix);
-
-		var useLighting = true;
-
-		if (useLighting) {
-			this.gl.uniform3f(this.shaderProgram.ambientColorUniform, 0.2, 0.2, 0.2);
-
-			var lightingDirection = [ 0.0, 0.0, 1.0 ];
-
-			var adjustedLD = vec3.create();
-			vec3.normalize(lightingDirection, adjustedLD);
-			vec3.scale(adjustedLD, -1);
-			this.gl.uniform3fv(this.shaderProgram.lightingDirectionUniform, adjustedLD);
-
-			this.gl.uniform3f(this.shaderProgram.directionalColorUniform, 0.8, 0.8, 0.8);
-		}
-
-		// Disable the vertex arrays for the current shader.
-		this.gl.disableVertexAttribArray(this.shaderProgram.vertexPositionAttribute);
-		this.gl.disableVertexAttribArray(this.shaderProgram.vertexNormalAttribute);
-		this.gl.disableVertexAttribArray(this.shaderProgram.vertexColorAttribute);
-
-		this.glAxes.draw();
-		this.glLines.draw();
-		//this.glTexture.draw();
-		//this.glTexture2.draw();
-		this.glSphere.draw();
-
-		if (this.frames && !this.allFramesRendered) {
-
-			var timeNow = new Date().getTime();
-
-			elapsed = timeNow - lastTime;
-
-			if (elapsed > 1000 / this.glOptions.framesPerSecond) {
-				if (!this.currentFrame) {
-					this.currentFrame = 1;
-				}
-
-				this.glSurface.updateSurface(data3ds[this.currentFrame]);
-
-				if (this.currentFrame < this.numFrames - 1)
-					this.currentFrame++;
-				else {
-					this.allFramesRendered = true;
-					this.currentFrame = 0;
-				}
-
-				lastTime = timeNow;
-			}
-
-		}
-
-		this.glSurface.draw();
-		// var timeNow = new Date().getTime();
-		// printlnMessage('messages','JSSurfacePlot() before draw'+timeNow);
-		// this.glSurface2.draw();
-		// printlnMessage('messages','JSSurfacePlot() after draw');
-
-		this.mvPopMatrix(this);
-	};
-
-	var lastTime = 0;
-	var elapsed = 0;
-
-	this.tick = function() {
-		var self = this;
-
-		if (this.gl == null)
-			return;
-
-		var animator = function() {
-			if (self.gl == null || self.bail)
-				return;
-
-			self.drawScene();
-			requestAnimFrame(animator);
-		};
-
-		requestAnimFrame(animator);
-	};
-
-	this.isWebGlEnabled = function() {
-		var enabled = true;
-
-		if (this.glOptions.chkControlId && document.getElementById(this.glOptions.chkControlId))
-			enabled = document.getElementById(this.glOptions.chkControlId).checked;
-
-		return enabled && this.initShaders();
 	};
 
 	this.rotate = function(deltaX, deltaY) {
@@ -1034,53 +526,29 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		lastMouseY = newY;
 	};
 
-	this.initGL = function(canvas) {
-		var canUseWebGL = false;
+	this.initMouse = function(canvas) {
+		var self = this;
+		printlnMessage('messages','JSSurfacePlot.js initMouse called');
 
-		try {
-			this.gl = canvas.getContext("experimental-webgl", {
-				alpha : false
-			});
-			this.gl.viewportWidth = canvas.width;
-			this.gl.viewportHeight = canvas.height;
-		} catch (e) {
-		}
+		var handleMouseDown = function(event) {
+			shiftPressed = isShiftPressed(event);
 
-		if (this.gl) {
-			canUseWebGL = this.isWebGlEnabled();
-			var self = this;
+			mouseDown = true;
+			lastMouseX = event.clientX;
+			lastMouseY = event.clientY;
 
-			var handleMouseDown = function(event) {
-				shiftPressed = isShiftPressed(event);
-
-				mouseDown = true;
-				lastMouseX = event.clientX;
-				lastMouseY = event.clientY;
-
-				document.onmouseup = self.handleMouseUp;
-				document.onmousemove = function(event) {
-					self.handleMouseMove(event, self)
-				};// self.handleMouseMove;
-			};
-
-			canvas.onmousedown = handleMouseDown;
-			document.onmouseup = this.handleMouseUp;
+			document.onmouseup = self.handleMouseUp;
 			document.onmousemove = function(event) {
 				self.handleMouseMove(event, self)
-			};// this.handleMouseMove;
-		}
+			};// self.handleMouseMove;
+		};
 
-		return canUseWebGL;
-	};
+		canvas.onmousedown = handleMouseDown;
+		document.onmouseup = this.handleMouseUp;
+		document.onmousemove = function(event) {
+			self.handleMouseMove(event, self)
+		};// this.handleMouseMove;
 
-	this.initCanvas = function() {
-		canvas.className = "surfacePlotCanvas";
-		canvas.setAttribute("width", width);
-		canvas.setAttribute("height", height);
-		canvas.style.left = '0px';
-		canvas.style.top = '0px';
-
-		targetDiv.appendChild(canvas);
 	};
 
 	this.scaleAndNormalise = function(scaleFactor) {
@@ -1179,51 +647,6 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		// Scale the values accordingly.
 		var scaleFactor = this.maxZValue / maxAxisValue;
 		this.scaleAndNormalise(scaleFactor);
-	}
-
-	this.createCanvas = function() {
-		canvas = document.createElement("canvas");
-
-		if (!supports_canvas()) {
-			G_vmlCanvasManager.initElement(canvas);
-			canvas.style.width = width;
-			canvas.style.height = height;
-		} else {
-			this.initCanvas();
-			this.useWebGL = this.initGL(canvas);
-		}
-
-		if (!this.useWebGL) {
-			targetDiv.removeChild(canvas);
-			canvas = document.createElement("canvas");
-
-			this.initCanvas();
-
-			canvasContext = canvas.getContext("2d");
-			canvasContext.font = "bold 18px sans-serif";
-			canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-
-			canvasContext.fillStyle = '#000';
-
-			canvasContext.fillRect(0, 0, canvas.width, canvas.height);
-
-			canvasContext.beginPath();
-			canvasContext.rect(0, 0, canvas.width, canvas.height);
-			canvasContext.strokeStyle = '#888';
-			canvasContext.stroke();
-
-			canvas.owner = this;
-			canvas.onmousemove = this.mouseIsMoving;
-			canvas.onmouseout = hideTooltip;
-			canvas.onmousedown = this.mouseDownd;
-			canvas.onmouseup = this.mouseUpd;
-
-			canvas.addEventListener("touchstart", this.mouseDownd, false);
-			canvas.addEventListener("touchmove", this.mouseIsMoving, false);
-			canvas.addEventListener("touchend", this.mouseUpd, false);
-			canvas.addEventListener("touchcancel", hideTooltip, false);
-		} else
-			this.createHiddenCanvasForGLText();
 	};
 
 	this.createHiddenCanvasForGLText = function() {
@@ -1262,10 +685,8 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		var currentPos = getMousePositionFromEvent(e);
 
 		if (mouseDown1) {
-			hideTooltip();
 			self.calculateRotation(currentPos);
 		} else if (mouseDown3) {
-			hideTooltip();
 			self.calculateScale(currentPos);
 		} else {
 			closestPointToMouse = null;
@@ -1283,13 +704,6 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 					closestPointToMouse = i;
 				}
 			}
-
-			if (closestDist > 32) {
-				hideTooltip();
-				return;
-			}
-
-			displayTooltip(currentPos);
 		}
 
 		return false;
@@ -1318,17 +732,7 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 	}
 
 	function getMousePositionFromEvent(e) {
-		if (getInternetExplorerVersion() > -1) {
-			var e = window.event;
-
-			if (e.srcElement.getAttribute('Stroked')) {
-				if (mousePosX == null || mousePosY == null)
-					return;
-			} else {
-				mousePosX = e.offsetX;
-				mousePosY = e.offsetY;
-			}
-		} else if (e.layerX || e.layerX == 0) // Firefox
+		if (e.layerX || e.layerX == 0) // Firefox
 		{
 			mousePosX = e.layerX;
 			mousePosY = e.layerY;
@@ -1392,7 +796,37 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		this.render();
 	};
 
-	this.init();
+	this.cleanUp = function() {
+		this.gl = null;
+
+		canvas.onmousedown = null;
+		document.onmouseup = null;
+		document.onmousemove = null;
+
+		this.numXPoints = 0;
+		this.numYPoints = 0;		this.glTexture = null;
+
+		canvas = null;
+		canvasContext = null;
+		this.data = null;
+		this.colourGradientObject = null;
+		this.glSurface = null;
+		this.glAxes = null;
+		this.glAxes2 = null;
+		this.glLines = null;
+		this.glSphere = null;
+		this.glTextureQuad = null;
+		this.glTextureSphere = null;
+		this.shaderProgram = null;
+		this.shaderTextureProgram = null;
+		this.shaderAxesProgram = null;
+		this.mvMatrix = null;
+		this.mvMatrixStack = null;
+		this.pMatrix = null;
+	};
+
+
+
 };
 
 JSSurfacePlot.DEFAULT_X_ANGLE_CANVAS = 47;

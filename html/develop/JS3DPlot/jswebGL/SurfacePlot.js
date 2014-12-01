@@ -24,7 +24,7 @@ SurfacePlot = function(container) {
 	this.redraw = function() {
 		this.surfacePlot.init();
 		this.surfacePlot.redraw();
-	}
+	};
 };
 
 SurfacePlot.prototype.draw = function(data, linePoints, options, basicPlotOptions, glOptions) {
@@ -44,7 +44,6 @@ SurfacePlot.prototype.draw = function(data, linePoints, options, basicPlotOption
 	var backColour = options.backColour;
 	var axisTextColour = options.axisTextColour;
 	var hideFlatMinPolygons = options.hideFlatMinPolygons;
-	var tooltipColour = options.tooltipColour;
 	var origin = options.origin;
 	var startXAngle_canvas = options.startXAngle;
 	var startZAngle_canvas = options.startZAngle;
@@ -54,23 +53,8 @@ SurfacePlot.prototype.draw = function(data, linePoints, options, basicPlotOption
 
 	if (this.surfacePlot) {
 
-		var isOpenGL = function() {
-			var openGLSelected = true;
-			if (glOptions.chkControlId && document.getElementById(glOptions.chkControlId))
-				openGLSelected = document.getElementById(glOptions.chkControlId).checked;
-
-			return openGLSelected;
-		}
-
-		if (glOptions.animate && isOpenGL()) // {
-			var data = this.createFrames(data, glOptions);
-		// this.surfacePlot.reRender(data, glOptions);
-		// return;
-		// }
-		// else {
 		this.surfacePlot.cleanUp();
 		this.containerElement.innerHTML = "";
-		// }
 
 		startXAngle_canvas = this.surfacePlot.currentXAngle_canvas;
 		startZAngle_canvas = this.surfacePlot.currentZAngle_canvas;
@@ -79,10 +63,10 @@ SurfacePlot.prototype.draw = function(data, linePoints, options, basicPlotOption
 	}
 
 	this.surfacePlot = new JSSurfacePlot(xPos, yPos, w, h, colourGradient, this.containerElement, fillPolygons,
-			tooltips, xTitle, yTitle, zTitle, renderPoints, backColour, axisTextColour, hideFlatMinPolygons,
-			tooltipColour, origin, startXAngle_canvas, startZAngle_canvas, rotationMatrix, zAxisTextPosition,
+			tooltips, xTitle, yTitle, zTitle, renderPoints, backColour, axisTextColour, hideFlatMinPolygons, origin, startXAngle_canvas, startZAngle_canvas, rotationMatrix, zAxisTextPosition,
 			glOptions, data,linePoints);
 
+	this.surfacePlot.webGLStart();
 	this.surfacePlot.redraw();
 };
 
@@ -96,132 +80,6 @@ Array.prototype.clone = function() {
 	return arr;
 }
 
-/*
- * Given the current plot and its data, if the number of rows and columns in the
- * new data are the same as the current then we can interpolate a number of
- * frames between the two data sets. We can then animate the transition from
- * displaying the old surface to the new one.
- */
-SurfacePlot.prototype.createFrames = function(newData, glOptions) {
-
-	var currentData = this.surfacePlot.data;
-	var numRows = newData.nRows;
-	var numCols = newData.nCols;
-	var currentValues = this.originalFormattedValues ? this.originalFormattedValues : currentData.formattedValues;
-	var newValues = newData.formattedValues;
-	this.originalFormattedValues = newValues.clone();
-	var self = this;
-
-	var canInterpolateFrames = function() {
-		return currentData.nRows == newData.nRows && currentData.nCols == newData.nCols
-				&& currentValues.length == newValues.length;
-	};
-
-	var getDiff = function(value1, value2) {
-		if (value1 == 0)
-			diff = value2;
-		else if (value2 == 0)
-			diff = value1;
-		else if (value2 > value1)
-			diff = value2 / value1;
-		else if (value1 > value2)
-			diff = value1 / value2;
-		else
-			diff = 0;
-
-		if (diff < 0)
-			diff *= -1;
-
-		diff -= 1;
-
-		return diff;
-	};
-
-	var getMaxZvalueDiff = function() {
-
-		var maxDiff = 0;
-		var diff = 0;
-		var currentValue, newValue;
-
-		for ( var i = 0; i < numRows; i++) {
-			for ( var j = 0; j < numCols; j++) {
-
-				currentValue = currentValues[i][j];
-				newValue = newValues[i][j];
-
-				var diff = getDiff(newValue, currentValue);
-
-				if (diff > maxDiff)
-					maxDiff = diff;
-			}
-		}
-
-		return maxDiff;
-
-	};
-
-	if (canInterpolateFrames) {
-
-		var maxDiff = getMaxZvalueDiff();
-
-		if (maxDiff <= 0)
-			return newData;
-
-		var numFrames = Math.min(10, Math.floor(maxDiff));
-
-		if (numFrames == 0)
-			return newData;
-
-		var rows = [];
-		var cols = [];
-		var frames = [];
-
-		for ( var f = 0; f < numFrames; f++) {
-
-			rows = [];
-
-			for ( var i = 0; i < numRows; i++) {
-
-				cols = [];
-
-				for ( var j = 0; j < numCols; j++) {
-
-					currentValue = currentValues[i][j];
-					newValue = newValues[i][j];
-
-					var diff = newValue - currentValue;
-
-					if (diff == 0)
-						cols.push(newValue);
-					else {
-						var increment = (diff / numFrames) * (f + 1);
-						var interpolatedValue = currentValue + increment;
-						cols.push(interpolatedValue);
-					}
-
-				}
-
-				rows.push(cols);
-
-			}
-
-			frames.push(rows);
-
-		}
-
-		var dataCopy = JSON.parse(JSON.stringify(newData));
-
-		dataCopy.frames = true;
-		dataCopy.formattedValues = frames;
-		glOptions.framesPerSecond = 60;
-
-		return dataCopy;
-
-	}
-
-	return newData;
-
-}
 
 SurfacePlot.prototype.getChart = function() {
 	return this.surfacePlot;

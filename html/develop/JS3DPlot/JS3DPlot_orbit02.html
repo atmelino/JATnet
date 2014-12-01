@@ -7,16 +7,21 @@
 <script type="text/javascript" src='jswebGL/SurfacePlot.js'></script>
 <script type="text/javascript" src='jswebGL/JSSurfacePlot.js'></script>
 <script type="text/javascript" src='jswebGL/GLText.js'></script>
+<script type="text/javascript" src='jswebGL/GLText2.js'></script>
 <script type="text/javascript" src='jswebGL/GLAxes.js'></script>
+<script type="text/javascript" src='jswebGL/GLAxes2.js'></script>
 <script type="text/javascript" src='jswebGL/GLSurface.js'></script>
 <script type="text/javascript" src='jswebGL/GLLines.js'></script>
 <script type="text/javascript" src='jswebGL/GLSphere.js'></script>
+<script type="text/javascript" src='jswebGL/GLTextureSphere.js'></script>
 <script type="text/javascript" src='jswebGL/ColourGradient.js'></script>
 <script type="text/javascript" src="jswebGL/glMatrix-0.9.5.min.js"></script>
 <script type="text/javascript" src="jswebGL/webgl-utils.js"></script>
-<script type="text/javascript" src="functions.js"></script>
-<script src="sprintf.js"></script>
-<script src="../libjs/jquery-2.1.1.js"></script>
+<script type="text/javascript" src="../libjs/functions.js"></script>
+<script type="text/javascript" src="../libjs/sprintf.js"></script>
+<script type="text/javascript" src="../libjs/jquery-2.1.1.js"></script>
+
+<!-- <script type="text/javascript" src='jswebGL/GLTextureQuad.js'></script> -->
 
 <title>SurfacePlot test stub</title>
 
@@ -176,9 +181,6 @@
 			}
 		}
 
-		//printlnMessage('messages', 'create SurfacePlot()');
-		surfacePlot = new SurfacePlot(document.getElementById("surfacePlotDiv"));
-
 		// Don't fill polygons in IE < v9. It's too slow.
 		var fillPly = true;
 
@@ -261,13 +263,12 @@
 			origin : chartOrigin
 		};
 
+		//printlnMessage('messages', 'create SurfacePlot()');
+		surfacePlot = new SurfacePlot(document.getElementById("surfacePlotDiv"));
+
 		//printlnMessage('messages', 'draw SurfacePlot()');
 		surfacePlot.draw(data, linePoints, options, basicPlotOptions, glOptions);
 
-	}
-
-	function toggleChart(chkbox) {
-		surfacePlot.draw(data, options, basicPlotOptions, glOptions);
 	}
 
 	$(document).ready(function() {
@@ -333,10 +334,8 @@
 			</div>
 		</div>
 		<div style="clear: right; float: left;">
-			<input id="allowWebGL" type="checkbox" checked=""
-				onclick="toggleChart(this)"> <span style="color: #ffffff">Use
-				webGL</span> <span style="color: #ffffff"> Drag to rotate. Shift
-				drag to scale</span> <br> Eccentricity:
+			<span style="color: #ffffff"> Drag to rotate. Shift drag to
+				scale</span> <br> Eccentricity:
 			<textarea rows="1" cols="12" name="Eccentricity" id="Eccentricity">0.3</textarea>
 			<br> Inclination:
 			<textarea rows="1" cols="12" name="Inclination" id="Inclination">0.5</textarea>

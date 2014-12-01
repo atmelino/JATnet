@@ -16,18 +16,6 @@
 <script type="text/javascript" src="lib/d3.js"></script>
 <script type="text/javascript" src="lib/elegansMod.js"></script>
 
-<!-- <script type="text/javascript" src="lib/d3.min.js"></script> -->
-<!-- <script type="text/javascript" src="lib/elegans.min.js"></script> -->
-<!-- <link rel="stylesheet" type="text/css" href="lib/jetmenu.css"> -->
-<!-- <script type="text/javascript" src="lib/jetmenu.js"></script> -->
-
-
-<!-- On the remote server, insert the code from piwik.txt here for tracking -->
-<!-- Piwik -->
-
-<!-- End Piwik Code -->
-
-
 
 </head>
 <body onload="onload_function()">

@@ -3,7 +3,6 @@
  */
 GLLines = function(linePoints, surfacePlot) {
 	this.shaderProgram = surfacePlot.shaderAxesProgram;
-	this.currenShader = null;
 	this.gl = surfacePlot.gl;
 	this.linePoints = linePoints;
 	this.setMatrixUniforms = surfacePlot.setMatrixUniforms;
@@ -16,7 +15,6 @@ GLLines = function(linePoints, surfacePlot) {
 		// JSON.stringify(linePoints));
 
 		var vertices = [];
-		// var i;
 
 		for ( var i = 0; i < linePoints.length; i += 3) {
 
@@ -31,9 +29,7 @@ GLLines = function(linePoints, surfacePlot) {
 			vertices = vertices.concat(linePoints[i + 5]);
 		}
 
-		// printlnMessage('messages', 'GLLines vertices ' +
-		// JSON.stringify(vertices));
-
+		//printlnMessage('messages', 'GLLines.js vertices ' + JSON.stringify(vertices));
 		this.linesVertexPositionBuffer = this.gl.createBuffer();
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.linesVertexPositionBuffer);
 
