@@ -5,7 +5,7 @@ function onload_function() {
 	title = getCookie('title');
 	if (page == null) {
 		page = 'home.html';
-		title = 'JAT'
+		title = 'JAT';
 	}
 	printlnMessage('messages', page + ' ' + title);
 
@@ -25,18 +25,31 @@ function linkClick(page, title) {
 
 }
 
-// jQuery(document).ready(function() {
-// $().jetmenu();
-// });
+
+// play the funky music white boy
+function do_the_click(url) {
+	alert(url);
+}
 
 (function($) {
 	$(document).ready(function() {
+
+		$('div.menu a').click(function() {
+			printlnMessage('messages',this.id);
+			linkClick(this.id+'.html', 'JAT');
+			//alert(this.href);
+			//do_the_click(this.href);
+			return false;
+		});
+
 		$('.has-sub').click(function(e) {
 			alert('clicked');
 			e.preventDefault();
 			$(this).parent().toggleClass('tap');
 		});
 		$('.myhome').click(function(e) {
+			alert('clicked');
+
 			linkClick('home.html', 'JAT');
 		});
 		$('.Documentation').click(function(e) {

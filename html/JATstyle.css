@@ -21,11 +21,11 @@ body {
 	z-index: 100;
 	position: fixed;
 	width: 100%;
-	top: 40px;
+	top: 25px;
 }
 
 #mainarea {
-	margin-top: 70px;
+	margin-top: 45px;
 	padding: 0;
 }
 
@@ -44,7 +44,7 @@ img.centered { /*position: fixed;*/
 	margin-left: -100px;
 }
 
-ul.menuheader  {
+ul {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
@@ -57,7 +57,7 @@ li {
 
 a:link,a:visited {
 	display: block;
-	width: 120px;
+	width: 100px;
 	font-weight: bold;
 	color: #FFFFFF;
 	background-color: #98bf21;
