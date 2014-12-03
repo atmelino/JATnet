@@ -3,18 +3,45 @@
 body {
 	font-family: Arial;
 	font-size: 14px;
-	margin: 1px;
-	//margin: 0;
+	margin: 1px; //
+	margin: 0;
 	padding: 0;
 }
 
 #menuheader {
 	z-index: 100;
-/* 	background: #eeeeff; */
+	/* 	background: #eeeeff; */
 	position: fixed;
 	width: 100%;
 	height: 35px;
 	top: 0;
+}
+
+#menuheader ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+#menuheader li {
+	float: left;
+}
+
+#menuheader a:link,a:visited {
+	display: block;
+	width: 100px;
+	font-weight: bold;
+	color: #dddddd;
+	background-color: #112266;
+	text-align: center;
+	padding: 4px;
+	text-decoration: none;
+	text-transform: uppercase;
+}
+
+#menuheader a:hover,a:active {
+	background-color: #1A991B;
 }
 
 #status {
@@ -29,8 +56,9 @@ body {
 	padding: 0;
 }
 
-.content {
-	border: 1px solid blue;
+#mainarea a:link,a:visited {
+	color: #0000ff;
+/* 	background-color: #112266; */
 }
 
 #container {
@@ -44,69 +72,11 @@ img.centered { /*position: fixed;*/
 	margin-left: -100px;
 }
 
-ul {
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
-	overflow: hidden;
+table, th, td {
+   border: 1px solid black;
 }
 
-li {
-	float: left;
+table {
+    border-collapse: collapse;
 }
 
-a:link,a:visited {
-	display: block;
-	width: 100px;
-	font-weight: bold;
-	color: #FFFFFF;
-	background-color: #98bf21;
-	text-align: center;
-	padding: 4px;
-	text-decoration: none;
-	text-transform: uppercase;
-}
-
-a:hover,a:active {
-	background-color: #7A991A;
-}
-
-/* ul.egmenu { */
-/* 	background: #444; */
-/* 	top: 0px; */
-/* 	width: 100%; */
-/* 	height: 30px; */
-/* } */
-
-/* ul.egmenu>li { */
-/* 	float: left; */
-/* 	position: relative; */
-/* } */
-
-/* ul.egmenu ul { */
-/* 	background: #444; */
-/* 	display: none; */
-/* 	position: absolute; */
-/* 	left: 0; */
-/* 	top: 100%; */
-/* } */
-
-/* ul.egmenu a { */
-/* 	cursor: pointer; */
-/* 	display: block; */
-/* 	color: white; */
-/* 	line-height: 30px; */
-/* 	padding: 0 10px; */
-/* } */
-
-/* ul.egmenu li { */
-/* 	list-style: none; */
-/* } */
-
-/* ul.egmenu li:hover { */
-/* 	background: #555; */
-/* } */
-
-/* ul.egmenu li:hover ul { */
-/* 	display: block; */
-/* } */

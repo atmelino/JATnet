@@ -35,8 +35,8 @@ function do_the_click(url) {
 	$(document).ready(function() {
 
 		$('div.menu a').click(function() {
-			printlnMessage('messages',this.id);
-			linkClick(this.id+'.html', 'JAT');
+			//printlnMessage('messages',this.id);
+			linkClick(this.id+'.html', 'JAT '+this.id);
 			//alert(this.href);
 			//do_the_click(this.href);
 			return false;
@@ -47,38 +47,37 @@ function do_the_click(url) {
 			e.preventDefault();
 			$(this).parent().toggleClass('tap');
 		});
-		$('.myhome').click(function(e) {
-			alert('clicked');
-
-			linkClick('home.html', 'JAT');
-		});
-		$('.Documentation').click(function(e) {
-			linkClick('Documentation.html', 'Documentation');
-		});
-		$('.Applications').click(function(e) {
-			linkClick('Applications.html', 'Applications');
-		});
-		$('.WebApps').click(function(e) {
-			linkClick('WebApps.html', 'Web Apps');
-		});
-		$('.Examples').click(function(e) {
-			linkClick('Examples.html', 'Examples');
-		});
-		$('.Development').click(function(e) {
-			linkClick('Development.html', 'Development');
-		});
-		$('.Testing').click(function(e) {
-			linkClick('Testing.html', 'Testing');
-		});
-		$('.Licenses').click(function(e) {
-			linkClick('Licenses.html', 'Licenses');
-		});
-		$('.Support').click(function(e) {
-			linkClick('Support.html', 'Support');
-		});
-		$('.Screenshots').click(function(e) {
-			linkClick('Screenshots.html', 'Screenshots');
-		});
+		// $('.myhome').click(function(e) {
+		// alert('clicked');
+		// linkClick('home.html', 'JAT');
+		//		});
+		// $('.Documentation').click(function(e) {
+		// linkClick('Documentation.html', 'Documentation');
+		// });
+		// $('.Applications').click(function(e) {
+		// linkClick('Applications.html', 'Applications');
+		// });
+		// $('.WebApps').click(function(e) {
+		// linkClick('WebApps.html', 'Web Apps');
+		// });
+		// $('.Examples').click(function(e) {
+		// linkClick('Examples.html', 'Examples');
+		// });
+		// $('.Development').click(function(e) {
+		// linkClick('Development.html', 'Development');
+		// });
+		// $('.Testing').click(function(e) {
+		// linkClick('Testing.html', 'Testing');
+		// });
+		// $('.Licenses').click(function(e) {
+		// linkClick('Licenses.html', 'Licenses');
+		// });
+		// $('.Support').click(function(e) {
+		// linkClick('Support.html', 'Support');
+		// });
+		// $('.Screenshots').click(function(e) {
+		// linkClick('Screenshots.html', 'Screenshots');
+		//		});
 
 		// <li><a class='Screenshots'>Screenshots</a></li>
 

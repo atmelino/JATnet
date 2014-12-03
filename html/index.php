@@ -16,12 +16,26 @@
 <script type="text/javascript" src="lib/d3.js"></script>
 <script type="text/javascript" src="lib/elegansMod.js"></script>
 
+<script type="text/javascript">
+</script>
 
 </head>
 <body onload="onload_function()">
 
-	<div id="menuheader">
-		<?php include("menu.html"); ?>
+	<div id="menuheader" class="menu">
+		<ul>
+			<li><a href=# id=home>Home</a></li>
+			<li><a href=# id='Documentation'>Documentation</a></li>
+			<li><a href=# id='Applications'>Applications</a></li>
+			<li><a href=# id='WebApps'>Web Apps</a></li>
+			<li><a href=# id='Examples'>Examples</a></li>
+			<li><a href=# id='Screenshots'>Screenshots</a></li>
+			<li><a href=# id='Support'>Support</a></li>
+			<li><a href=# id='Development'>Development</a></li>
+			<li><a href=# id='Testing'>Testing</a></li>
+			<li><a href=# id='Licenses'>Licenses</a></li>
+		</ul>
+
 	</div>
 	<div id="status">
 		<?php include("status.html"); ?>
@@ -30,7 +44,8 @@
 	<div ID='mainarea' style="display: table;">
 
 		<div id='messagesDiv'>
-			<textarea id="messages" style="width: 90%;"></textarea>
+			<!--<textarea id="messages" style="width: 90%;"></textarea>-->
+			<textarea id="messages" cols=80;"></textarea>
 			<!-- cols=60 rows=10 -->
 		</div>
 		<div id='container'></div>
