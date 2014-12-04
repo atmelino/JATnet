@@ -24,16 +24,25 @@
 
 	<div id="menuheader" class="menu">
 		<ul>
-			<li><a href=# id=home>Home</a></li>
-			<li><a href=# id='Documentation'>Documentation</a></li>
-			<li><a href=# id='Applications'>Applications</a></li>
-			<li><a href=# id='WebApps'>Web Apps</a></li>
-			<li><a href=# id='Examples'>Examples</a></li>
-			<li><a href=# id='Screenshots'>Screenshots</a></li>
-			<li><a href=# id='Support'>Support</a></li>
-			<li><a href=# id='Development'>Development</a></li>
-			<li><a href=# id='Testing'>Testing</a></li>
-			<li><a href=# id='Licenses'>Licenses</a></li>
+			<li><a href="home.html" id=home target="iframe_a">Home</a></li>
+			<li><a href='Documentation.html' id='Documentation' target="iframe_a">Documentation</a>
+			</li>
+			<li><a href='Applications.html' id='Applications' target="iframe_a">Applications</a>
+			</li>
+			<li><a href='WebApps.php' id='WebApps' target="iframe_a">Web Apps</a>
+			</li>
+			<li><a href='Examples.html' id='Examples' target="iframe_a">Examples</a>
+			</li>
+			<li><a href='Screenshots.html' id='Screenshots' target="iframe_a">Screenshots</a>
+			</li>
+			<li><a href='Support.html' id='Support' target="iframe_a">Support</a>
+			</li>
+			<li><a href='Development.html' id='Development' target="iframe_a">Development</a>
+			</li>
+			<li><a href='Testing.html' id='Testing' target="iframe_a">Testing</a>
+			</li>
+			<li><a href='Licenses.html' id='Licenses' target="iframe_a">Licenses</a>
+			</li>
 		</ul>
 
 	</div>
@@ -48,7 +57,11 @@
 			<textarea id="messages" cols=80;"></textarea>
 			<!-- cols=60 rows=10 -->
 		</div>
-		<div id='container'></div>
+
+		<iframe width="100%" height="700px" src="home.html" name="iframe_a"></iframe>
+		<!-- 		<iframe width="100%" src="home.html" name="iframe_a"></iframe> -->
+
+		<!-- 		<div id='container'></div> -->
 
 	</div>
 	<!-- end of mainarea -->

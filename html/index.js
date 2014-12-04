@@ -11,7 +11,7 @@ function onload_function() {
 
 	// $('#container').load('home.html');
 	// document.title = 'JAT';
-	$('#container').load(page);
+	//$('#container').load(page);
 	document.title = title;
 
 }
@@ -25,22 +25,18 @@ function linkClick(page, title) {
 
 }
 
-
-// play the funky music white boy
-function do_the_click(url) {
-	alert(url);
-}
-
 (function($) {
 	$(document).ready(function() {
 
-		$('div.menu a').click(function() {
-			//printlnMessage('messages',this.id);
-			linkClick(this.id+'.html', 'JAT '+this.id);
-			//alert(this.href);
-			//do_the_click(this.href);
-			return false;
-		});
+//		$('div.menu a').click(function() {
+//			// printlnMessage('messages',this.id);
+//			if (this.id == 'WebApps')
+//				linkClick('WebApps.php', 'Web Apps');
+//			else
+//				linkClick(this.id + '.html', 'JAT ' + this.id);
+//			// alert(this.href);
+//			return false;
+//		});
 
 		$('.has-sub').click(function(e) {
 			alert('clicked');
@@ -50,7 +46,7 @@ function do_the_click(url) {
 		// $('.myhome').click(function(e) {
 		// alert('clicked');
 		// linkClick('home.html', 'JAT');
-		//		});
+		// });
 		// $('.Documentation').click(function(e) {
 		// linkClick('Documentation.html', 'Documentation');
 		// });
@@ -77,7 +73,7 @@ function do_the_click(url) {
 		// });
 		// $('.Screenshots').click(function(e) {
 		// linkClick('Screenshots.html', 'Screenshots');
-		//		});
+		// });
 
 		// <li><a class='Screenshots'>Screenshots</a></li>
 
