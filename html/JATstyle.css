@@ -52,13 +52,13 @@ body {
 }
 
 #mainarea {
-	top: 35px;
-	margin-top: 25px;
+	top: 26px;
+	margin-top: 26px;
 	padding: 0;
 }
 
 #mainarea a:link,a:visited {
-	color: #0000ff;
+/* 	color: #0000ff; */
 /* 	background-color: #112266; */
 }
 

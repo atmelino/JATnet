@@ -22,10 +22,11 @@
 </head>
 <body onload="onload_function()">
 
-	<div id="menuheader" class="menu">
-		<ul>
+<!-- 	<div id="menuheader" class="menu"> -->
+	<div id="menuheader">
+	<ul>
 			<li><a href="home.html" id=home target="iframe_a">Home</a></li>
-			<li><a href='Documentation.html' id='Documentation' target="iframe_a">Documentation</a>
+			<li><a href='Documentation.html' id='Documentation'>Documentation</a>
 			</li>
 			<li><a href='Applications.html' id='Applications' target="iframe_a">Applications</a>
 			</li>
@@ -51,7 +52,6 @@
 	<!-- 	</div> -->
 	
 	<div ID='mainarea' style="display: table;">
-	<button onclick="redirect()">redirect</button>
 	
 		<div id='messagesDiv'>
 			<!--<textarea id="messages" style="width: 90%;"></textarea>-->
@@ -64,7 +64,7 @@
 
 	</div>
 	<!-- end of mainarea -->
-	<iframe width="100%" height="700px" src="home.html" name="iframe_a" id="iframe_a"></iframe>
+<!-- 	<iframe width="100%" height="600px%" src="home.html" name="iframe_a" id="iframe_a"></iframe> -->
 
 
 </body>
