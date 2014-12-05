@@ -2,6 +2,7 @@ function onload_function() {
 	// printlnMessage('messages', 'index.js: onload_function()');
 
 	page = getCookie('page');
+	printlnMessage('messages', 'index.js: from cookies: ' + page);
 	title = getCookie('title');
 	if (page == null) {
 		page = 'home.html';
@@ -51,6 +52,8 @@ function linkClick(page, title) {
 			printlnMessage('messages', 'index.js: ' + page);
 			setCookie('page', page, 100);
 			//	setCookie('title', title, 100);
+			page = getCookie('page');
+			printlnMessage('messages', 'index.js: from cookies: ' + page);
 
 		});
 

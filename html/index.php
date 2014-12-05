@@ -26,7 +26,7 @@
 	<div id="menuheader">
 	<ul>
 			<li><a href="home.html" id=home target="iframe_a">Home</a></li>
-			<li><a href='Documentation.html' id='Documentation'>Documentation</a>
+			<li><a href='Documentation.html' id='Documentation' target="iframe_a">Documentation</a>
 			</li>
 			<li><a href='Applications.html' id='Applications' target="iframe_a">Applications</a>
 			</li>
@@ -55,7 +55,7 @@
 	
 		<div id='messagesDiv'>
 			<!--<textarea id="messages" style="width: 90%;"></textarea>-->
-			<textarea id="messages" cols=80;"></textarea>
+			<textarea id="messages" cols=80; rows=4"></textarea>
 			<!-- cols=60 rows=10 -->
 		</div>
 
@@ -64,7 +64,7 @@
 
 	</div>
 	<!-- end of mainarea -->
-<!-- 	<iframe width="100%" height="600px%" src="home.html" name="iframe_a" id="iframe_a"></iframe> -->
+	<iframe width="100%" height="600px%" src="home.html" name="iframe_a" id="iframe_a"></iframe>
 
 
 </body>
