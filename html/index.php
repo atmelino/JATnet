@@ -44,27 +44,27 @@
 			<li><a href='Licenses.html' id='Licenses' target="iframe_a">Licenses</a>
 			</li>
 		</ul>
-
-	</div>
-	<div id="status">
-		<?php include("status.html"); ?>
 	</div>
 
+	<!-- 	<div id="status"> -->
+	<!--<?php include("status.html"); ?>-->
+	<!-- 	</div> -->
+	
 	<div ID='mainarea' style="display: table;">
-
+	<button onclick="redirect()">redirect</button>
+	
 		<div id='messagesDiv'>
 			<!--<textarea id="messages" style="width: 90%;"></textarea>-->
 			<textarea id="messages" cols=80;"></textarea>
 			<!-- cols=60 rows=10 -->
 		</div>
 
-		<iframe width="100%" height="700px" src="home.html" name="iframe_a"></iframe>
 		<!-- 		<iframe width="100%" src="home.html" name="iframe_a"></iframe> -->
-
 		<!-- 		<div id='container'></div> -->
 
 	</div>
 	<!-- end of mainarea -->
+	<iframe width="100%" height="700px" src="home.html" name="iframe_a" id="iframe_a"></iframe>
 
 
 </body>

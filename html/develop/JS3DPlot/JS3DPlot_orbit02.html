@@ -320,12 +320,10 @@
 
 <body onLoad="setUp();" style="background: #ccc">
 	<div id='messagesDiv'>
-		<textarea id="messages" style="width: 90%;" rows=10></textarea>
+		<textarea id="messages" style="width: 90%;" rows=4></textarea>
 	</div>
 
 	<div style="margin-left: 50px;">
-		<div></div>
-
 		<div style="clear: right; float: left;">
 			<div id='surfacePlotDiv'
 				style="float: left; width: 500px; height: 500px; border: 1px solid red; background: #fff;">
@@ -334,7 +332,9 @@
 		</div>
 		<div style="clear: right; float: left;">
 			<span style="color: #ffffff"> Drag to rotate. Shift drag to
-				scale</span> <br> Eccentricity:
+				scale</span> <br> Semimajor Axis:
+			<textarea rows="1" cols="12" name="SemimajorAxis" id="SemimajorAxis">10000</textarea>
+			<br> Eccentricity:
 			<textarea rows="1" cols="12" name="Eccentricity" id="Eccentricity">0.3</textarea>
 			<br> Inclination:
 			<textarea rows="1" cols="12" name="Inclination" id="Inclination">0.5</textarea>

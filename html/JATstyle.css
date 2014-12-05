@@ -52,7 +52,8 @@ body {
 }
 
 #mainarea {
-	margin-top: 45px;
+	top: 35px;
+	margin-top: 25px;
 	padding: 0;
 }
 

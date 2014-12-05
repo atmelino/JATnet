@@ -5,27 +5,7 @@
 <title>Insert title here</title>
 
 <script type="text/javascript">
-function PHPtest()
-{
-
-	var thisIP="<?php echo $_SERVER['SERVER_ADDR'];?>";
-    //alert("<?php echo $_SERVER['SERVER_ADDR'];?>");
-    //alert(thisIP);
-
-}
-
-
-function redirect()
-{
-
-	var thisIP="<?php echo $_SERVER['SERVER_ADDR'];?>";
-	newAddress="http://"+thisIP+":8080/JATServlet/JS3DPlot/JS3DPlot_orbit02.html";
-	linkClick(newAddress);
-}
-
 </script>
-
-
 
 </head>
 <body>
@@ -51,24 +31,6 @@ function redirect()
 	<p>
 		<a href="WebAppsDevelop.html" target="iframe_a">Web Apps Develop</a>
 	</p>
-	<p>
-		<a href="javascript:void(0)"
-			onclick="linkClick('WebAppsDevelop.html')">Orbit Viewer</a> <a
-			href="javascript:void(0)" onclick="linkClick('WebAppsDevelop.html')">Web
-			Apps Develop</a>
-	</p>
-	<button onclick="PHPtest()">PHP test</button>
-	<button onclick="redirect()">redirect</button>
-
-
 
 </body>
 </html>
-<?php
-
-
-
-
-echo $_SERVER['SERVER_ADDR'];
-
-?>
