@@ -12,6 +12,7 @@
 <script type="text/JavaScript" src="index.js"></script>
 <script type="text/JavaScript" src="functions.js"></script>
 <script type="text/JavaScript" src="menu.js"></script>
+<script type="text/JavaScript" src="globals.js"></script>
 <script type="text/javascript" src="lib/three.min.js"></script>
 <script type="text/javascript" src="lib/d3.js"></script>
 <script type="text/javascript" src="lib/elegansMod.js"></script>
@@ -55,7 +56,7 @@
 	
 		<div id='messagesDiv'>
 			<!--<textarea id="messages" style="width: 90%;"></textarea>-->
-			<textarea id="messages" cols=80; rows=4"></textarea>
+			<textarea id="messages" cols=80; rows=3"></textarea>
 			<!-- cols=60 rows=10 -->
 		</div>
 
@@ -64,8 +65,9 @@
 
 	</div>
 	<!-- end of mainarea -->
-	<iframe width="100%" height="600px%" src="home.html" name="iframe_a" id="iframe_a"></iframe>
-
+<!-- 	<iframe width="100%" height="600px%" src="home.html" name="iframe_a" id="iframe_a"></iframe> -->
+		<iframe width="100%" height="600px%" name="iframe_a" id="iframe_a" seamless="seamless"></iframe>
+	
 
 </body>
 </html>
