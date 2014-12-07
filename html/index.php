@@ -13,12 +13,6 @@
 <script type="text/JavaScript" src="functions.js"></script>
 <script type="text/JavaScript" src="menu.js"></script>
 <script type="text/JavaScript" src="globals.js"></script>
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
-</script>
-<script type="text/javascript"
-	src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
 <script type="text/javascript" src="lib/three.min.js"></script>
 <script type="text/javascript" src="lib/d3.js"></script>
 <script type="text/javascript" src="lib/elegansMod.js"></script>
