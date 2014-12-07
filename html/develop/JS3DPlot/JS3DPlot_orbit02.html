@@ -274,10 +274,12 @@
 	$(document).ready(function() {
 		$('#twobodyParam-button').click(function() {
 
+			var SemimajorAxis = document.getElementById('SemimajorAxis').value;
 			var Eccentricity = document.getElementById('Eccentricity').value;
 			var Inclination = document.getElementById('Inclination').value;
 
 			$.post('/JATServlet/TwoBodyParam', {
+				SemimajorAxis : SemimajorAxis,
 				Eccentricity : Eccentricity,
 				Inclination : Inclination
 			}, function(responseText) {
