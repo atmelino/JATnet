@@ -181,7 +181,7 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 
 		this.gl.viewport(0, 0, this.gl.viewportWidth, this.gl.viewportHeight);
 		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
-		
+
 		mat4.perspective(5, this.gl.viewportWidth / this.gl.viewportHeight, 0.1, 100.0, this.pMatrix);
 		mat4.identity(this.mvMatrix);
 		mat4.translate(this.mvMatrix, [ 0.0, -0.1, -19.0 ]);
@@ -207,17 +207,16 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		this.gl.disableVertexAttribArray(this.shaderProgram.vertexNormalAttribute);
 		this.gl.disableVertexAttribArray(this.shaderProgram.vertexColorAttribute);
 
-		//this.glTextureQuad.draw();
+		// this.glTextureQuad.draw();
 		this.glTextureSphere.draw();
 		this.glAxes.draw();
-		//this.glAxes2.draw();
+		// this.glAxes2.draw();
 		this.glLines.draw();
 		this.glSphere.draw();
-		//this.glSurface.draw();
+		// this.glSurface.draw();
 
 		this.mvPopMatrix(this);
 	};
-
 
 	this.tick = function() {
 		var self = this;
@@ -229,7 +228,7 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 			if (self.gl == null || self.bail)
 				return;
 
-			 self.drawSceneOrig();
+			self.drawSceneOrig();
 			requestAnimFrame(animator);
 		};
 
@@ -471,7 +470,7 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		this.glAxes2 = new GLAxes2(data3D, this);
 		this.glLines = new GLLines(linePoints, this);
 		this.glSphere = new GLSphere(data3D, this);
-		//this.glTextureQuad = new glTextureQuad(linePoints, this);
+		// this.glTextureQuad = new glTextureQuad(linePoints, this);
 		this.glTextureSphere = new glTextureSphere(linePoints, this);
 	};
 
@@ -487,9 +486,10 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		mat4.rotate(newRotationMatrix, degToRad(deltaX / 2), [ 0, 1, 0 ]);
 		mat4.rotate(newRotationMatrix, degToRad(deltaY / 2), [ 1, 0, 0 ]);
 		mat4.multiply(newRotationMatrix, this.rotationMatrix, this.rotationMatrix);
-	}
+	};
 
 	this.handleMouseMove = function(event, context) {
+		printlnMessage('messages', 'JSSurfacePlot.js  handleMouseMove');
 
 		if (!mouseDown) {
 			return;
@@ -528,9 +528,10 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 
 	this.initMouse = function(canvas) {
 		var self = this;
-		printlnMessage('messages','JSSurfacePlot.js initMouse called');
+		printlnMessage('messages', 'JSSurfacePlot.js initMouse called');
 
 		var handleMouseDown = function(event) {
+			printlnMessage('messages', 'JSSurfacePlot.js handleMouseDown called');
 			shiftPressed = isShiftPressed(event);
 
 			mouseDown = true;
@@ -539,14 +540,14 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 
 			document.onmouseup = self.handleMouseUp;
 			document.onmousemove = function(event) {
-				self.handleMouseMove(event, self)
+				self.handleMouseMove(event, self);
 			};// self.handleMouseMove;
 		};
 
 		canvas.onmousedown = handleMouseDown;
 		document.onmouseup = this.handleMouseUp;
 		document.onmousemove = function(event) {
-			self.handleMouseMove(event, self)
+			self.handleMouseMove(event, self);
 		};// this.handleMouseMove;
 
 	};
@@ -595,11 +596,11 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 
 		// Recalculate the new min and max values.
 		this.determineMinMaxZValues();
-	}
+	};
 
 	this.log = function(base, value) {
 		return Math.log(value) / Math.log(base);
-	}
+	};
 
 	this.nice_num = function(x, round) {
 		var exp = Math.floor(log(10, x));
@@ -627,7 +628,7 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		}
 
 		return nf * Math.pow(10, exp);
-	}
+	};
 
 	this.calculateZScale = function() {
 		// Calculate the z-axis labels.
@@ -804,7 +805,8 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		document.onmousemove = null;
 
 		this.numXPoints = 0;
-		this.numYPoints = 0;		this.glTexture = null;
+		this.numYPoints = 0;
+		this.glTexture = null;
 
 		canvas = null;
 		canvasContext = null;
@@ -824,8 +826,6 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 		this.mvMatrixStack = null;
 		this.pMatrix = null;
 	};
-
-
 
 };
 
