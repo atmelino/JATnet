@@ -27,19 +27,11 @@
 	<div id="menuheader">
 		<ul>
 			<li><a href="home.html" id=home target="iframe_a">Home</a></li>
-			<li><a href='Documentation.html' id='Documentation' target="iframe_a">Documentation</a>
-			</li>
-			<li><a href='Applications.html' id='Applications' target="iframe_a">Applications</a>
-			</li>
-			<li><a href='WebApps.php' id='WebApps' target="iframe_a">Web Apps</a>
-			</li>
-			<li><a href='Examples.html' id='Examples' target="iframe_a">Examples</a>
-			</li>
-			<li><a href='Screenshots.html' id='Screenshots' target="iframe_a">Screenshots</a>
+			<li><a href='Applications.php' id='Applications' target="iframe_a">Applications</a>
 			</li>
 			<li><a href='Support.html' id='Support' target="iframe_a">Support</a>
 			</li>
-			<li><a href='Development.html' id='Development' target="iframe_a">Development</a>
+			<li><a href='Screenshots.html' id='Screenshots' target="iframe_a">Screenshots</a>
 			</li>
 			<li><a href='Testing.html' id='Testing' target="iframe_a">Testing</a>
 			</li>
