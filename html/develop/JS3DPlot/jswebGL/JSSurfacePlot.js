@@ -476,6 +476,7 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 
 	// WebGL mouse handlers:
 	this.handleMouseUp = function(event) {
+		// printlnMessage('messages', 'JSSurfacePlot.js handleMouseUp');
 		mouseDown = false;
 	};
 
@@ -489,7 +490,7 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 	};
 
 	this.handleMouseMove = function(event, context) {
-		printlnMessage('messages', 'JSSurfacePlot.js  handleMouseMove');
+		// printlnMessage('messages', 'JSSurfacePlot.js handleMouseMove');
 
 		if (!mouseDown) {
 			return;
@@ -510,9 +511,21 @@ JSSurfacePlot = function(x, y, width, height, colourGradient, targetElement, fil
 			mat4.multiply(newRotationMatrix, this.rotationMatrix, this.rotationMatrix);
 		} else // rotate
 		{
-			mat4.rotate(newRotationMatrix, degToRad(deltaX / 2), [ 0, 1, 0 ]);
 			mat4.rotate(newRotationMatrix, degToRad(deltaY / 2), [ 1, 0, 0 ]);
+			mat4.rotate(newRotationMatrix, degToRad(deltaX / 2), [ 0, 1, 0 ]);
 			mat4.multiply(newRotationMatrix, this.rotationMatrix, this.rotationMatrix);
+			
+			
+
+			// mat4.rotate(newRotationMatrix, degToRad(deltaX / 2), [ 0, 1, 0
+			// ]);
+//			mat4.rotate(newRotationMatrix, degToRad(deltaY / 2), [ 1, 0, 0 ]);
+//			mat4.multiply(newRotationMatrix, this.rotationMatrix, this.rotationMatrix);
+//
+//			var newRotationMatrix = mat4.create();
+//			mat4.identity(newRotationMatrix);
+//			mat4.rotate(newRotationMatrix, degToRad(deltaX / 2), [ 0, 1, 0 ]);
+//			mat4.multiply(newRotationMatrix, this.rotationMatrix, this.rotationMatrix);
 
 			if (this.otherPlots) {
 				var numPlots = this.otherPlots.length;
