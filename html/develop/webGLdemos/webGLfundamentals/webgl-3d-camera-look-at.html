@@ -4,9 +4,6 @@
 <head>
 <meta charset="utf-8">
 <title>WebGL - 3D Camera Look At</title>
-<link type="text/css"
-	href="resources/css/ui-lightness/jquery-ui-1.8.16.custom.css"
-	rel="stylesheet" />
 <link type="text/css" href="resources/webgl-tutorials.css"
 	rel="stylesheet" />
 <style>
@@ -19,41 +16,49 @@
 }
 </style>
 <script src="resources/jquery-1.7.1.min.js"></script>
-<script src="resources/jquery-ui-1.8.16.custom.min.js"></script>
-<script src="resources/jquery.gman.ui.js"></script>
 <script src="resources/webgl-utils.js"></script>
 <script src="matrixVectorUtil.js"></script>
-<!-- vertex shader -->
-<script id="3d-vertex-shader" type="x-shader/x-vertex">
-attribute vec4 a_position;
-attribute vec4 a_color;
+<script type="text/javascript" src="functions.js"></script>
 
-uniform mat4 u_matrix;
+<script id="3d-fragment-shader" type="x-shader/x-fragment">
+precision mediump float;
+varying vec4 uPMatrix;
 
-varying vec4 v_color;
+void main() {
+   gl_FragColor = uPMatrix;
+}
+</script>
+
+<script id="shader-vs" type="x-shader/x-vertex">
+attribute vec4 aVertexPosition;
+attribute vec4 aVertexColor;
+uniform mat4 uMVMatrix;
+varying vec4 uPMatrix;
+varying vec4 vColor;
 
 void main() {
   // Multiply the position by the matrix.
-  gl_Position = u_matrix * a_position;
+  gl_Position = uMVMatrix * aVertexPosition;
 
   // Pass the color to the fragment shader.
-  v_color = a_color;
+  uPMatrix = aVertexColor;
 }
 </script>
-<!-- fragment shader -->
-<script id="3d-fragment-shader" type="x-shader/x-fragment">
-precision mediump float;
 
-// Passed in from the vertex shader.
-varying vec4 v_color;
-
-void main() {
-   gl_FragColor = v_color;
-}
-</script>
 
 <script>
-	"use strict";
+	var gl;
+	var cameraAngleRadians = degToRad(0);
+	var fieldOfViewRadians = degToRad(60);
+	var cameraHeight = 1;
+	var matrixLocation;
+	var shaderProgram;
+	var mouseDown = false;
+	var lastMouseX = null;
+	var lastMouseY = null;
+	var cubeVertexPositionBuffer;
+	var cubeVertexColorBuffer;
+	var cubeVertexIndexBuffer;
 
 	$(function() {
 		main();
@@ -62,7 +67,7 @@ void main() {
 	function main() {
 		// Get A WebGL context
 		var canvas = document.getElementById("canvas");
-		var gl = getWebGLContext(canvas);
+		gl = getWebGLContext(canvas);
 		if (!gl) {
 			return;
 		}
@@ -71,111 +76,185 @@ void main() {
 		gl.enable(gl.DEPTH_TEST);
 
 		// setup GLSL program
-		var program = createProgramFromScripts(gl, [ "3d-vertex-shader", "3d-fragment-shader" ]);
+		var program = createProgramFromScripts(gl, [ "shader-vs", "3d-fragment-shader" ]);
 		gl.useProgram(program);
 
 		// look up where the vertex data needs to go.
-		var positionLocation = gl.getAttribLocation(program, "a_position");
-		var colorLocation = gl.getAttribLocation(program, "a_color");
+		var positionLocation = gl.getAttribLocation(program, "aVertexPosition");
+		var colorLocation = gl.getAttribLocation(program, "aVertexColor");
 
 		// lookup uniforms
-		var matrixLocation = gl.getUniformLocation(program, "u_matrix");
+		matrixLocation = gl.getUniformLocation(program, "uMVMatrix");
 
-		// Create a buffer.
-		var buffer = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+		//initShaders();
+
+		// Positions
+		cubeVertexPositionBuffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
 		gl.enableVertexAttribArray(positionLocation);
 		gl.vertexAttribPointer(positionLocation, 3, gl.FLOAT, false, 0, 0);
+		var positions = new Float32Array([ -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0,
+				-1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+				1.0, 1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, -1.0,
+				1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0,
+				1.0, -1.0
+		//
+		]);
+		gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+		cubeVertexPositionBuffer.itemSize = 3;
+		cubeVertexPositionBuffer.numItems = 24;
 
-		// Set Geometry.
-		setGeometry(gl);
-
-		// Create a buffer for colors.
-		var buffer = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+		// Colors
+		cubeVertexColorBuffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexColorBuffer);
 		gl.enableVertexAttribArray(colorLocation);
-
 		// We'll supply RGB as bytes.
 		gl.vertexAttribPointer(colorLocation, 3, gl.UNSIGNED_BYTE, true, 0, 0);
+		// 		var colors = new Uint8Array([ 200, 70, 120, 200, 70, 120, 200, 70, 120, 200, 70, 120, 200, 70, 120, 80, 70,
+		// 				200, 80, 70, 200, 80, 70, 200, 80, 70, 200, 80, 70, 200, 70, 200, 210, 70, 200, 210, 70, 200, 210, 70,
+		// 				200, 210, 70, 200, 210, 140, 210, 80, 140, 210, 80, 140, 210, 80, 140, 210, 80, 140, 210, 80, 90, 130,
+		// 				110, 90, 130, 110, 90, 130, 110, 90, 130, 110, 90, 130, 110, 160, 160, 220, 160, 160, 220, 160, 160,
+		// 				220, 160, 160, 220, 160, 160, 220,
+		// 		//
+		// 		]);
+		// 		gl.bufferData(gl.ARRAY_BUFFER, colors, gl.STATIC_DRAW);
 
-		// Set Colors.
-		setColors(gl);
+		colors = [ [ 1.0, 0.0, 0.0, 1.0 ], // Front face
+		[ 1.0, 1.0, 0.0, 1.0 ], // Back face
+		[ 0.0, 1.0, 0.0, 1.0 ], // Top face
+		[ 1.0, 0.5, 0.5, 1.0 ], // Bottom face
+		[ 1.0, 0.0, 1.0, 1.0 ], // Right face
+		[ 0.0, 0.0, 1.0, 1.0 ] // Left face
+		];
+		var unpackedColors = [];
+		for ( var i in colors) {
+			var color = colors[i];
+			for ( var j = 0; j < 4; j++) {
+				unpackedColors = unpackedColors.concat(color);
+			}
+		}
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(unpackedColors), gl.STATIC_DRAW);
+		cubeVertexColorBuffer.itemSize = 4;
+		cubeVertexColorBuffer.numItems = 24;
 
-		function radToDeg(r) {
-			return r * 180 / Math.PI;
+		// Indices
+		cubeVertexIndexBuffer = gl.createBuffer();
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
+		var cubeVertexIndices = [ 0, 1, 2, 0, 2, 3, // Front face
+		4, 5, 6, 4, 6, 7, // Back face
+		8, 9, 10, 8, 10, 11, // Top face
+		12, 13, 14, 12, 14, 15, // Bottom face
+		16, 17, 18, 16, 18, 19, // Right face
+		20, 21, 22, 20, 22, 23 // Left face
+		];
+		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeVertexIndices), gl.STATIC_DRAW);
+		cubeVertexIndexBuffer.itemSize = 1;
+		cubeVertexIndexBuffer.numItems = 36;
+
+		canvas.onmousedown = handleMouseDown;
+		document.onmouseup = handleMouseUp;
+		document.onmousemove = handleMouseMove;
+
+		drawScene();
+	}
+
+	function handleMouseDown(event) {
+		mouseDown = true;
+		lastMouseX = event.clientX;
+		lastMouseY = event.clientY;
+	}
+
+	function handleMouseUp(event) {
+		mouseDown = false;
+	}
+
+	function handleMouseMove(event) {
+		if (!mouseDown) {
+			return;
 		}
 
-		function degToRad(d) {
-			return d * Math.PI / 180;
-		}
+		//	printlnMessage('messages', 'mouse move');
 
-		var cameraAngleRadians = degToRad(0);
-		var fieldOfViewRadians = degToRad(60);
+		var newX = event.clientX;
+		var newY = event.clientY;
+
+		var deltaX = newX - lastMouseX
+		var deltaY = newY - lastMouseY;
+
+		cameraAngleRadians -= deltaX / 50;
+		cameraHeight += deltaY / 10;
 
 		drawScene();
 
-		// Setup a ui.
-		$("#cameraAngle").gmanSlider({
-			value : radToDeg(cameraAngleRadians),
-			slide : updateCameraAngle,
-			min : -360,
-			max : 360
-		});
+		// 		var newRotationMatrix = mat4.create();
+		// 		mat4.identity(newRotationMatrix);
+		// 		mat4.rotate(newRotationMatrix, degToRad(deltaX / 5), [ 0, 1, 0 ]);
+		// 		mat4.rotate(newRotationMatrix, degToRad(deltaY / 5), [ 1, 0, 0 ]);
+		// 		mat4.multiply(newRotationMatrix, moonRotationMatrix, moonRotationMatrix);
 
-		function updateFieldOfView(event, ui) {
-			fieldOfViewRadians = degToRad(ui.value);
-			drawScene();
-		}
+		lastMouseX = newX
+		lastMouseY = newY;
+	}
 
-		function updateCameraAngle(event, ui) {
-			cameraAngleRadians = degToRad(ui.value);
-			drawScene();
-		}
+	function updateFieldOfView(event, ui) {
+		fieldOfViewRadians = degToRad(ui.value);
+		drawScene();
+	}
 
-		// Draw the scene.
-		function drawScene() {
+	function updateCameraAngle(event, ui) {
+		cameraAngleRadians = degToRad(ui.value);
+		drawScene();
+	}
 
-			var radius = 200;
+	function updateCameraHeight(event, ui) {
+		cameraHeight = ui.value / 10;
+		drawScene();
+	}
 
-			// Clear the canvas AND the depth buffer.
-			gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	// Draw the scene.
+	function drawScene() {
 
-			// Compute the projection matrix
-			var aspect = canvas.clientWidth / canvas.clientHeight;
-			var projectionMatrix = makePerspective(fieldOfViewRadians, aspect, 1, 2000);
+		var radius = 2;
 
-			// Compute the position of the first F
-			var fPosition = [ radius, 0, 0 ];
+		// Clear the canvas AND the depth buffer.
+		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-			// Use matrix math to compute a position on the circle.
-			var cameraMatrix = makeTranslation(0, 50, radius * 1.5);
-			cameraMatrix = matrixMultiply(cameraMatrix, makeYRotation(cameraAngleRadians));
+		// Compute the projection matrix
+		var aspect = canvas.clientWidth / canvas.clientHeight;
+		var projectionMatrix = makePerspective(fieldOfViewRadians, aspect, 1, 2000);
 
-			// Get the camera's postion from the matrix we computed
-			var cameraPosition = [ cameraMatrix[12], cameraMatrix[13], cameraMatrix[14] ];
+		// Compute the position of the object
+		var objectPosition = [ 0, 0, 0 ];
 
-			var up = [ 0, 1, 0 ];
+		// Use matrix math to compute a position on the circle.
+		var cameraMatrix = makeTranslation(0, cameraHeight, radius * 1.5);
+		cameraMatrix = matrixMultiply(cameraMatrix, makeYRotation(cameraAngleRadians));
 
-			// Compute the camera's matrix using look at.
-			var cameraMatrix = makeLookAt(cameraPosition, fPosition, up);
+		// Get the camera's postion from the matrix we computed
+		var cameraPosition = [ cameraMatrix[12], cameraMatrix[13], cameraMatrix[14] ];
 
-			// Make a view matrix from the camera matrix.
-			var viewMatrix = makeInverse(cameraMatrix);
+		var up = [ 0, 1, 0 ];
 
-			// Draw 'F's in a circle
-			var translationMatrix = makeTranslation(0, 0, 0);
+		// Compute the camera's matrix using look at.
+		var cameraMatrix = makeLookAt(cameraPosition, objectPosition, up);
 
-			// Multiply the matrices.
-			var matrix = translationMatrix;
-			matrix = matrixMultiply(matrix, viewMatrix);
-			matrix = matrixMultiply(matrix, projectionMatrix);
+		// Make a view matrix from the camera matrix.
+		var viewMatrix = makeInverse(cameraMatrix);
 
-			// Set the matrix.
-			gl.uniformMatrix4fv(matrixLocation, false, matrix);
+		// Draw 'F's in a circle
+		var translationMatrix = makeTranslation(0, 0, 0);
 
-			// Draw the geometry.
-			gl.drawArrays(gl.TRIANGLES, 0, 6 * 6);
-		}
+		// Multiply the matrices.
+		var matrix = translationMatrix;
+		matrix = matrixMultiply(matrix, viewMatrix);
+		matrix = matrixMultiply(matrix, projectionMatrix);
+
+		// Set the matrix.
+		gl.uniformMatrix4fv(matrixLocation, false, matrix);
+
+		// Draw the geometry.
+		gl.drawArrays(gl.TRIANGLES, 0, 6 * 4);
+
 	}
 
 	function makeLookAt(cameraPosition, target, up) {
@@ -238,76 +317,82 @@ void main() {
 		return [ sx, 0, 0, 0, 0, sy, 0, 0, 0, 0, sz, 0, 0, 0, 0, 1, ];
 	}
 
-	// Fill the buffer with the values that define a letter 'F'.
-	function setGeometry(gl) {
-		var positions = new Float32Array([
-		// left column front
-		0, 0, 0, 0, 150, 0, 30, 0, 0, 0, 150, 0, 30, 150, 0, 30, 0, 0,
-
-		// left column back
-		0, 0, 30, 30, 0, 30, 0, 150, 30, 0, 150, 30, 30, 0, 30, 30, 150, 30,
-
-		// top
-		0, 0, 0, 30, 0, 0, 30, 0, 30, 0, 0, 0, 30, 0, 30, 0, 0, 30,
-
-		// front of bottom
-		30, 90, 0, 30, 150, 30, 30, 90, 30, 30, 90, 0, 30, 150, 0, 30, 150, 30,
-
-		// bottom
-		0, 150, 0, 0, 150, 30, 30, 150, 30, 0, 150, 0, 30, 150, 30, 30, 150, 0,
-
-		// left side
-		0, 0, 0, 0, 0, 30, 0, 150, 30, 0, 0, 0, 0, 150, 30, 0, 150, 0 ]);
-
-		var matrix = makeTranslation(0, 0, 0);
-		matrix = matrixMultiply(matrix, makeXRotation(Math.PI));
-
-		for ( var ii = 0; ii < positions.length; ii += 3) {
-			var vector = matrixVectorMultiply([ positions[ii + 0], positions[ii + 1], positions[ii + 2], 1 ], matrix);
-			positions[ii + 0] = vector[0];
-			positions[ii + 1] = vector[1];
-			positions[ii + 2] = vector[2];
-		}
-
-		gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+	function radToDeg(r) {
+		return r * 180 / Math.PI;
 	}
 
-	// Fill the buffer with colors for the 'F'.
-	function setColors(gl) {
+	function degToRad(d) {
+		return d * Math.PI / 180;
+	}
 
-		var colors = new Uint8Array([
-		// left column front
-		200, 70, 120, 200, 70, 120, 200, 70, 120, 200, 70, 120, 200, 70, 120, 200, 70, 120,
+	function getShader(gl, id) {
+		var shaderScript = document.getElementById(id);
+		if (!shaderScript) {
+			return null;
+		}
 
-		// left column back
-		80, 70, 200, 80, 70, 200, 80, 70, 200, 80, 70, 200, 80, 70, 200, 80, 70, 200,
+		var str = "";
+		var k = shaderScript.firstChild;
+		while (k) {
+			if (k.nodeType == 3) {
+				str += k.textContent;
+			}
+			k = k.nextSibling;
+		}
 
-		// top
-		70, 200, 210, 70, 200, 210, 70, 200, 210, 70, 200, 210, 70, 200, 210, 70, 200, 210,
+		var shader;
+		if (shaderScript.type == "x-shader/x-fragment") {
+			shader = gl.createShader(gl.FRAGMENT_SHADER);
+		} else if (shaderScript.type == "x-shader/x-vertex") {
+			shader = gl.createShader(gl.VERTEX_SHADER);
+		} else {
+			return null;
+		}
 
-		// front of bottom
-		140, 210, 80, 140, 210, 80, 140, 210, 80, 140, 210, 80, 140, 210, 80, 140, 210, 80,
+		gl.shaderSource(shader, str);
+		gl.compileShader(shader);
 
-		// bottom
-		90, 130, 110, 90, 130, 110, 90, 130, 110, 90, 130, 110, 90, 130, 110, 90, 130, 110,
+		if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+			alert(gl.getShaderInfoLog(shader));
+			return null;
+		}
 
-		// left side
-		160, 160, 220, 160, 160, 220, 160, 160, 220, 160, 160, 220, 160, 160, 220, 160, 160, 220 ]);
+		return shader;
+	}
 
-		gl.bufferData(gl.ARRAY_BUFFER, colors, gl.STATIC_DRAW);
+	function initShaders() {
+		var fragmentShader = getShader(gl, "shader-fs");
+		var vertexShader = getShader(gl, "shader-vs");
+
+		shaderProgram = gl.createProgram();
+		gl.attachShader(shaderProgram, vertexShader);
+		gl.attachShader(shaderProgram, fragmentShader);
+		gl.linkProgram(shaderProgram);
+
+		if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+			alert("Could not initialise shaders");
+		}
+
+		gl.useProgram(shaderProgram);
+
+		shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
+		gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+
+		shaderProgram.vertexColorAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
+		gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);
+
+		shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
+		shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
 	}
 </script>
 </head>
 
 <body>
-	<div class="description">Drag slider to move camera.</div>
-	<canvas id="canvas" width="400" height="300"></canvas>
-	<div id="uiContainer">
-		<div id="ui">
-			<div id="cameraAngle"></div>
-		</div>
+	<div id='messagesDiv'>
+		<textarea id="messages" style="width: 90%;" rows=4></textarea>
 	</div>
+	<div class="description">Drag mouse to move camera.</div>
+	<canvas id="canvas" width="400" height="300"></canvas>
 </body>
 </html>
-
 
