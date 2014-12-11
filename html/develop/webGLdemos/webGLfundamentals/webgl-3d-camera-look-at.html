@@ -1,0 +1,313 @@
+<!-- Licensed under a BSD license. See license.html for license -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>WebGL - 3D Camera Look At</title>
+<link type="text/css"
+	href="resources/css/ui-lightness/jquery-ui-1.8.16.custom.css"
+	rel="stylesheet" />
+<link type="text/css" href="resources/webgl-tutorials.css"
+	rel="stylesheet" />
+<style>
+#ui {
+	width: 200px;
+}
+
+#rotation>canvas {
+	background-color: rgba(255, 255, 255, 0.6) !important;
+}
+</style>
+<script src="resources/jquery-1.7.1.min.js"></script>
+<script src="resources/jquery-ui-1.8.16.custom.min.js"></script>
+<script src="resources/jquery.gman.ui.js"></script>
+<script src="resources/webgl-utils.js"></script>
+<script src="matrixVectorUtil.js"></script>
+<!-- vertex shader -->
+<script id="3d-vertex-shader" type="x-shader/x-vertex">
+attribute vec4 a_position;
+attribute vec4 a_color;
+
+uniform mat4 u_matrix;
+
+varying vec4 v_color;
+
+void main() {
+  // Multiply the position by the matrix.
+  gl_Position = u_matrix * a_position;
+
+  // Pass the color to the fragment shader.
+  v_color = a_color;
+}
+</script>
+<!-- fragment shader -->
+<script id="3d-fragment-shader" type="x-shader/x-fragment">
+precision mediump float;
+
+// Passed in from the vertex shader.
+varying vec4 v_color;
+
+void main() {
+   gl_FragColor = v_color;
+}
+</script>
+
+<script>
+	"use strict";
+
+	$(function() {
+		main();
+	});
+
+	function main() {
+		// Get A WebGL context
+		var canvas = document.getElementById("canvas");
+		var gl = getWebGLContext(canvas);
+		if (!gl) {
+			return;
+		}
+
+		gl.enable(gl.CULL_FACE);
+		gl.enable(gl.DEPTH_TEST);
+
+		// setup GLSL program
+		var program = createProgramFromScripts(gl, [ "3d-vertex-shader", "3d-fragment-shader" ]);
+		gl.useProgram(program);
+
+		// look up where the vertex data needs to go.
+		var positionLocation = gl.getAttribLocation(program, "a_position");
+		var colorLocation = gl.getAttribLocation(program, "a_color");
+
+		// lookup uniforms
+		var matrixLocation = gl.getUniformLocation(program, "u_matrix");
+
+		// Create a buffer.
+		var buffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+		gl.enableVertexAttribArray(positionLocation);
+		gl.vertexAttribPointer(positionLocation, 3, gl.FLOAT, false, 0, 0);
+
+		// Set Geometry.
+		setGeometry(gl);
+
+		// Create a buffer for colors.
+		var buffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+		gl.enableVertexAttribArray(colorLocation);
+
+		// We'll supply RGB as bytes.
+		gl.vertexAttribPointer(colorLocation, 3, gl.UNSIGNED_BYTE, true, 0, 0);
+
+		// Set Colors.
+		setColors(gl);
+
+		function radToDeg(r) {
+			return r * 180 / Math.PI;
+		}
+
+		function degToRad(d) {
+			return d * Math.PI / 180;
+		}
+
+		var cameraAngleRadians = degToRad(0);
+		var fieldOfViewRadians = degToRad(60);
+
+		drawScene();
+
+		// Setup a ui.
+		$("#cameraAngle").gmanSlider({
+			value : radToDeg(cameraAngleRadians),
+			slide : updateCameraAngle,
+			min : -360,
+			max : 360
+		});
+
+		function updateFieldOfView(event, ui) {
+			fieldOfViewRadians = degToRad(ui.value);
+			drawScene();
+		}
+
+		function updateCameraAngle(event, ui) {
+			cameraAngleRadians = degToRad(ui.value);
+			drawScene();
+		}
+
+		// Draw the scene.
+		function drawScene() {
+
+			var radius = 200;
+
+			// Clear the canvas AND the depth buffer.
+			gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+			// Compute the projection matrix
+			var aspect = canvas.clientWidth / canvas.clientHeight;
+			var projectionMatrix = makePerspective(fieldOfViewRadians, aspect, 1, 2000);
+
+			// Compute the position of the first F
+			var fPosition = [ radius, 0, 0 ];
+
+			// Use matrix math to compute a position on the circle.
+			var cameraMatrix = makeTranslation(0, 50, radius * 1.5);
+			cameraMatrix = matrixMultiply(cameraMatrix, makeYRotation(cameraAngleRadians));
+
+			// Get the camera's postion from the matrix we computed
+			var cameraPosition = [ cameraMatrix[12], cameraMatrix[13], cameraMatrix[14] ];
+
+			var up = [ 0, 1, 0 ];
+
+			// Compute the camera's matrix using look at.
+			var cameraMatrix = makeLookAt(cameraPosition, fPosition, up);
+
+			// Make a view matrix from the camera matrix.
+			var viewMatrix = makeInverse(cameraMatrix);
+
+			// Draw 'F's in a circle
+			var translationMatrix = makeTranslation(0, 0, 0);
+
+			// Multiply the matrices.
+			var matrix = translationMatrix;
+			matrix = matrixMultiply(matrix, viewMatrix);
+			matrix = matrixMultiply(matrix, projectionMatrix);
+
+			// Set the matrix.
+			gl.uniformMatrix4fv(matrixLocation, false, matrix);
+
+			// Draw the geometry.
+			gl.drawArrays(gl.TRIANGLES, 0, 6 * 6);
+		}
+	}
+
+	function makeLookAt(cameraPosition, target, up) {
+		var zAxis = normalize(subtractVectors(cameraPosition, target));
+		var xAxis = cross(up, zAxis);
+		var yAxis = cross(zAxis, xAxis);
+
+		return [ xAxis[0], xAxis[1], xAxis[2], 0, yAxis[0], yAxis[1], yAxis[2], 0, zAxis[0], zAxis[1], zAxis[2], 0,
+				cameraPosition[0], cameraPosition[1], cameraPosition[2], 1 ];
+	}
+
+	function makePerspective(fieldOfViewInRadians, aspect, near, far) {
+		var f = Math.tan(Math.PI * 0.5 - 0.5 * fieldOfViewInRadians);
+		var rangeInv = 1.0 / (near - far);
+
+		return [ f / aspect, 0, 0, 0, 0, f, 0, 0, 0, 0, (near + far) * rangeInv, -1, 0, 0, near * far * rangeInv * 2, 0 ];
+	};
+
+	function makeTranslation(tx, ty, tz) {
+		return [ //
+		1, 0, 0, 0,//
+		0, 1, 0, 0,//
+		0, 0, 1, 0,//
+		tx, ty, tz, 1 ];
+	}
+
+	function makeXRotation(angleInRadians) {
+		var c = Math.cos(angleInRadians);
+		var s = Math.sin(angleInRadians);
+
+		return [//
+		1, 0, 0, 0,//
+		0, c, s, 0,//
+		0, -s, c, 0,//
+		0, 0, 0, 1 ];
+	};
+
+	function makeYRotation(angleInRadians) {
+		var c = Math.cos(angleInRadians);
+		var s = Math.sin(angleInRadians);
+
+		return [//
+		c, 0, -s, 0,//
+		0, 1, 0, 0,//
+		s, 0, c, 0,//
+		0, 0, 0, 1 ];
+	};
+
+	function makeZRotation(angleInRadians) {
+		var c = Math.cos(angleInRadians);
+		var s = Math.sin(angleInRadians);
+		return [//
+		c, s, 0, 0,//
+		-s, c, 0, 0,//
+		0, 0, 1, 0,//
+		0, 0, 0, 1, ];
+	}
+
+	function makeScale(sx, sy, sz) {
+		return [ sx, 0, 0, 0, 0, sy, 0, 0, 0, 0, sz, 0, 0, 0, 0, 1, ];
+	}
+
+	// Fill the buffer with the values that define a letter 'F'.
+	function setGeometry(gl) {
+		var positions = new Float32Array([
+		// left column front
+		0, 0, 0, 0, 150, 0, 30, 0, 0, 0, 150, 0, 30, 150, 0, 30, 0, 0,
+
+		// left column back
+		0, 0, 30, 30, 0, 30, 0, 150, 30, 0, 150, 30, 30, 0, 30, 30, 150, 30,
+
+		// top
+		0, 0, 0, 30, 0, 0, 30, 0, 30, 0, 0, 0, 30, 0, 30, 0, 0, 30,
+
+		// front of bottom
+		30, 90, 0, 30, 150, 30, 30, 90, 30, 30, 90, 0, 30, 150, 0, 30, 150, 30,
+
+		// bottom
+		0, 150, 0, 0, 150, 30, 30, 150, 30, 0, 150, 0, 30, 150, 30, 30, 150, 0,
+
+		// left side
+		0, 0, 0, 0, 0, 30, 0, 150, 30, 0, 0, 0, 0, 150, 30, 0, 150, 0 ]);
+
+		var matrix = makeTranslation(0, 0, 0);
+		matrix = matrixMultiply(matrix, makeXRotation(Math.PI));
+
+		for ( var ii = 0; ii < positions.length; ii += 3) {
+			var vector = matrixVectorMultiply([ positions[ii + 0], positions[ii + 1], positions[ii + 2], 1 ], matrix);
+			positions[ii + 0] = vector[0];
+			positions[ii + 1] = vector[1];
+			positions[ii + 2] = vector[2];
+		}
+
+		gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+	}
+
+	// Fill the buffer with colors for the 'F'.
+	function setColors(gl) {
+
+		var colors = new Uint8Array([
+		// left column front
+		200, 70, 120, 200, 70, 120, 200, 70, 120, 200, 70, 120, 200, 70, 120, 200, 70, 120,
+
+		// left column back
+		80, 70, 200, 80, 70, 200, 80, 70, 200, 80, 70, 200, 80, 70, 200, 80, 70, 200,
+
+		// top
+		70, 200, 210, 70, 200, 210, 70, 200, 210, 70, 200, 210, 70, 200, 210, 70, 200, 210,
+
+		// front of bottom
+		140, 210, 80, 140, 210, 80, 140, 210, 80, 140, 210, 80, 140, 210, 80, 140, 210, 80,
+
+		// bottom
+		90, 130, 110, 90, 130, 110, 90, 130, 110, 90, 130, 110, 90, 130, 110, 90, 130, 110,
+
+		// left side
+		160, 160, 220, 160, 160, 220, 160, 160, 220, 160, 160, 220, 160, 160, 220, 160, 160, 220 ]);
+
+		gl.bufferData(gl.ARRAY_BUFFER, colors, gl.STATIC_DRAW);
+	}
+</script>
+</head>
+
+<body>
+	<div class="description">Drag slider to move camera.</div>
+	<canvas id="canvas" width="400" height="300"></canvas>
+	<div id="uiContainer">
+		<div id="ui">
+			<div id="cameraAngle"></div>
+		</div>
+	</div>
+</body>
+</html>
+
+
