@@ -62,7 +62,7 @@ void main() {
 	var cubeVertexColorBuffer;
 	var cubeVertexIndexBuffer;
 	var canvas;
-	
+
 	$(function() {
 		main();
 	});
@@ -113,7 +113,7 @@ void main() {
 			return;
 		}
 
-		printlnMessage('messages', 'mouse move');
+		//printlnMessage('messages', 'mouse move');
 
 		var newX = event.clientX;
 		var newY = event.clientY;
@@ -126,28 +126,12 @@ void main() {
 
 		drawScene();
 
-		// 		var newRotationMatrix = mat4.create();
-		// 		mat4.identity(newRotationMatrix);
-		// 		mat4.rotate(newRotationMatrix, degToRad(deltaX / 5), [ 0, 1, 0 ]);
-		// 		mat4.rotate(newRotationMatrix, degToRad(deltaY / 5), [ 1, 0, 0 ]);
-		// 		mat4.multiply(newRotationMatrix, moonRotationMatrix, moonRotationMatrix);
-
 		lastMouseX = newX
 		lastMouseY = newY;
 	}
 
 	function updateFieldOfView(event, ui) {
 		fieldOfViewRadians = degToRad(ui.value);
-		drawScene();
-	}
-
-	function updateCameraAngle(event, ui) {
-		cameraAngleRadians = degToRad(ui.value);
-		drawScene();
-	}
-
-	function updateCameraHeight(event, ui) {
-		cameraHeight = ui.value / 10;
 		drawScene();
 	}
 
@@ -195,66 +179,6 @@ void main() {
 		// Draw the geometry.
 		gl.drawArrays(gl.TRIANGLES, 0, 6 * 4);
 
-	}
-
-	function makeLookAt(cameraPosition, target, up) {
-		var zAxis = normalize(subtractVectors(cameraPosition, target));
-		var xAxis = cross(up, zAxis);
-		var yAxis = cross(zAxis, xAxis);
-
-		return [ xAxis[0], xAxis[1], xAxis[2], 0, yAxis[0], yAxis[1], yAxis[2], 0, zAxis[0], zAxis[1], zAxis[2], 0,
-				cameraPosition[0], cameraPosition[1], cameraPosition[2], 1 ];
-	}
-
-	function makePerspective(fieldOfViewInRadians, aspect, near, far) {
-		var f = Math.tan(Math.PI * 0.5 - 0.5 * fieldOfViewInRadians);
-		var rangeInv = 1.0 / (near - far);
-
-		return [ f / aspect, 0, 0, 0, 0, f, 0, 0, 0, 0, (near + far) * rangeInv, -1, 0, 0, near * far * rangeInv * 2, 0 ];
-	};
-
-	function makeTranslation(tx, ty, tz) {
-		return [ //
-		1, 0, 0, 0,//
-		0, 1, 0, 0,//
-		0, 0, 1, 0,//
-		tx, ty, tz, 1 ];
-	}
-
-	function makeXRotation(angleInRadians) {
-		var c = Math.cos(angleInRadians);
-		var s = Math.sin(angleInRadians);
-
-		return [//
-		1, 0, 0, 0,//
-		0, c, s, 0,//
-		0, -s, c, 0,//
-		0, 0, 0, 1 ];
-	};
-
-	function makeYRotation(angleInRadians) {
-		var c = Math.cos(angleInRadians);
-		var s = Math.sin(angleInRadians);
-
-		return [//
-		c, 0, -s, 0,//
-		0, 1, 0, 0,//
-		s, 0, c, 0,//
-		0, 0, 0, 1 ];
-	};
-
-	function makeZRotation(angleInRadians) {
-		var c = Math.cos(angleInRadians);
-		var s = Math.sin(angleInRadians);
-		return [//
-		c, s, 0, 0,//
-		-s, c, 0, 0,//
-		0, 0, 1, 0,//
-		0, 0, 0, 1, ];
-	}
-
-	function makeScale(sx, sy, sz) {
-		return [ sx, 0, 0, 0, 0, sy, 0, 0, 0, 0, sz, 0, 0, 0, 0, 1, ];
 	}
 
 	function radToDeg(r) {
@@ -329,11 +253,7 @@ void main() {
 		cubeVertexIndexBuffer.itemSize = 1;
 		cubeVertexIndexBuffer.numItems = 36;
 
-	
-	
 	}
-	
-	
 </script>
 </head>
 

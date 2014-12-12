@@ -197,50 +197,6 @@ void main() {
 		}
 	}
 
-	function makeLookAt(cameraPosition, target, up) {
-		var zAxis = normalize(subtractVectors(cameraPosition, target));
-		var xAxis = cross(up, zAxis);
-		var yAxis = cross(zAxis, xAxis);
-
-		return [ xAxis[0], xAxis[1], xAxis[2], 0, yAxis[0], yAxis[1], yAxis[2], 0, zAxis[0], zAxis[1], zAxis[2], 0,
-				cameraPosition[0], cameraPosition[1], cameraPosition[2], 1 ];
-	}
-
-	function makePerspective(fieldOfViewInRadians, aspect, near, far) {
-		var f = Math.tan(Math.PI * 0.5 - 0.5 * fieldOfViewInRadians);
-		var rangeInv = 1.0 / (near - far);
-
-		return [ f / aspect, 0, 0, 0, 0, f, 0, 0, 0, 0, (near + far) * rangeInv, -1, 0, 0, near * far * rangeInv * 2, 0 ];
-	};
-
-	function makeTranslation(tx, ty, tz) {
-		return [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, tx, ty, tz, 1 ];
-	}
-
-	function makeXRotation(angleInRadians) {
-		var c = Math.cos(angleInRadians);
-		var s = Math.sin(angleInRadians);
-
-		return [ 1, 0, 0, 0, 0, c, s, 0, 0, -s, c, 0, 0, 0, 0, 1 ];
-	};
-
-	function makeYRotation(angleInRadians) {
-		var c = Math.cos(angleInRadians);
-		var s = Math.sin(angleInRadians);
-
-		return [ c, 0, -s, 0, 0, 1, 0, 0, s, 0, c, 0, 0, 0, 0, 1 ];
-	};
-
-	function makeZRotation(angleInRadians) {
-		var c = Math.cos(angleInRadians);
-		var s = Math.sin(angleInRadians);
-		return [ c, s, 0, 0, -s, c, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, ];
-	}
-
-	function makeScale(sx, sy, sz) {
-		return [ sx, 0, 0, 0, 0, sy, 0, 0, 0, 0, sz, 0, 0, 0, 0, 1, ];
-	}
-
 	// Fill the buffer with the values that define a letter 'F'.
 	function setGeometry(gl) {
 		var positions = new Float32Array(HeadData.positions);
