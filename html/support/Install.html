@@ -10,19 +10,41 @@
 	<h2>Server Preparation</h2>
 
 	This section describes the setup on the server that runs the Java
-	programs and makes them available to a browser client.<br><br> Install an Apache server:
+	programs and makes them available to a browser client.
+	<h3>LAMP Server</h3>
+	Install an Apache server:
+
 	<p>
 		<code>sudo apt-get install tasksel</code>
 	</p>
+
+	<h3>Tomcat</h3>
 	Install Tomcat:
 	<p>
 		<code>sudo apt-get install tomcat7</code>
-		<br> Also install<br>
+	</p>
+	<br> Also install
+	<br>
+
+	<p>
 		<code>sudo apt-get install tomcat7-docs tomcat7-admin
 			tomcat7-examples</code>
-
 	</p>
-	if you get error " * no JDK or JRE found - please set JAVA_HOME":
+
+
+	<p>
+		To test the installation: <br> go to
+	</p>
+
+	<p>
+		<a href="http://localhost:8080" target="_parent">http://localhost:8080</a>
+	</p>
+
+	To use the manager, set up a user.
+
+
+	<br> if you get error " * no JDK or JRE found - please set
+	JAVA_HOME":
 	<p>
 		<code>nano /etc/default/tomcat7</code>
 	</p>
@@ -32,7 +54,7 @@
 	</p>
 
 	<p>
-		<img alt="" src="images/tomcat_config.png" style="width: 400px;" />
+		<img alt="" src="../images/tomcat_config.png" style="width: 400px;" />
 	</p>
 
 	To allow the web management interface:
