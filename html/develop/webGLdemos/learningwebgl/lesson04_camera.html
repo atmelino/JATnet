@@ -8,6 +8,7 @@
 <script type="text/javascript" src="webgl-utils.js"></script>
 <script type="text/javascript" src="../../libjs/jquery-2.1.1.js"></script>
 <script type="text/javascript" src="../../libjs/functions.js"></script>
+<script type="text/javascript" src="../../libjs/sprintf.js"></script>
 <script src="matrixVectorUtil.js"></script>
 
 <script id="shader-fs" type="x-shader/x-fragment">
@@ -38,7 +39,7 @@
 	var shaderProgram;
 	var cameraPhi = degToRad(0);
 	var cameraTheta = degToRad(0);
-	var radius = 4;
+	var radius = 10;
 	var fieldOfViewRadians = degToRad(60);
 	//var cameraHeight = 1;
 	var mouseDown = false;
@@ -99,7 +100,7 @@
 		//printlnMessage('messages', 'deltaX=' + deltaX + ' deltaY=' + deltaY);
 
 		cameraPhi += deltaX / 50;
-		cameraTheta -= deltaY / 50;
+		cameraTheta += deltaY / 50;
 		//cameraHeight += deltaY / 10;
 
 		//printlnMessage('messages', 'phi=' + cameraPhi + ' theta=' + cameraTheta);
@@ -263,7 +264,6 @@
 	function drawScene() {
 		//printlnMessage('messages', 'drawScene');
 
-
 		// Clear the canvas AND the depth buffer.
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -285,21 +285,23 @@
 		// Get the camera's postion from the matrix we computed
 		//var cameraPosition = [ cameraMatrix[12], cameraMatrix[13],		cameraMatrix[14] ];
 
-		camera_position_x = Math.cos(cameraPhi) * Math.cos(cameraTheta)
-				* radius;
-		camera_position_y = Math.sin(cameraTheta) * radius;
-		camera_position_z = Math.sin(cameraPhi) * Math.cos(cameraTheta)
-				* radius;
+		camera_x = Math.cos(cameraPhi) * Math.cos(cameraTheta) * radius;
+		camera_y = Math.sin(cameraPhi) * Math.cos(cameraTheta) * radius;
+		camera_z = Math.sin(cameraTheta) * radius;
 
-		
-		printlnMessage('messages', 'x=' + camera_position_x + ' y=' + camera_position_y+ ' z=' + camera_position_z);
+		var r = camera_x * camera_x + camera_y * camera_y + camera_z * camera_z;
 
-		
-		cameraMatrix = makeTranslation(camera_position_x, camera_position_z,
-				camera_position_y);
+		x_ = sprintf("%3.2f", camera_x);
+		y_ = sprintf("%3.2f", camera_y);
+		z_ = sprintf("%3.2f", camera_z);
+		r_ = sprintf("%3.2f", r);
 
-		cameraPosition = [ camera_position_x, camera_position_y,
-				camera_position_z ];
+		printlnMessage('messages', 'x=' + x_ + ' y=' + y_ + ' z=' + z_ + ' r='
+				+ r_);
+
+		cameraMatrix = makeTranslation(camera_x, camera_z, camera_y);
+
+		cameraPosition = [ camera_x, camera_z, camera_y ];
 
 		var up = [ 0, 1, 0 ];
 
