@@ -6,17 +6,23 @@
 </head>
 <body>
 
-
+	Right-click over the project and select Export -> war-file
 
 	<p>
 		<img alt="" src="images/ExportWarFile.png" />
 	</p>
-
+	create the war file where you have write-permission
 	<p>
 		<img alt="" src="images/JATServletDeploy.png" />
 	</p>
-
-
+	Then copy the war file to the Tomcat folder
+	<p>
+		<code> sudo cp JATServlet.war /var/lib/tomcat7/webapps </code>
+	</p>
+	Make sure that the war file is readable by Tomcat
+	<p>
+		<code> sudo chmod 666 /var/lib/tomcat7/webapps/JATServlet.war </code>
+	</p>
 
 
 
