@@ -87,16 +87,32 @@
 		});
 		// CONTROLS
 		controls = new THREE.OrbitControls(camera, renderer.domElement);
+
 		// STATS
 		stats = new Stats();
 		stats.domElement.style.position = 'absolute';
 		stats.domElement.style.bottom = '0px';
 		stats.domElement.style.zIndex = 100;
 		container.appendChild(stats.domElement);
+
 		// LIGHT
 		var light = new THREE.PointLight(0xffffff);
 		light.position.set(0, 250, 0);
 		scene.add(light);
+
+		// GUI
+		gui = new dat.GUI();
+		parameters = {
+			a : 12000, // numeric
+			ecc : 0.3, // numeric slider
+			inc : 23, // numeric slider
+			add : makeOrbit,
+		};
+		gui.add(parameters, 'a').name('Semimajor Axis [km]');
+		gui.add(parameters, 'ecc').min(0).max(1).step(0.01).name('Eccentricity');
+		gui.add(parameters, 'inc').min(0).max(180).step(0.1).name('Inclination');
+		gui.add(parameters, 'add').name('Add Orbit');
+		gui.open();
 
 		// SKYBOX/FOG
 		var skyBoxGeometry = new THREE.CubeGeometry(1000 * gridSize, 1000 * gridSize, 1000 * gridSize);
@@ -148,24 +164,19 @@
 
 		makeAxisLabel(scene);
 
-		gui = new dat.GUI();
+		var lineGeometry = new THREE.Geometry();
+		var vertArray = lineGeometry.vertices;
+		for ( var i = 0; i < 12; i++) {
+			vertArray.push(new THREE.Vector3( Math.random()*i*1000, Math.random()*i*1000, Math.random()*i*1000));
 
-		parameters = {
-			a : 12000, // numeric
-			ecc : 0.3, // numeric slider
-			inc : 23, // numeric slider
-			add : makeOrbit,
-
-		};
-
-		// gui.add( parameters )
-		gui.add(parameters, 'a').name('Semimajor Axis [km]');
-		gui.add(parameters, 'ecc').min(0).max(1).step(0.01).name('Eccentricity');
-		gui.add(parameters, 'inc').min(0).max(180).step(0.1).name('Inclination');
-
-		gui.add(parameters, 'add').name('Add Orbit');
-
-		gui.open();
+		}
+		//vertArray.push(new THREE.Vector3(-150, -100, 0), new THREE.Vector3(-150, 100, 0));
+		lineGeometry.computeLineDistances();
+		var lineMaterial = new THREE.LineBasicMaterial({
+			color : 0xcc0000
+		});
+		var line = new THREE.Line(lineGeometry, lineMaterial);
+		scene.add(line);
 
 	}
 
@@ -207,15 +218,17 @@
 			//printlnMessage('messages', JSON.stringify(obj.TBE));
 			console.log(JSON.stringify(obj.TBE));
 
-			factor = plotBoxSize * 2;
+			//factor = plotBoxSize * 2;
+			//factor = 1;
 			//var i=0;
-			for ( var i = 0; i < obj.coords.x.length; i++) {
 
-				point = [ obj.coords.x[i] / factor, obj.coords.y[i] / factor, obj.coords.z[i] / factor ];
-				linePoints = linePoints.concat(point);
-			}
+			// 			for ( var i = 0; i < obj.coords.x.length; i++) {
 
-			console.log('draw');
+			// 				point = [ obj.coords.x[i] / factor, obj.coords.y[i] / factor, obj.coords.z[i] / factor ];
+			// 				linePoints = linePoints.concat(point);
+			// 			}
+
+			// 			console.log('draw');
 			//var Point1 = [ 0, 0, 0 ];
 			//linePoints = linePoints.concat(Point1);
 			//linePoints = linePoints.concat(point);
