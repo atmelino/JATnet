@@ -4,34 +4,33 @@
 <title>GUI (Three.js)</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-<link rel=stylesheet href="css/base.css" />
-<link rel=stylesheet href="css/jquery-ui.css" />
-<link rel=stylesheet href="css/info.css" />
+<link rel=stylesheet href="../css/base.css" />
+<link rel=stylesheet href="../css/jquery-ui.css" />
+<link rel=stylesheet href="../css/info.css" />
 
+<script src="../js/Three.js"></script>
+<script src="../js/Detector.js"></script>
+<script src="../js/Stats.js"></script>
+<script src="../js/OrbitControls.js"></script>
+<script src="../js/THREEx.KeyboardState.js"></script>
+<script src="../js/THREEx.FullScreen.js"></script>
+<script src="../js/THREEx.WindowResize.js"></script>
+<script src='../js/DAT.GUI.min.js'></script>
+<script src="../js/jquery-1.9.1.js"></script>
+<script src="../js/jquery-ui.js"></script>
+<script src="../js/info.js"></script>
+<script src="../fonts/gentilis_bold.typeface.js"></script>
+<script src="../fonts/gentilis_regular.typeface.js"></script>
+<script src="../fonts/optimer_bold.typeface.js"></script>
+<script src="../fonts/optimer_regular.typeface.js"></script>
+<script src="../fonts/helvetiker_bold.typeface.js"></script>
+<script src="../fonts/helvetiker_regular.typeface.js"></script>
+<script src="../fonts/droid_sans_regular.typeface.js"></script>
+<script src="../fonts/droid_sans_bold.typeface.js"></script>
+<script src="../fonts/droid_serif_regular.typeface.js"></script>
+<script src="../fonts/droid_serif_bold.typeface.js"></script>
 
-<script src="js/Three.js"></script>
-<script src="js/Detector.js"></script>
-<script src="js/Stats.js"></script>
-<script src="js/OrbitControls.js"></script>
-<script src="js/THREEx.KeyboardState.js"></script>
-<script src="js/THREEx.FullScreen.js"></script>
-<script src="js/THREEx.WindowResize.js"></script>
-<script type='text/javascript' src='js/DAT.GUI.min.js'></script>
-<script src="js/jquery-1.9.1.js"></script>
-<script src="js/jquery-ui.js"></script>
-<script src="js/info.js"></script>
-<script src="fonts/gentilis_bold.typeface.js"></script>
-<script src="fonts/gentilis_regular.typeface.js"></script>
-<script src="fonts/optimer_bold.typeface.js"></script>
-<script src="fonts/optimer_regular.typeface.js"></script>
-<script src="fonts/helvetiker_bold.typeface.js"></script>
-<script src="fonts/helvetiker_regular.typeface.js"></script>
-<script src="fonts/droid_sans_regular.typeface.js"></script>
-<script src="fonts/droid_sans_bold.typeface.js"></script>
-<script src="fonts/droid_serif_regular.typeface.js"></script>
-<script src="fonts/droid_serif_bold.typeface.js"></script>
-
-<script src="js/extra/axisLabels.js"></script>
+<script src="../js/extra/axisLabels.js"></script>
 
 
 
@@ -48,6 +47,8 @@
 	var gridSize = 10000;
 	//var radius = 100;
 	//var gridSize = 200;
+	var parameters;
+	var gui;
 
 	function setup() {
 		// initialization
@@ -113,7 +114,7 @@
 
 		// Create the Earth with nice texture
 		var sphereGeo = new THREE.SphereGeometry(radius, 64, 32);
-		var colors = THREE.ImageUtils.loadTexture("images/earth-day.jpg");
+		var colors = THREE.ImageUtils.loadTexture("../images/earth-day.jpg");
 		var earthMaterial = new THREE.MeshBasicMaterial({
 			color : 0xffffff,
 			map : colors
@@ -147,47 +148,23 @@
 
 		makeAxisLabel(scene);
 
-		var gui = new dat.GUI();
+		gui = new dat.GUI();
 
-		var parameters = {
-			a : 200, // numeric
-			b : 200, // numeric slider
-			c : "Hello, GUI!", // string
-			d : false, // boolean (checkbox)
-			e : "#ff8800", // color (hex)
-			f : function() {
-				alert("Hello!")
-			},
-			g : function() {
-				alert(parameters.c)
-			},
-			v : 0, // dummy value, only type is important
-			w : "...", // dummy value, only type is important
-			x : 0,
-			y : 0,
-			z : 0
+		parameters = {
+			a : 12000, // numeric
+			ecc : 0.3, // numeric slider
+			inc : 23, // numeric slider
+			add : makeOrbit,
+
 		};
+
 		// gui.add( parameters )
-		gui.add(parameters, 'a').name('Number');
-		gui.add(parameters, 'b').min(128).max(256).step(16).name('Slider');
-		gui.add(parameters, 'c').name('String');
-		gui.add(parameters, 'd').name('Boolean');
+		gui.add(parameters, 'a').name('Semimajor Axis [km]');
+		gui.add(parameters, 'ecc').min(0).max(1).step(0.01).name('Eccentricity');
+		gui.add(parameters, 'inc').min(0).max(180).step(0.1).name('Inclination');
 
-		gui.addColor(parameters, 'e').name('Color');
+		gui.add(parameters, 'add').name('Add Orbit');
 
-		var numberList = [ 1, 2, 3 ];
-		gui.add(parameters, 'v', numberList).name('List');
-
-		var stringList = [ "One", "Two", "Three" ];
-		gui.add(parameters, 'w', stringList).name('List');
-
-		gui.add(parameters, 'f').name('Say "Hello!"');
-		gui.add(parameters, 'g').name("Alert Message");
-
-		var folder1 = gui.addFolder('Coordinates');
-		folder1.add(parameters, 'x');
-		folder1.add(parameters, 'y');
-		folder1.close();
 		gui.open();
 
 	}
@@ -209,6 +186,41 @@
 
 	function render() {
 		renderer.render(scene, camera);
+	}
+
+	function makeOrbit() {
+		//console.log("clicked");
+		var SemimajorAxis = parameters.a;
+		var Eccentricity = parameters.ecc;
+		var Inclination = parameters.inc;
+		console.log("SemimajorAxis=" + SemimajorAxis);
+
+		$.post('/JATServlet/TwoBodyParam', {
+			SemimajorAxis : SemimajorAxis,
+			Eccentricity : Eccentricity,
+			Inclination : Inclination
+		}, function(responseText) {
+
+			var obj = JSON.parse(responseText);
+			//printlnMessage('messages', JSON.stringify(obj));
+			//printlnMessage('messages', obj.coords.x[0]);
+			//printlnMessage('messages', JSON.stringify(obj.TBE));
+			console.log(JSON.stringify(obj.TBE));
+
+			factor = plotBoxSize * 2;
+			//var i=0;
+			for ( var i = 0; i < obj.coords.x.length; i++) {
+
+				point = [ obj.coords.x[i] / factor, obj.coords.y[i] / factor, obj.coords.z[i] / factor ];
+				linePoints = linePoints.concat(point);
+			}
+
+			console.log('draw');
+			//var Point1 = [ 0, 0, 0 ];
+			//linePoints = linePoints.concat(Point1);
+			//linePoints = linePoints.concat(point);
+			//surfacePlot.draw(data, linePoints, options, basicPlotOptions, glOptions);
+		});
 	}
 </script>
 
