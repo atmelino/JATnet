@@ -31,6 +31,7 @@
 <script src="../fonts/droid_serif_bold.typeface.js"></script>
 
 <script src="../js/extra/axisLabels.js"></script>
+<script src="../js/extra/colors.js"></script>
 
 
 
@@ -156,7 +157,7 @@
 		scene.add(earthSphere);
 
 		var gridXZ = new THREE.GridHelper(gridSize, gridSize / 2);
-		gridXZ.setColors(new THREE.Color(0x006600), new THREE.Color(0x006600));
+		gridXZ.setColors(new THREE.Color(colourNameToHex("gray"), new THREE.Color(colourNameToHex("gray"))));
 		gridXZ.position.set(0, -gridSize, 0);
 		//gridXZ.position.set(-gridSize / 2, -gridSize, -gridSize);
 		scene.add(gridXZ);
@@ -165,13 +166,13 @@
 		gridXY.position.set(0, 0, -gridSize);
 		//gridXY.position.set(gridSize, gridSize, -gridSize);
 		gridXY.rotation.x = Math.PI / 2;
-		gridXY.setColors(new THREE.Color(0x000066), new THREE.Color(0x000066));
+		gridXY.setColors(new THREE.Color(colourNameToHex("gray"), new THREE.Color(colourNameToHex("gray"))));
 		scene.add(gridXY);
 
 		var gridYZ = new THREE.GridHelper(gridSize, gridSize / 2);
 		gridYZ.position.set(-gridSize, 0, 0);
 		gridYZ.rotation.z = Math.PI / 2;
-		gridYZ.setColors(new THREE.Color(0x660000), new THREE.Color(0x660000));
+		gridYZ.setColors(new THREE.Color(colourNameToHex("gray"), new THREE.Color(colourNameToHex("gray"))));
 		scene.add(gridYZ);
 
 		// create a set of coordinate axes to help orient user
