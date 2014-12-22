@@ -112,11 +112,21 @@
 			ecc : 0.3, // numeric slider
 			inc : 23, // numeric slider
 			add : makeOrbit,
+			autoRotate : false, // boolean (checkbox)
+
 		};
 		gui.add(parameters, 'a').name('Semimajor Axis [km]');
 		gui.add(parameters, 'ecc').min(0).max(1).step(0.01).name('Eccentricity');
 		gui.add(parameters, 'inc').min(0).max(180).step(0.1).name('Inclination');
 		gui.add(parameters, 'add').name('Add Orbit');
+		//gui.add(parameters, 'autoRotate').name('autoRotate');
+		var cubeVisible = gui.add(parameters, 'autoRotate').name('autoRotate').listen();
+		cubeVisible.onChange(function(value) {
+			//console.log(value);
+			controls.autoRotate = value;
+			//cube.visible = value;
+		});
+		
 		gui.open();
 
 		// SKYBOX/FOG
