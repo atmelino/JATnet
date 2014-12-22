@@ -63,6 +63,7 @@
 	function init() {
 		// SCENE
 		scene = new THREE.Scene();
+
 		// CAMERA
 		var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
 		var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 1000 * gridSize;
@@ -70,6 +71,7 @@
 		scene.add(camera);
 		camera.position.set(radius * 5, 3.5 * radius, 4 * radius);
 		camera.lookAt(scene.position);
+
 		// RENDERER
 		if (Detector.webgl)
 			renderer = new THREE.WebGLRenderer({
@@ -80,6 +82,7 @@
 		renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 		container = document.getElementById('ThreeJS');
 		container.appendChild(renderer.domElement);
+
 		// EVENTS
 		THREEx.WindowResize(renderer, camera);
 		THREEx.FullScreen.bindKey({
@@ -87,6 +90,8 @@
 		});
 		// CONTROLS
 		controls = new THREE.OrbitControls(camera, renderer.domElement);
+		controls.autoRotate = true;
+		controls.autoRotateSpeed = 0.2;
 
 		// STATS
 		stats = new Stats();
@@ -128,6 +133,8 @@
 		// CUSTOM //
 		////////////
 
+		document.addEventListener('mousedown', onDocumentMouseDown, false);
+
 		// Create the Earth with nice texture
 		var sphereGeo = new THREE.SphereGeometry(radius, 64, 32);
 		var colors = THREE.ImageUtils.loadTexture("../images/earth-day.jpg");
@@ -164,20 +171,22 @@
 
 		makeAxisLabel(scene);
 
-		var lineGeometry = new THREE.Geometry();
-		var vertArray = lineGeometry.vertices;
-		for ( var i = 0; i < 12; i++) {
-			vertArray.push(new THREE.Vector3( Math.random()*i*1000, Math.random()*i*1000, Math.random()*i*1000));
+		// 		var lineGeometry = new THREE.Geometry();
+		// 		var vertArray = lineGeometry.vertices;
+		// 		for ( var i = 0; i < 12; i++) {
+		// 			vertArray.push(new THREE.Vector3(Math.random() * i * 1000, Math.random() * i * 1000, Math.random() * i * 1000));
+		// 		}
+		// 		lineGeometry.computeLineDistances();
+		// 		var lineMaterial = new THREE.LineBasicMaterial({
+		// 			color : 0xcc0000
+		// 		});
+		// 		var line = new THREE.Line(lineGeometry, lineMaterial);
+		// 		scene.add(line);
 
-		}
-		//vertArray.push(new THREE.Vector3(-150, -100, 0), new THREE.Vector3(-150, 100, 0));
-		lineGeometry.computeLineDistances();
-		var lineMaterial = new THREE.LineBasicMaterial({
-			color : 0xcc0000
-		});
-		var line = new THREE.Line(lineGeometry, lineMaterial);
-		scene.add(line);
-
+	}
+	function onDocumentMouseDown(event) {
+		//console.log("Click.");
+		controls.autoRotate = false;
 	}
 
 	function animate() {
@@ -191,6 +200,7 @@
 			// do something
 		}
 
+		//earthSphere.rotation.y += 0.0010;
 		controls.update();
 		stats.update();
 	}
@@ -218,21 +228,20 @@
 			//printlnMessage('messages', JSON.stringify(obj.TBE));
 			console.log(JSON.stringify(obj.TBE));
 
-			//factor = plotBoxSize * 2;
-			//factor = 1;
-			//var i=0;
+			var lineGeometry = new THREE.Geometry();
+			var vertArray = lineGeometry.vertices;
+			for ( var i = 0; i < obj.coords.x.length; i++) {
+				point = new THREE.Vector3(obj.coords.x[i], obj.coords.y[i], obj.coords.z[i]);
+				vertArray.push(point);
 
-			// 			for ( var i = 0; i < obj.coords.x.length; i++) {
+			}
+			lineGeometry.computeLineDistances();
+			var lineMaterial = new THREE.LineBasicMaterial({
+				color : 0xcc0000
+			});
+			var line = new THREE.Line(lineGeometry, lineMaterial);
+			scene.add(line);
 
-			// 				point = [ obj.coords.x[i] / factor, obj.coords.y[i] / factor, obj.coords.z[i] / factor ];
-			// 				linePoints = linePoints.concat(point);
-			// 			}
-
-			// 			console.log('draw');
-			//var Point1 = [ 0, 0, 0 ];
-			//linePoints = linePoints.concat(Point1);
-			//linePoints = linePoints.concat(point);
-			//surfacePlot.draw(data, linePoints, options, basicPlotOptions, glOptions);
 		});
 	}
 </script>
