@@ -33,7 +33,10 @@
 <script src="../js/extra/axisLabels.js"></script>
 <script src="../js/extra/colors.js"></script>
 
-
+<!-- Coordinate orer has been changed to reflect OpenGL default: -->
+<!-- first coordinate is y -->
+<!-- second coordinate is z -->
+<!-- third coordinate is x -->
 
 <script>
 	// MAIN
@@ -50,6 +53,7 @@
 	//var gridSize = 200;
 	var parameters;
 	var gui;
+	var zUpVec = [ 0, 0, 0 ];
 
 	function setup() {
 		// initialization
@@ -71,6 +75,7 @@
 		camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
 		scene.add(camera);
 		camera.position.set(radius * 5, 3.5 * radius, 4 * radius);
+		//camera.position.set([radius * 5, 3.5 * radius, 4 * radius]);
 		camera.lookAt(scene.position);
 
 		// RENDERER
@@ -127,7 +132,7 @@
 			controls.autoRotate = value;
 			//cube.visible = value;
 		});
-		
+
 		gui.open();
 
 		// SKYBOX/FOG
@@ -180,7 +185,7 @@
 		var axes = new THREE.AxisHelper(gridSize);
 		scene.add(axes);
 
-		makeAxisLabel(scene);
+		makeAxisLabel(scene,true);
 
 		// 		var lineGeometry = new THREE.Geometry();
 		// 		var vertArray = lineGeometry.vertices;
@@ -195,6 +200,14 @@
 		// 		scene.add(line);
 
 	}
+
+	function zUp(x, y, z) {
+		zUpVec[0] = y;
+		zUpVec[1] = z;
+		zUpVec[2] = x;
+		return;
+	}
+
 	function onDocumentMouseDown(event) {
 		//console.log("Click.");
 		controls.autoRotate = false;
@@ -242,9 +255,9 @@
 			var lineGeometry = new THREE.Geometry();
 			var vertArray = lineGeometry.vertices;
 			for ( var i = 0; i < obj.coords.x.length; i++) {
-				point = new THREE.Vector3(obj.coords.x[i], obj.coords.y[i], obj.coords.z[i]);
+				//point = new THREE.Vector3(obj.coords.x[i], obj.coords.y[i], obj.coords.z[i]);
+				point = new THREE.Vector3(obj.coords.y[i], obj.coords.z[i], obj.coords.x[i]);
 				vertArray.push(point);
-
 			}
 			lineGeometry.computeLineDistances();
 			var lineMaterial = new THREE.LineBasicMaterial({
