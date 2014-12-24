@@ -54,6 +54,7 @@
 	var parameters;
 	var gui;
 	var zUpVec = [ 0, 0, 0 ];
+	var autoRotateCB;
 
 	function setup() {
 		// initialization
@@ -119,6 +120,7 @@
 			inc : 23, // numeric slider
 			add : makeOrbit,
 			autoRotate : false, // boolean (checkbox)
+			opacity : 0.8, // numeric slider
 
 		};
 		gui.add(parameters, 'a').name('Semimajor Axis [km]');
@@ -126,11 +128,14 @@
 		gui.add(parameters, 'inc').min(0).max(180).step(0.1).name('Inclination');
 		gui.add(parameters, 'add').name('Add Orbit');
 		//gui.add(parameters, 'autoRotate').name('autoRotate');
-		var cubeVisible = gui.add(parameters, 'autoRotate').name('autoRotate').listen();
-		cubeVisible.onChange(function(value) {
+		autoRotateCB = gui.add(parameters, 'autoRotate').name('autoRotate').listen();
+		autoRotateCB.onChange(function(value) {
 			//console.log(value);
 			controls.autoRotate = value;
-			//cube.visible = value;
+		});
+		var opacity=gui.add(parameters, 'opacity').min(0).max(1).step(0.01).name('Opacity').listen();
+		opacity.onChange(function(value) {
+			earthSphere.material.opacity = value;
 		});
 
 		gui.open();
@@ -156,11 +161,14 @@
 		var colors = THREE.ImageUtils.loadTexture("../images/earth-day.jpg");
 		var earthMaterial = new THREE.MeshBasicMaterial({
 			color : 0xffffff,
-			map : colors
+			map : colors,
+			transparent : true,
+			opacity : 1
 		});
 		this.earthSphere = new THREE.Mesh(sphereGeo, earthMaterial);
 		scene.add(earthSphere);
-
+		
+		
 		var gridXZ = new THREE.GridHelper(gridSize, gridSize / 2);
 		gridXZ.setColors(new THREE.Color(colourNameToHex("gray"), new THREE.Color(colourNameToHex("gray"))));
 		gridXZ.position.set(0, -gridSize, 0);
@@ -185,7 +193,7 @@
 		var axes = new THREE.AxisHelper(gridSize);
 		scene.add(axes);
 
-		makeAxisLabel(scene,true);
+		makeAxisLabel(scene, true);
 
 		// 		var lineGeometry = new THREE.Geometry();
 		// 		var vertArray = lineGeometry.vertices;
@@ -210,7 +218,13 @@
 
 	function onDocumentMouseDown(event) {
 		//console.log("Click.");
+
 		controls.autoRotate = false;
+		parameters.autoRotate = false;
+		// Iterate over all controllers
+		for ( var i in gui.__controllers) {
+			gui.__controllers[i].updateDisplay();
+		}
 	}
 
 	function animate() {
