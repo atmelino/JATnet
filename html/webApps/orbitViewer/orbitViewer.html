@@ -118,6 +118,9 @@
 			a : 12000, // numeric
 			ecc : 0.3, // numeric slider
 			inc : 23, // numeric slider
+			raan : 10, // numeric slider
+			w : 10, // numeric slider
+			ta : 10, // numeric slider
 			add : makeOrbit,
 			autoRotate : false, // boolean (checkbox)
 			opacity : 0.8, // numeric slider
@@ -126,6 +129,9 @@
 		gui.add(parameters, 'a').name('Semimajor Axis [km]');
 		gui.add(parameters, 'ecc').min(0).max(1).step(0.01).name('Eccentricity');
 		gui.add(parameters, 'inc').min(0).max(180).step(0.1).name('Inclination');
+		gui.add(parameters, 'raan').min(0).max(180).step(0.1).name('RAAN');
+		gui.add(parameters, 'w').min(0).max(180).step(0.1).name('Perigee');
+		gui.add(parameters, 'ta').min(0).max(180).step(0.1).name('True Anomaly');
 		gui.add(parameters, 'add').name('Add Orbit');
 		//gui.add(parameters, 'autoRotate').name('autoRotate');
 		autoRotateCB = gui.add(parameters, 'autoRotate').name('autoRotate').listen();
@@ -252,12 +258,18 @@
 		var SemimajorAxis = parameters.a;
 		var Eccentricity = parameters.ecc;
 		var Inclination = parameters.inc;
+		var raan = parameters.raan;
+		var w = parameters.w;
+		var ta = parameters.ta;
 		console.log("SemimajorAxis=" + SemimajorAxis);
 
 		$.post('/JATServlet/TwoBodyParam', {
 			SemimajorAxis : SemimajorAxis,
 			Eccentricity : Eccentricity,
-			Inclination : Inclination
+			Inclination : Inclination,
+			raan : raan,
+			w : w,
+			ta : ta,
 		}, function(responseText) {
 
 			var obj = JSON.parse(responseText);
