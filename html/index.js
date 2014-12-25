@@ -1,5 +1,5 @@
 function onload_function() {
-	// printlnMessage('messages', 'index.js: onload_function()');
+	printlnMessage('messages', 'index.js: onload_function()');
 
 	root_path = window.location.pathname;
 	// printlnMessage('messages', 'index.js: root path ' + root_path);

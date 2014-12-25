@@ -54,9 +54,10 @@
 
 	</div>
 	<!-- end of mainarea -->
+
+
 	<!-- 	<iframe width="100%" height="600px%" src="home.html" name="iframe_a" id="iframe_a"></iframe> -->
-	<iframe width="100%" height="600px%" name="iframe_a" id="iframe_a"
-		seamless="seamless"></iframe>
+	<iframe width="100%" height=4000px scrolling=no name="iframe_a" id="iframe_a" seamless="seamless"></iframe>
 
 
 </body>
