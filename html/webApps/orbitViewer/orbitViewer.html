@@ -30,6 +30,7 @@
 <script src="../fonts/droid_serif_regular.typeface.js"></script>
 <script src="../fonts/droid_serif_bold.typeface.js"></script>
 
+<script src="../js/extra/grid.js"></script>
 <script src="../js/extra/axisLabels.js"></script>
 <script src="../js/extra/colors.js"></script>
 
@@ -126,7 +127,7 @@
 			opacity : 0.8, // numeric slider
 
 		};
-		gui.add(parameters, 'a').name('Semimajor Axis [km]');
+		gui.add(parameters, 'a').min(6000).max(50000).step(1).name('Semimajor Axis [km]');
 		gui.add(parameters, 'ecc').min(0).max(1).step(0.01).name('Eccentricity');
 		gui.add(parameters, 'inc').min(0).max(180).step(0.1).name('Inclination');
 		gui.add(parameters, 'raan').min(0).max(180).step(0.1).name('RAAN');
@@ -175,25 +176,8 @@
 		scene.add(earthSphere);
 		
 		
-		var gridXZ = new THREE.GridHelper(gridSize, gridSize / 2);
-		gridXZ.setColors(new THREE.Color(colourNameToHex("gray"), new THREE.Color(colourNameToHex("gray"))));
-		gridXZ.position.set(0, -gridSize, 0);
-		//gridXZ.position.set(-gridSize / 2, -gridSize, -gridSize);
-		scene.add(gridXZ);
-
-		var gridXY = new THREE.GridHelper(gridSize, gridSize / 2);
-		gridXY.position.set(0, 0, -gridSize);
-		//gridXY.position.set(gridSize, gridSize, -gridSize);
-		gridXY.rotation.x = Math.PI / 2;
-		gridXY.setColors(new THREE.Color(colourNameToHex("gray"), new THREE.Color(colourNameToHex("gray"))));
-		scene.add(gridXY);
-
-		var gridYZ = new THREE.GridHelper(gridSize, gridSize / 2);
-		gridYZ.position.set(-gridSize, 0, 0);
-		gridYZ.rotation.z = Math.PI / 2;
-		gridYZ.setColors(new THREE.Color(colourNameToHex("gray"), new THREE.Color(colourNameToHex("gray"))));
-		scene.add(gridYZ);
-
+		makeGrid(scene, true);
+		
 		// create a set of coordinate axes to help orient user
 		//    specify length in pixels in each direction
 		var axes = new THREE.AxisHelper(gridSize);
