@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +11,7 @@
 
 
 <script>
-	function ThreeJSStart() {
+	function setup() {
 		if (!Detector.webgl) {
 			Detector.addGetWebGLMessage();
 			return;
@@ -102,7 +101,7 @@
 </script>
 
 </head>
-<body onload="ThreeJSStart()">
+<body onload="setup()">
 
 
 
