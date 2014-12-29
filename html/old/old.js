@@ -1,3 +1,28 @@
+
+	var canvas = document.createElement('canvas');
+	var context = canvas.getContext('2d');
+	context.font = '64px Arial';
+	var s = '-10000         10000';
+	canvas.width = context.measureText(s).width;
+	canvas.height = Math.ceil(64 * 1.25);
+	context.font = '64px Arial';
+	context.fillStyle = "#FF0000";
+	context.fillText(s, 0, 64);
+
+	var tex = new THREE.Texture(canvas);
+	tex.needsUpdate = true;
+
+	var plane = new THREE.Mesh(new THREE.PlaneGeometry(canvas.width * 10, canvas.height * 10), new THREE.MeshBasicMaterial({
+		map : tex,
+		color : 0xFFFFFF,
+		opacity : 1
+	}));
+	plane.doubleSided = true;
+	plane.position.set(0, -gridSize, 1.1 * gridSize);
+	plane.rotation.x = -Math.PI / 2;
+	//scene.add(plane);
+
+
 function PHPtest()
 {
 

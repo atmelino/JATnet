@@ -171,13 +171,13 @@
 			color : 0xffffff,
 			map : colors,
 			transparent : true,
-			opacity : 1
+			opacity : 0.8
 		});
 		this.earthSphere = new THREE.Mesh(sphereGeo, earthMaterial);
 		scene.add(earthSphere);
 		
 		
-		makeGrid(scene, true);
+		makeGrid(scene, true,gridSize);
 		
 		// create a set of coordinate axes to help orient user
 		//    specify length in pixels in each direction

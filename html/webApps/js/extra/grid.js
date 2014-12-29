@@ -1,17 +1,14 @@
-function makeGrid(scene, zUp) {
-
-
-
+function makeGrid(scene, zUp, gridSize) {
 
 	var gridXZ = new THREE.GridHelper(gridSize, gridSize / 2);
 	gridXZ.setColors(new THREE.Color(colourNameToHex("gray"), new THREE.Color(colourNameToHex("gray"))));
 	gridXZ.position.set(0, -gridSize, 0);
-	//gridXZ.position.set(-gridSize / 2, -gridSize, -gridSize);
+	// gridXZ.position.set(-gridSize / 2, -gridSize, -gridSize);
 	scene.add(gridXZ);
 
 	var gridXY = new THREE.GridHelper(gridSize, gridSize / 2);
 	gridXY.position.set(0, 0, -gridSize);
-	//gridXY.position.set(gridSize, gridSize, -gridSize);
+	// gridXY.position.set(gridSize, gridSize, -gridSize);
 	gridXY.rotation.x = Math.PI / 2;
 	gridXY.setColors(new THREE.Color(colourNameToHex("gray"), new THREE.Color(colourNameToHex("gray"))));
 	scene.add(gridXY);
@@ -22,32 +19,43 @@ function makeGrid(scene, zUp) {
 	gridYZ.setColors(new THREE.Color(colourNameToHex("gray"), new THREE.Color(colourNameToHex("gray"))));
 	scene.add(gridYZ);
 
-	
-	
-	var c = document.createElement('canvas');
-	var ctx = c.getContext('2d');
-	ctx.font = '64px Arial';
+	makeLabel(-gridSize, -gridSize, -gridSize, 1.2 * gridSize, -Math.PI / 2, 0, Math.PI / 2);
+	makeLabel("y [km]", 0, -gridSize, 1.2 * gridSize, -Math.PI / 2, 0, Math.PI / 2);
+	makeLabel(gridSize, gridSize, -gridSize, 1.2 * gridSize, -Math.PI / 2, 0, Math.PI / 2);
+
+}
+
+function makeLabel(text, xpos, ypos, zpos, xrot, yrot, zrot) {
+
+	var canvas1 = document.createElement('canvas');
+	var context1 = canvas1.getContext('2d');
+	context1.font = '64px Arial';
 	var s = '-10000         10000';
-	c.width = ctx.measureText(s).width;
-	c.height = Math.ceil(64 * 1.25);
-	ctx.font = '64px Arial';
-	ctx.fillStyle = "#FF0000";
-	ctx.fillText(s, 0, 64);
+	// console.log(''+context1.measureText(s).width);
+	canvas1.width = context1.measureText(text).width;
+	canvas1.height = Math.ceil(64 * 1.25);
+	context1.font = '64px Arial';
+	context1.fillStyle = "#505050";
+	// context1.fillText('50', 0, 300);
+	context1.fillText(text, 0, 64);
 
-	var tex = new THREE.Texture(c);
-	tex.needsUpdate = true;
+	// canvas contents will be used for a texture
+	var texture1 = new THREE.Texture(canvas1)
+	texture1.needsUpdate = true;
 
-	var plane = new THREE.Mesh(new THREE.PlaneGeometry(c.width*10, c.height*10), new THREE.MeshBasicMaterial({
-		map : tex,
-		color : 0xFFFFFF,
-		opacity : 1
-	}));
-	plane.doubleSided = true;
-	plane.position.set(0,-gridSize, 1.1*gridSize);
-	plane.rotation.x = -Math.PI / 2;
-	scene.add(plane);
+	var material1 = new THREE.MeshBasicMaterial({
+		map : texture1,
+		side : THREE.DoubleSide
+	});
+	material1.transparent = true;
 
-	
-
+	// var mesh1 = new THREE.Mesh(new THREE.PlaneGeometry(2000, 2000),
+	// material1);
+	var mesh1 = new THREE.Mesh(new THREE.PlaneGeometry(canvas1.width * 10, canvas1.height * 10), material1);
+	mesh1.position.set(xpos, ypos, zpos);
+	mesh1.rotation.x = xrot;
+	mesh1.rotation.y = yrot;
+	mesh1.rotation.z = zrot;
+	scene.add(mesh1);
 
 }
