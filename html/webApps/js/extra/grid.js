@@ -23,6 +23,10 @@ function makeGrid(scene, zUp, gridSize) {
 	makeLabel("y [km]", 0, -gridSize, 1.2 * gridSize, -Math.PI / 2, 0, Math.PI / 2);
 	makeLabel(gridSize, gridSize, -gridSize, 1.2 * gridSize, -Math.PI / 2, 0, Math.PI / 2);
 
+	makeLabel(-gridSize, -1.2 * gridSize, -gridSize, gridSize, 0,0,0);
+	makeLabel("z [km]", -1.2 *gridSize, 0, gridSize,  0,0,0);
+	makeLabel(gridSize, -1.2 *gridSize, gridSize, gridSize, 0,0,0);
+
 }
 
 function makeLabel(text, xpos, ypos, zpos, xrot, yrot, zrot) {
@@ -51,7 +55,7 @@ function makeLabel(text, xpos, ypos, zpos, xrot, yrot, zrot) {
 
 	// var mesh1 = new THREE.Mesh(new THREE.PlaneGeometry(2000, 2000),
 	// material1);
-	var mesh1 = new THREE.Mesh(new THREE.PlaneGeometry(canvas1.width * 10, canvas1.height * 10), material1);
+	var mesh1 = new THREE.Mesh(new THREE.PlaneGeometry(canvas1.width * 15, canvas1.height * 15), material1);
 	mesh1.position.set(xpos, ypos, zpos);
 	mesh1.rotation.x = xrot;
 	mesh1.rotation.y = yrot;
