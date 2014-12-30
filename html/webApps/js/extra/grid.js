@@ -19,6 +19,10 @@ function makeGrid(scene, zUp, gridSize) {
 	gridYZ.setColors(new THREE.Color(colourNameToHex("gray"), new THREE.Color(colourNameToHex("gray"))));
 	scene.add(gridYZ);
 
+	makeLabel(-gridSize, 1.2 * gridSize, -gridSize, -gridSize, -Math.PI / 2,0,0);
+	makeLabel("x [km]", 1.2 *gridSize, -gridSize, 0,  -Math.PI / 2,0,0);
+	makeLabel(gridSize, 1.2 *gridSize, -gridSize, gridSize, -Math.PI / 2,0,0);
+
 	makeLabel(-gridSize, -gridSize, -gridSize, 1.2 * gridSize, -Math.PI / 2, 0, Math.PI / 2);
 	makeLabel("y [km]", 0, -gridSize, 1.2 * gridSize, -Math.PI / 2, 0, Math.PI / 2);
 	makeLabel(gridSize, gridSize, -gridSize, 1.2 * gridSize, -Math.PI / 2, 0, Math.PI / 2);

@@ -1,4 +1,19 @@
 
+
+
+		// 		var lineGeometry = new THREE.Geometry();
+		// 		var vertArray = lineGeometry.vertices;
+		// 		for ( var i = 0; i < 12; i++) {
+		// 			vertArray.push(new THREE.Vector3(Math.random() * i * 1000, Math.random() * i * 1000, Math.random() * i * 1000));
+		// 		}
+		// 		lineGeometry.computeLineDistances();
+		// 		var lineMaterial = new THREE.LineBasicMaterial({
+		// 			color : 0xcc0000
+		// 		});
+		// 		var line = new THREE.Line(lineGeometry, lineMaterial);
+		// 		scene.add(line);
+
+
 	var canvas = document.createElement('canvas');
 	var context = canvas.getContext('2d');
 	context.font = '64px Arial';
