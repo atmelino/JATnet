@@ -4,24 +4,24 @@
 <title>Hello World (Three.js)</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-<link rel=stylesheet href="css/base.css" />
+<link rel=stylesheet href="../lib/css/base.css" />
 </head>
 <body>
 
-	<script src="js/Three.js"></script>
-	<script src="js/Detector.js"></script>
-	<script src="js/Stats.js"></script>
-	<script src="js/OrbitControls.js"></script>
-	<script src="js/THREEx.KeyboardState.js"></script>
-	<script src="js/THREEx.FullScreen.js"></script>
-	<script src="js/THREEx.WindowResize.js"></script>
+	<script src="../lib/js/Three.js"></script>
+	<script src="../lib/js/Detector.js"></script>
+	<script src="../lib/js/Stats.js"></script>
+	<script src="../lib/js/OrbitControls.js"></script>
+	<script src="../lib/js/THREEx.KeyboardState.js"></script>
+	<script src="../lib/js/THREEx.FullScreen.js"></script>
+	<script src="../lib/js/THREEx.WindowResize.js"></script>
 
 	<!-- jQuery code to display an information button and box when clicked. -->
-	<script src="js/jquery-1.9.1.js"></script>
-	<script src="js/jquery-ui.js"></script>
-	<link rel=stylesheet href="css/jquery-ui.css" />
-	<link rel=stylesheet href="css/info.css" />
-	<script src="js/info.js"></script>
+	<script src="../lib/js/jquery-1.9.1.js"></script>
+	<script src="../lib/js/jquery-ui.js"></script>
+	<link rel=stylesheet href="../lib/css/jquery-ui.css" />
+	<link rel=stylesheet href="../lib/css/info.css" />
+	<script src="../lib/js/info.js"></script>
 	<div id="infoButton"></div>
 	<div id="infoBox" title="Demo Information">
 		This three.js demo is part of a collection at <a href="http://stemkoski.github.io/Three.js/">http://stemkoski.github.io/Three.js/</a>
@@ -206,7 +206,7 @@
 			///////////
 
 			// note: 4x4 checkboard pattern scaled so that each square is 25 by 25 pixels.
-			var floorTexture = new THREE.ImageUtils.loadTexture('images/checkerboard.jpg');
+			var floorTexture = new THREE.ImageUtils.loadTexture('../lib/images/checkerboard.jpg');
 			floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
 			floorTexture.repeat.set(10, 10);
 			// DoubleSide: render texture on both sides of mesh

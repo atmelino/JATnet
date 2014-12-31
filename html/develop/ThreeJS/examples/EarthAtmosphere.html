@@ -19,27 +19,27 @@
 
 <div id="message"></div>
 
-<script src="js/Three.js"></script>
-<script src="js/Detector.js"></script>
-<script src="js/Stats.js"></script>
-<script src="js/TrackballControls.js"></script>
-<script src="js/THREEx.KeyboardState.js"></script>
-<script src="js/THREEx.FullScreen.js"></script>
-<script src="js/THREEx.WindowResize.js"></script>
+<script src="../lib/js/Three.js"></script>
+<script src="../lib/js/Detector.js"></script>
+<script src="../lib/js/Stats.js"></script>
+<script src="../lib/js/TrackballControls.js"></script>
+<script src="../lib/js/THREEx.KeyboardState.js"></script>
+<script src="../lib/js/THREEx.FullScreen.js"></script>
+<script src="../lib/js/THREEx.WindowResize.js"></script>
 
 
 <!-- GUI for experimenting with values -->		
-<script type='text/javascript' src='js/DAT.GUI.min.js'></script>
+<script type='text/javascript' src='../lib/js/DAT.GUI.min.js'></script>
 
 <!-- Note the additional JS files! always need all of these for postprocessing. -->
-<script src="js/postprocessing/EffectComposer.js"></script>
-<script src="js/postprocessing/RenderPass.js"></script>
-<script src="js/postprocessing/ShaderPass.js"></script>
-<script src="js/postprocessing/MaskPass.js"></script>
-<script src="js/shaders/CopyShader.js"></script>
+<script src="../lib/js/postprocessing/EffectComposer.js"></script>
+<script src="../lib/js/postprocessing/RenderPass.js"></script>
+<script src="../lib/js/postprocessing/ShaderPass.js"></script>
+<script src="../lib/js/postprocessing/MaskPass.js"></script>
+<script src="../lib/js/shaders/CopyShader.js"></script>
 
 <!-- separate out the shaders specific to this demo -->
-<script src="js/shaders/AdditiveBlendShader.js"></script>
+<script src="../lib/js/shaders/AdditiveBlendShader.js"></script>
 
 
 <!-- ------ Custom Shader Code for atmospheric glow ------ -->
@@ -123,7 +123,7 @@ function init()
 	scene.add(light);
 	
 	
-	var imagePrefix = "images/nebula-";
+	var imagePrefix = "../lib/images/nebula-";
 	var directions  = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
 	var imageSuffix = ".png";
 	var skyGeometry = new THREE.CubeGeometry( 10000, 10000, 10000 );	
@@ -154,9 +154,9 @@ function init()
 	
     // Create the Earth with nice texture - normal map for elevation, specular highlights
 
-	var colors = THREE.ImageUtils.loadTexture( "images/earth-day.jpg" );
-	var bumpy  = THREE.ImageUtils.loadTexture( "images/earth-topo.jpg" );
-	var shiny  = THREE.ImageUtils.loadTexture( "images/earth-specular.jpg" );
+	var colors = THREE.ImageUtils.loadTexture( "../lib/images/earth-day.jpg" );
+	var bumpy  = THREE.ImageUtils.loadTexture( "../lib/images/earth-topo.jpg" );
+	var shiny  = THREE.ImageUtils.loadTexture( "../lib/images/earth-specular.jpg" );
 
 	var earthMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff, map: colors, 
 		bumpMap: bumpy, bumpScale: 4, specular: 0xffffff, specularMap: shiny, emissive: 0x888888 } );
@@ -167,7 +167,7 @@ function init()
 	// add a cloud layer
 
 	var cloudMaterial = new THREE.MeshBasicMaterial( 
-	  { map: THREE.ImageUtils.loadTexture( "images/earth-clouds.png" ), transparent: true} );
+	  { map: THREE.ImageUtils.loadTexture( "../lib/images/earth-clouds.png" ), transparent: true} );
 	  
 	this.cloudSphere = new THREE.Mesh( sphereGeo.clone(), cloudMaterial );
 	cloudSphere.scale.x = cloudSphere.scale.y = cloudSphere.scale.z = 1.005;

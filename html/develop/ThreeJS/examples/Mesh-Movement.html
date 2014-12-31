@@ -5,24 +5,24 @@
 <title>Mesh Movement (Three.js)</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-<link rel=stylesheet href="css/base.css" />
+<link rel=stylesheet href="../lib/css/base.css" />
 </head>
 <body>
 
-	<script src="js/Three.js"></script>
-	<script src="js/Detector.js"></script>
-	<script src="js/Stats.js"></script>
-	<script src="js/OrbitControls.js"></script>
-	<script src="js/THREEx.KeyboardState.js"></script>
-	<script src="js/THREEx.FullScreen.js"></script>
-	<script src="js/THREEx.WindowResize.js"></script>
+	<script src="../lib/js/Three.js"></script>
+	<script src="../lib/js/Detector.js"></script>
+	<script src="../lib/js/Stats.js"></script>
+	<script src="../lib/js/OrbitControls.js"></script>
+	<script src="../lib/js/THREEx.KeyboardState.js"></script>
+	<script src="../lib/js/THREEx.FullScreen.js"></script>
+	<script src="../lib/js/THREEx.WindowResize.js"></script>
 
 	<!-- jQuery code to display an information button and box when clicked. -->
-	<script src="js/jquery-1.9.1.js"></script>
-	<script src="js/jquery-ui.js"></script>
-	<link rel=stylesheet href="css/jquery-ui.css" />
-	<link rel=stylesheet href="css/info.css" />
-	<script src="js/info.js"></script>
+	<script src="../lib/js/jquery-1.9.1.js"></script>
+	<script src="../lib/js/jquery-ui.js"></script>
+	<link rel=stylesheet href="../lib/css/jquery-ui.css" />
+	<link rel=stylesheet href="../lib/css/info.css" />
+	<script src="../lib/js/info.js"></script>
 	<div id="infoButton"></div>
 	<div id="infoBox" title="Demo Information">
 		Movement controls: <br />
@@ -97,7 +97,7 @@
 			light.position.set(0, 250, 0);
 			scene.add(light);
 			// FLOOR
-			var floorTexture = new THREE.ImageUtils.loadTexture('images/checkerboard.jpg');
+			var floorTexture = new THREE.ImageUtils.loadTexture('../lib/images/checkerboard.jpg');
 			floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
 			floorTexture.repeat.set(10, 10);
 			var floorMaterial = new THREE.MeshBasicMaterial({
@@ -126,22 +126,22 @@
 			// create an array with six textures for a cool cube
 			var materialArray = [];
 			materialArray.push(new THREE.MeshBasicMaterial({
-				map : THREE.ImageUtils.loadTexture('images/xpos.png')
+				map : THREE.ImageUtils.loadTexture('../lib/images/xpos.png')
 			}));
 			materialArray.push(new THREE.MeshBasicMaterial({
-				map : THREE.ImageUtils.loadTexture('images/xneg.png')
+				map : THREE.ImageUtils.loadTexture('../lib/images/xneg.png')
 			}));
 			materialArray.push(new THREE.MeshBasicMaterial({
-				map : THREE.ImageUtils.loadTexture('images/ypos.png')
+				map : THREE.ImageUtils.loadTexture('../lib/images/ypos.png')
 			}));
 			materialArray.push(new THREE.MeshBasicMaterial({
-				map : THREE.ImageUtils.loadTexture('images/yneg.png')
+				map : THREE.ImageUtils.loadTexture('../lib/images/yneg.png')
 			}));
 			materialArray.push(new THREE.MeshBasicMaterial({
-				map : THREE.ImageUtils.loadTexture('images/zpos.png')
+				map : THREE.ImageUtils.loadTexture('../lib/images/zpos.png')
 			}));
 			materialArray.push(new THREE.MeshBasicMaterial({
-				map : THREE.ImageUtils.loadTexture('images/zneg.png')
+				map : THREE.ImageUtils.loadTexture('../lib/images/zneg.png')
 			}));
 			var MovingCubeMat = new THREE.MeshFaceMaterial(materialArray);
 			var MovingCubeGeom = new THREE.CubeGeometry(50, 50, 50, 1, 1, 1, materialArray);

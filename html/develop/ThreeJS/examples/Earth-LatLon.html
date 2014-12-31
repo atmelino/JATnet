@@ -19,13 +19,13 @@
 
 <div id="message"></div>
 
-<script src="js/Three62.js"></script>
-<script src="js/Detector.js"></script>
-<script src="js/Stats.js"></script>
-<script src="js/TrackballControls.js"></script>
-<script src="js/KeyboardState.js"></script>
-<script src="js/THREEx.FullScreen.js"></script>
-<script src="js/THREEx.WindowResize.js"></script>
+<script src="../lib/js/Three62.js"></script>
+<script src="../lib/js/Detector.js"></script>
+<script src="../lib/js/Stats.js"></script>
+<script src="../lib/js/TrackballControls.js"></script>
+<script src="../lib/js/KeyboardState.js"></script>
+<script src="../lib/js/THREEx.FullScreen.js"></script>
+<script src="../lib/js/THREEx.WindowResize.js"></script>
 
 
 <!-- ----------------------------------------------------------- -->
@@ -90,7 +90,7 @@ function init()
 	
     // Create the Earth with nice texture
 
-	var colors = THREE.ImageUtils.loadTexture( "images/earth-day.jpg" );
+	var colors = THREE.ImageUtils.loadTexture( "../lib/images/earth-day.jpg" );
 
 	var earthMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, map: colors } );
 
