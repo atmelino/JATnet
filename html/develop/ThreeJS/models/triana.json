@@ -102,14 +102,14 @@
 					"DbgIndex": 4,
 					"DbgName": "TDRSS-Dish1",
 					"blending": "NormalBlending",
-					"colorAmbient": [0.1996642944646041, 0.6745098774573393, 0.13005232371650166],
-					"colorDiffuse": [0.1996642944646041, 0.6745098774573393, 0.13005232371650166],
-					"colorEmissive": [0.12778514560112597, 0.43168631192375595, 0.08323348531814764],
-					"colorSpecular": [0.14444425401754302, 0.18375733608301914, 0.3849998712539673],
+					"colorAmbient": [0.2321677803993225, 0.7843137979507446, 0.15122362971305847],
+					"colorDiffuse": [0.2321677803993225, 0.7843137979507446, 0.15122362971305847],
+					"colorEmissive": [0.0, 0.0, 0.0],
+					"colorSpecular": [0.8050000071525574, 0.8026199209478619, 0.7663004311460924],
 					"depthTest": true,
 					"depthWrite": true,
-					"shading": "Phong",
-					"specularCoef": 68,
+					"shading": "Lambert",
+					"specularCoef": 260,
 					"transparency": 1.0,
 					"transparent": false,
 					"vertexColors": false
@@ -149,7 +149,7 @@
 					"vertexColors": false
 				},
 				{
-					"DbgColor": 8478454,
+					"DbgColor": 109031,
 					"DbgIndex": 7,
 					"DbgName": "TDRSS-MainSolarPanelBlock",
 					"blending": "NormalBlending",
@@ -166,7 +166,7 @@
 					"vertexColors": false
 				},
 				{
-					"DbgColor": 3698379,
+					"DbgColor": 9886237,
 					"DbgIndex": 8,
 					"DbgName": "TDRSS-MainSolarPanelDetailGold",
 					"blending": "NormalBlending",
@@ -183,7 +183,7 @@
 					"vertexColors": false
 				},
 				{
-					"DbgColor": 9142600,
+					"DbgColor": 445199,
 					"DbgIndex": 9,
 					"DbgName": "TDRSS-MainSolarPanelPanels",
 					"blending": "NormalBlending",
@@ -200,7 +200,7 @@
 					"vertexColors": false
 				},
 				{
-					"DbgColor": 9886237,
+					"DbgColor": 13579988,
 					"DbgIndex": 10,
 					"DbgName": "TOMS-black",
 					"blending": "NormalBlending",
@@ -217,7 +217,7 @@
 					"vertexColors": false
 				},
 				{
-					"DbgColor": 13579988,
+					"DbgColor": 9142600,
 					"DbgIndex": 11,
 					"DbgName": "TOMS-brassflat",
 					"blending": "NormalBlending",
@@ -234,7 +234,7 @@
 					"vertexColors": false
 				},
 				{
-					"DbgColor": 10903250,
+					"DbgColor": 13519402,
 					"DbgIndex": 12,
 					"DbgName": "TOMS-greysmooth",
 					"blending": "NormalBlending",
@@ -251,7 +251,7 @@
 					"vertexColors": false
 				},
 				{
-					"DbgColor": 13519402,
+					"DbgColor": 11712834,
 					"DbgIndex": 13,
 					"DbgName": "TOMS-sides1245black",
 					"blending": "NormalBlending",
@@ -268,7 +268,7 @@
 					"vertexColors": false
 				},
 				{
-					"DbgColor": 11712834,
+					"DbgColor": 10903250,
 					"DbgIndex": 14,
 					"DbgName": "TrianaCamside",
 					"blending": "NormalBlending",
@@ -285,24 +285,24 @@
 					"vertexColors": false
 				},
 				{
-					"DbgColor": 3335942,
+					"DbgColor": 3698379,
 					"DbgIndex": 15,
 					"DbgName": "TrianaTop&Bot",
 					"blending": "NormalBlending",
-					"colorAmbient": [0.6509020353345321, 0.5463529689592477, 0.26643138673025035],
-					"colorDiffuse": [0.6509020353345321, 0.5463529689592477, 0.26643138673025035],
+					"colorAmbient": [0.7568628191947937, 0.2000897228717804, 0.6312995553016663],
+					"colorDiffuse": [0.7568628191947937, 0.2000897228717804, 0.6312995553016663],
 					"colorEmissive": [0.0, 0.0, 0.0],
-					"colorSpecular": [0.20999999344348907, 0.20999999344348907, 0.20999999344348907],
+					"colorSpecular": [0.8050000071525574, 0.8050000071525574, 0.8050000071525574],
 					"depthTest": true,
 					"depthWrite": true,
 					"shading": "Lambert",
-					"specularCoef": 68,
+					"specularCoef": 260,
 					"transparency": 1.0,
 					"transparent": false,
 					"vertexColors": false
 				},
 				{
-					"DbgColor": 109031,
+					"DbgColor": 8478454,
 					"DbgIndex": 16,
 					"DbgName": "TrianaXsides",
 					"blending": "NormalBlending",
@@ -319,7 +319,7 @@
 					"vertexColors": false
 				},
 				{
-					"DbgColor": 445199,
+					"DbgColor": 3335942,
 					"DbgIndex": 17,
 					"DbgName": "TrianaZsides",
 					"blending": "NormalBlending",
