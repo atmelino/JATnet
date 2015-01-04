@@ -56,6 +56,9 @@
 	var gui;
 	var zUpVec = [ 0, 0, 0 ];
 	var autoRotateCB;
+	var lines = new Array();
+	var satellite;
+	var satScale = 100;
 
 	function setup() {
 		// initialization
@@ -96,7 +99,7 @@
 		THREEx.FullScreen.bindKey({
 			charCode : 'm'.charCodeAt(0)
 		});
-		
+
 		// CONTROLS
 		controls = new THREE.OrbitControls(camera, renderer.domElement);
 		controls.autoRotate = true;
@@ -124,6 +127,7 @@
 			w : 10, // numeric slider
 			ta : 10, // numeric slider
 			add : makeOrbit,
+			clear : clearOrbits,
 			autoRotate : false, // boolean (checkbox)
 			opacity : 0.8, // numeric slider
 
@@ -135,13 +139,14 @@
 		gui.add(parameters, 'w').min(0).max(180).step(0.1).name('Perigee');
 		gui.add(parameters, 'ta').min(0).max(180).step(0.1).name('True Anomaly');
 		gui.add(parameters, 'add').name('Add Orbit');
+		gui.add(parameters, 'clear').name('Clear Orbit(s)');
 		//gui.add(parameters, 'autoRotate').name('autoRotate');
 		autoRotateCB = gui.add(parameters, 'autoRotate').name('autoRotate').listen();
 		autoRotateCB.onChange(function(value) {
 			//console.log(value);
 			controls.autoRotate = value;
 		});
-		var opacity=gui.add(parameters, 'opacity').min(0).max(1).step(0.01).name('Opacity').listen();
+		var opacity = gui.add(parameters, 'opacity').min(0).max(1).step(0.01).name('Opacity').listen();
 		opacity.onChange(function(value) {
 			earthSphere.material.opacity = value;
 		});
@@ -175,27 +180,32 @@
 		});
 		this.earthSphere = new THREE.Mesh(sphereGeo, earthMaterial);
 		scene.add(earthSphere);
-		
+
 		var jsonLoader = new THREE.JSONLoader();
 		jsonLoader.load("../models/triana.json", addModelToScene);
 
-		makeGrid(scene, true,gridSize);
-		
+		makeGrid(scene, true, gridSize);
+
 		// create a set of coordinate axes to help orient user
 		//    specify length in pixels in each direction
-		var axes = new THREE.AxisHelper(gridSize);
-		scene.add(axes);
-
-		makeAxisLabel(scene, true);
+		//var axes = new THREE.AxisHelper(gridSize);
+		//scene.add(axes);
+		//makeAxisLabel(scene, true);
 
 	}
 
 	function addModelToScene(geometry, materials) {
 		var material = new THREE.MeshFaceMaterial(materials);
-		android = new THREE.Mesh(geometry, material);
-		android.scale.set(10, 10, 10);
-		//android.position.set(0, 30, 0);
-		scene.add(android);
+		satellite = new THREE.Mesh(geometry, material);
+		satellite.scale.set(satScale, satScale, satScale);
+		//satellite.position.set(0, 30, 0);
+
+		// 		z = 1126.5079268573745;
+		// 		y = 3989.067891143869;
+		// 		x = 7340.005746153715;
+		// 		satellite.position.set(y, z, x);
+
+		scene.add(satellite);
 	}
 
 	function zUp(x, y, z) {
@@ -244,7 +254,7 @@
 		var raan = parameters.raan;
 		var w = parameters.w;
 		var ta = parameters.ta;
-		console.log("SemimajorAxis=" + SemimajorAxis);
+		//console.log("SemimajorAxis=" + SemimajorAxis);
 
 		$.post('/JATServlet/TwoBodyParam', {
 			SemimajorAxis : SemimajorAxis,
@@ -260,6 +270,7 @@
 			//printlnMessage('messages', obj.coords.x[0]);
 			//printlnMessage('messages', JSON.stringify(obj.TBE));
 			console.log(JSON.stringify(obj.TBE));
+			console.log(JSON.stringify(obj.pos));
 
 			var lineGeometry = new THREE.Geometry();
 			var vertArray = lineGeometry.vertices;
@@ -272,10 +283,35 @@
 			var lineMaterial = new THREE.LineBasicMaterial({
 				color : 0xcc0000
 			});
-			var line = new THREE.Line(lineGeometry, lineMaterial);
-			scene.add(line);
+			var index = lines.length;
+			//console.log("index=" + index);
+			lines[index] = new THREE.Line(lineGeometry, lineMaterial);
+			scene.add(lines[index]);
 
+			z = 1126.5079268573745;
+			y = 3989.067891143869;
+			x = 7340.005746153715;
+			
+			x=parseInt(obj.pos.x);
+			y=parseInt(obj.pos.y);
+			z=parseInt(obj.pos.z);
+			console.log("x=" + x+" y="+y);
+			
+			satellite.position.set(y, z, x);
+			update();
 		});
+	}
+
+	function clearOrbits() {
+		console.log("clearOrbits called");
+		for (index = 0; index < lines.length; ++index) {
+			console.log(lines[index]);
+			scene.remove(lines[index]);
+		}
+
+		// 		for (line in lines)
+		// 			scene.remove(line);
+
 	}
 </script>
 
