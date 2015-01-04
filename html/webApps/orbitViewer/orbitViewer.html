@@ -4,35 +4,35 @@
 <title>GUI (Three.js)</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-<link rel=stylesheet href="../css/base.css" />
-<link rel=stylesheet href="../css/jquery-ui.css" />
-<link rel=stylesheet href="../css/info.css" />
+<link rel=stylesheet href="../lib/css/base.css" />
+<link rel=stylesheet href="../lib/css/jquery-ui.css" />
+<link rel=stylesheet href="../lib/css/info.css" />
 
-<script src="../js/Three.js"></script>
-<script src="../js/Detector.js"></script>
-<script src="../js/Stats.js"></script>
-<script src="../js/OrbitControls.js"></script>
-<script src="../js/THREEx.KeyboardState.js"></script>
-<script src="../js/THREEx.FullScreen.js"></script>
-<script src="../js/THREEx.WindowResize.js"></script>
-<script src='../js/DAT.GUI.min.js'></script>
-<script src="../js/jquery-1.9.1.js"></script>
-<script src="../js/jquery-ui.js"></script>
-<script src="../js/info.js"></script>
-<script src="../fonts/gentilis_bold.typeface.js"></script>
-<script src="../fonts/gentilis_regular.typeface.js"></script>
-<script src="../fonts/optimer_bold.typeface.js"></script>
-<script src="../fonts/optimer_regular.typeface.js"></script>
-<script src="../fonts/helvetiker_bold.typeface.js"></script>
-<script src="../fonts/helvetiker_regular.typeface.js"></script>
-<script src="../fonts/droid_sans_regular.typeface.js"></script>
-<script src="../fonts/droid_sans_bold.typeface.js"></script>
-<script src="../fonts/droid_serif_regular.typeface.js"></script>
-<script src="../fonts/droid_serif_bold.typeface.js"></script>
+<script src="../lib/js/Three.js"></script>
+<script src="../lib/js/Detector.js"></script>
+<script src="../lib/js/Stats.js"></script>
+<script src="../lib/js/OrbitControls.js"></script>
+<script src="../lib/js/THREEx.KeyboardState.js"></script>
+<script src="../lib/js/THREEx.FullScreen.js"></script>
+<script src="../lib/js/THREEx.WindowResize.js"></script>
+<script src='../lib/js/DAT.GUI.min.js'></script>
+<script src="../lib/js/jquery-1.9.1.js"></script>
+<script src="../lib/js/jquery-ui.js"></script>
+<script src="../lib/js/info.js"></script>
+<script src="../lib/fonts/gentilis_bold.typeface.js"></script>
+<script src="../lib/fonts/gentilis_regular.typeface.js"></script>
+<script src="../lib/fonts/optimer_bold.typeface.js"></script>
+<script src="../lib/fonts/optimer_regular.typeface.js"></script>
+<script src="../lib/fonts/helvetiker_bold.typeface.js"></script>
+<script src="../lib/fonts/helvetiker_regular.typeface.js"></script>
+<script src="../lib/fonts/droid_sans_regular.typeface.js"></script>
+<script src="../lib/fonts/droid_sans_bold.typeface.js"></script>
+<script src="../lib/fonts/droid_serif_regular.typeface.js"></script>
+<script src="../lib/fonts/droid_serif_bold.typeface.js"></script>
 
-<script src="../js/extra/grid.js"></script>
-<script src="../js/extra/axisLabels.js"></script>
-<script src="../js/extra/colors.js"></script>
+<script src="../lib/js/extra/grid.js"></script>
+<script src="../lib/js/extra/axisLabels.js"></script>
+<script src="../lib/js/extra/colors.js"></script>
 
 <!-- Coordinate order has been changed to reflect OpenGL default: -->
 <!-- first coordinate is y -->
@@ -166,7 +166,7 @@
 
 		// Create the Earth with nice texture
 		var sphereGeo = new THREE.SphereGeometry(radius, 64, 32);
-		var colors = THREE.ImageUtils.loadTexture("../images/earth-day.jpg");
+		var colors = THREE.ImageUtils.loadTexture("../lib/images/earth-day.jpg");
 		var earthMaterial = new THREE.MeshBasicMaterial({
 			color : 0xffffff,
 			map : colors,
@@ -176,7 +176,9 @@
 		this.earthSphere = new THREE.Mesh(sphereGeo, earthMaterial);
 		scene.add(earthSphere);
 		
-		
+		var jsonLoader = new THREE.JSONLoader();
+		jsonLoader.load("../models/triana.json", addModelToScene);
+
 		makeGrid(scene, true,gridSize);
 		
 		// create a set of coordinate axes to help orient user
@@ -186,6 +188,14 @@
 
 		makeAxisLabel(scene, true);
 
+	}
+
+	function addModelToScene(geometry, materials) {
+		var material = new THREE.MeshFaceMaterial(materials);
+		android = new THREE.Mesh(geometry, material);
+		android.scale.set(10, 10, 10);
+		//android.position.set(0, 30, 0);
+		scene.add(android);
 	}
 
 	function zUp(x, y, z) {
