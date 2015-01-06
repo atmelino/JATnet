@@ -57,9 +57,9 @@ body {
 	padding: 0;
 }
 
-#mainarea a:link,a:visited {
-/* 	color: #0000ff; */
-/* 	background-color: #112266; */
+#mainarea a:link,a:visited { /* 	color: #0000ff; */
+	/* 	background-color: #112266; */
+	
 }
 
 #container {
@@ -73,11 +73,18 @@ img.centered { /*position: fixed;*/
 	margin-left: -100px;
 }
 
-table, th, td {
-   border: 1px solid black;
+table,th,td {
+	border: 1px solid black;
 }
 
 table {
-    border-collapse: collapse;
+	border-collapse: collapse;
 }
 
+code {
+	background-color: lightgray;
+	padding-top: 5px;
+	padding-right: 10px;
+	padding-bottom: 5px;
+	padding-left: 10px;
+}

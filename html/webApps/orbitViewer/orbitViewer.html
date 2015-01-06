@@ -12,6 +12,7 @@
 <script src="../lib/js/Detector.js"></script>
 <script src="../lib/js/Stats.js"></script>
 <script src="../lib/js/OrbitControls.js"></script>
+<!-- <script src="../lib/js/TrackballControls.js"></script> -->
 <script src="../lib/js/THREEx.KeyboardState.js"></script>
 <script src="../lib/js/THREEx.FullScreen.js"></script>
 <script src="../lib/js/THREEx.WindowResize.js"></script>
@@ -102,6 +103,7 @@
 
 		// CONTROLS
 		controls = new THREE.OrbitControls(camera, renderer.domElement);
+		//controls = new THREE.TrackballControls( camera, renderer.domElement );
 		controls.autoRotate = true;
 		controls.autoRotateSpeed = 0.2;
 
@@ -130,7 +132,8 @@
 			clear : clearOrbits,
 			autoRotate : false, // boolean (checkbox)
 			opacity : 0.8, // numeric slider
-
+			satScale : 100,
+			background : "Stars",
 		};
 		gui.add(parameters, 'a').min(6000).max(50000).step(1).name('Semimajor Axis [km]');
 		gui.add(parameters, 'ecc').min(0).max(1).step(0.01).name('Eccentricity');
@@ -150,6 +153,12 @@
 		opacity.onChange(function(value) {
 			earthSphere.material.opacity = value;
 		});
+		var satScale = gui.add(parameters, 'satScale').min(1).max(1000).step(1).name('satellite scale').listen();
+		satScale.onChange(function(value) {
+			satellite.scale.set(value, value, value);
+		});
+		var bgList = [ "Color", "Stars", "Sky" ];
+		gui.add(parameters, 'background', bgList).name('background');
 
 		gui.open();
 
@@ -160,8 +169,29 @@
 			side : THREE.BackSide
 		});
 		var skyBox = new THREE.Mesh(skyBoxGeometry, skyBoxMaterial);
-		scene.add(skyBox);
+		//scene.add(skyBox);
 		//scene.fog = new THREE.FogExp2(0x9999ff, 0.00025);
+
+		// SPACEBOX
+		var imagePrefix = "../lib/images/nebula-";
+		var directions = [ "xpos", "xneg", "ypos", "yneg", "zpos", "zneg" ];
+		var imageSuffix = ".png";
+		var skyGeometry = new THREE.CubeGeometry(1000 * gridSize, 1000 * gridSize, 1000 * gridSize);
+		var imageURLs = [];
+		for ( var i = 0; i < 6; i++)
+			imageURLs.push(imagePrefix + directions[i] + imageSuffix);
+		var textureCube = THREE.ImageUtils.loadTextureCube(imageURLs);
+		var shader = THREE.ShaderLib["cube"];
+		shader.uniforms["tCube"].value = textureCube;
+		var skyMaterial = new THREE.ShaderMaterial({
+			fragmentShader : shader.fragmentShader,
+			vertexShader : shader.vertexShader,
+			uniforms : shader.uniforms,
+			depthWrite : false,
+			side : THREE.BackSide
+		});
+		var skyBox = new THREE.Mesh(skyGeometry, skyMaterial);
+		scene.add(skyBox);
 
 		////////////
 		// CUSTOM //
@@ -291,12 +321,12 @@
 			z = 1126.5079268573745;
 			y = 3989.067891143869;
 			x = 7340.005746153715;
-			
-			x=parseInt(obj.pos.x);
-			y=parseInt(obj.pos.y);
-			z=parseInt(obj.pos.z);
-			console.log("x=" + x+" y="+y);
-			
+
+			x = parseInt(obj.pos.x);
+			y = parseInt(obj.pos.y);
+			z = parseInt(obj.pos.z);
+			console.log("x=" + x + " y=" + y);
+
 			satellite.position.set(y, z, x);
 			update();
 		});
@@ -318,8 +348,8 @@
 </head>
 <body onLoad="setup();">
 	<div id="infoButton"></div>
-	<div id="infoBox" title="Demo Information">
-		Java Astrodynamics Toolkit</a>
+	<div id="infoBox" title="Information">
+		Java Astrodynamics Toolkit<br>Drag mouse to rotate scene<br>mouse wheel to zoom
 	</div>
 	<!-- ------------------------------------------------------------ -->
 
