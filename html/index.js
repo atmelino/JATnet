@@ -1,23 +1,20 @@
 function onload_function() {
-	printlnMessage('messages', 'index.js: onload_function()');
+	// printlnMessage('messages', 'index.js: onload_function()');
 
 	root_path = window.location.pathname;
 	// printlnMessage('messages', 'index.js: root path ' + root_path);
 
+	// load most recent page
 	page = getCookie('page');
 	title = getCookie('title');
-	//printlnMessage('messages', 'index.js: from cookies: ' + page + ' ' + title);
+	// printlnMessage('messages', 'index.js: from cookies: ' + page + ' ' +
+	// title);
 	if (page == null) {
 		page = 'home.html';
 		title = 'JAT';
 	}
 
 	$('#iframe_a').attr('src', page);
-	// $('#iframe_a').attr('src', 'Applications.html');
-
-	// $('#container').load('home.html');
-	// document.title = 'JAT';
-	// $('#container').load(page);
 	document.title = title;
 
 }
@@ -26,11 +23,13 @@ function onload_function() {
 	$(document).ready(function() {
 
 		$('#iframe_a').load(function() {
+			printlnMessage('messages', 'index.js: iframe_a loaded');
+
 			// printlnMessage('messages', 'index.js: ' +
 			// this.contentWindow.location);
 
 			full_path = this.contentWindow.location.href;
-			//printlnMessage('messages', 'index.js: full path ' + full_path);
+			// printlnMessage('messages', 'index.js: full path ' + full_path);
 
 			var pathArrayStr = this.contentWindow.location + '';
 			pathArray = pathArrayStr.split('/');
@@ -45,12 +44,31 @@ function onload_function() {
 			// setCookie('title', title, 100);
 
 			page = getCookie('page');
-			//printlnMessage('messages', 'index.js: saved to cookies: ' + page);
+			// printlnMessage('messages', 'index.js: saved to cookies: ' +
+			// page);
+
+			autoResize('iframe_a');
 
 		});
 
 	});
 }(jQuery));
+
+
+function autoResize(id) {
+	var newheight = 0;
+	var newwidth = 0;
+
+	// if(document.getElementById){
+	newheight = document.getElementById(id).contentWindow.document.body.scrollHeight;
+	newwidth = document.getElementById(id).contentWindow.document.body.scrollWidth;
+	// }
+	// printlnMessage('messages', 'index.js: newheight='+newheight);
+
+	document.getElementById(id).height = (newheight) + "px";
+	document.getElementById(id).width = (newwidth) + "px";
+	document.location.href = "#top";
+}
 
 function linkClick(page, title) {
 

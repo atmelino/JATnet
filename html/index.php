@@ -20,7 +20,6 @@
 </head>
 <body onload="onload_function()">
 
-	<!-- 	<div id="menuheader" class="menu"> -->
 	<div id="menuheader">
 		<ul>
 			<li><a href="home.html" id=home target="iframe_a">Home</a></li>
@@ -41,23 +40,20 @@
 	<!--<?php include("status.html"); ?>-->
 	<!-- 	</div> -->
 
-	<div ID='mainarea' style="display: table;">
-
+	<div id='mainarea'>
 		<div id='messagesDiv'>
 			<!--<textarea id="messages" style="width: 90%;"></textarea>-->
 			<textarea id="messages" cols=80; rows=3"></textarea>
 			<!-- cols=60 rows=10 -->
 		</div>
-
-		<!-- 		<iframe width="100%" src="home.html" name="iframe_a"></iframe> -->
-		<!-- 		<div id='container'></div> -->
-
+		<iframe width="100%" height=400px scrolling=no name="iframe_a" id="iframe_a" seamless="seamless"></iframe>
 	</div>
 	<!-- end of mainarea -->
 
 
+
+
 	<!-- 	<iframe width="100%" height="600px%" src="home.html" name="iframe_a" id="iframe_a"></iframe> -->
-	<iframe width="100%" height=4000px scrolling=no name="iframe_a" id="iframe_a" seamless="seamless"></iframe>
 
 
 </body>

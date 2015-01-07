@@ -1,5 +1,35 @@
 
 
+			// document.getElementById('iframe_a').contentWindow.scrollTo(0,500);
+			// this.contentWindow.document.documentElement.scrollTop=0;
+
+
+// $("#scroll").click(function() {
+// alert("Handler for .click() called.");
+// document.getElementById('iframe_a').contentWindow.scrollTo(0, 0);
+// });
+
+function scroll() {
+	//alert("Handler for .click() called.");
+	//document.getElementById('iframe_a').contentWindow.scrollTo(100, 100);
+	//document.getElementById('mainarea').contentWindow.scrollTo(100, 100);
+
+	document.location.href = "#top";
+}
+
+// $("#iframe_a").ready(function () {
+// alert('iFrame loaded!');
+// });
+
+
+
+// $('#iframe_a').attr('src', 'Applications.html');
+
+	// $('#container').load('home.html');
+	// document.title = 'JAT';
+	// $('#container').load(page);
+
+
 
 		// 		var lineGeometry = new THREE.Geometry();
 		// 		var vertArray = lineGeometry.vertices;
